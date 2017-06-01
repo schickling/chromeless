@@ -1,0 +1,22 @@
+{
+  "name": "daymare",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "typings": "lib/index",
+  "license": "MIT",
+  "devDependencies": {
+    "tslint": "^5.3.2",
+    "typescript": "^2.3.4"
+  },
+  "scripts": {
+    "start": "npm run build; npm run watch",
+    "watch": "tsc -w",
+    "build": "tsc",
+    "dist": "tsc; tsc -d",
+    "prepublish": "npm run tslint; npm run dist",
+    "tslint": "tslint -c tslint.json -p tsconfig.json"
+  },
+  "dependencies": {
+    "chrome-remote-interface": "^0.23.0"
+  }
+}
