@@ -1,17 +1,17 @@
-# daymare
+# chromeless
 
 ## Installation
 ```sh
-npm install daymare
+npm install chromeless
 ```
 
 ## Usage
 ```js
-import Daymare from 'daymare'
+import Chromeless from 'chromeless'
 
-const daymare = new Daymare()
+const chromeless = new Chromeless()
 
-daymare
+chromeless
     .goto('https://console.graph.cool/signup')
     .type('#email', 'test@account.com')
     .type('#password', 'secret password')

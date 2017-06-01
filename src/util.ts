@@ -21,7 +21,7 @@ export async function nodeAppears(client, selector) {
   // inject the browser code
   const {Runtime} = client
   await Runtime.evaluate({
-    expression: `(${browserCode})(${JSON.stringify(selector)})`,
+    expression: `(${browserCode})(\`${selector}\`)`,
     awaitPromise: true
   })
 }
@@ -33,7 +33,7 @@ export async function waitForNode(client, selector) {
   }
 
   const result = await Runtime.evaluate({
-    expression: `(${getNode})(${JSON.stringify(selector)})`,
+    expression: `(${getNode})(\`${selector}\`)`,
   })
 
   if (result.result.value === null) {
@@ -49,6 +49,29 @@ export async function wait(timeout: number) {
   })
 }
 
+export async function nodeExists(client, selector) {
+  const {Runtime} = client
+  const exists = (selector) => {
+    return document.querySelector(selector)
+  }
+
+  const expression = `(${exists})(\`${selector}\`)`
+
+  try {
+    const result = await Runtime.evaluate({
+      expression,
+    })
+
+    // counter intuitive: if it is a real object and not just null,
+    // the chrome debugger won't return a value but return a objectId
+    const exists = typeof result.result.value === 'undefined'
+    return exists
+  } catch (e) {
+    console.error('Error while trying to run nodeExists')
+    console.error(e)
+  }
+}
+
 export async function getPosition(client, selector) {
 
   const {Runtime} = client
@@ -60,40 +83,61 @@ export async function getPosition(client, selector) {
     return document.querySelector(selector).getBoundingClientRect().left
   }
 
+  const topExpression = `(${getTop})(\`${selector}\`)`
   const topResult = await Runtime.evaluate({
-    expression: `(${getTop})(${JSON.stringify(selector)})`,
+    expression: topExpression,
   })
 
+  const leftExpression = `(${getLeft})(\`${selector}\`)`
   const leftResult = await Runtime.evaluate({
-    expression: `(${getLeft})(${JSON.stringify(selector)})`,
+    expression: leftExpression,
   })
 
-  const x = leftResult.result.value
-  const y = topResult.result.value
+  const x = parseInt(leftResult.result.value, 10)
+  const y = parseInt(topResult.result.value, 10)
+
+  if (isNaN(x) || isNaN(y)) {
+    throw new Error(`The viewport position for ${selector} couldn't be determined. x: ${x} y: ${y}`)
+  }
+
   return {
-    x, y,
+    x: x,
+    y: y,
   }
 }
 
-export async function click(client, selector) {
-  const position = await getPosition(client, selector)
-  const {Input} = client
+export async function click(client, useArtificialClick, selector) {
+  if (useArtificialClick) {
+    console.log('Using artificial .click()')
+    const {Runtime} = client
+    const click = (selector) => {
+      return document.querySelector(selector).click()
+    }
+    const expression = `(${click})(\`${selector}\`)`
 
-  const options = {
-    x: position.x + 1,
-    y: position.y + 1,
-    button: 'left',
-    clickCount: 1
+    await Runtime.evaluate({
+      expression,
+    })
+  } else {
+    const position = await getPosition(client, selector)
+    const {Input} = client
+
+    const options = {
+      x: position.x + 1,
+      y: position.y + 1,
+      button: 'left',
+      clickCount: 1
+    }
+
+    await Input.dispatchMouseEvent({
+      ...options,
+      type: 'mousePressed'
+    })
+    await Input.dispatchMouseEvent({
+      ...options,
+      type: 'mouseReleased'
+    })
   }
-
-  await Input.dispatchMouseEvent({
-    ...options,
-    type: 'mousePressed'
-  })
-  await Input.dispatchMouseEvent({
-    ...options,
-    type: 'mouseReleased'
-  })
 }
 
 export async function focus(client, selector) {
@@ -101,30 +145,74 @@ export async function focus(client, selector) {
   const focus = (selector) => {
     return document.querySelector(selector).focus()
   }
-  const expression = `(${focus})(${JSON.stringify(selector)})`
+  const expression = `(${focus})(\`${selector}\`)`
 
   await Runtime.evaluate({
     expression,
   })
 }
 
-export async function type(client, selector, text) {
-  await click(client, selector)
-  const {Input} = client
+export async function evaluate(client, fn) {
+  const {Runtime} = client
+  const expression = `(${fn})()`
 
-  await wait(500)
+  return await Runtime.evaluate({
+    expression,
+  }).result.value
+}
+
+export async function type(client, useArtificialClick, text, selector) {
+  if (selector) {
+    await click(client, useArtificialClick, selector)
+    await wait(500)
+  }
+
+  const {Input} = client
 
   for (let i = 0; i < text.length; i++) {
     const char = text[i]
-  // Array.prototype.forEach.call(text, async (char) => {
+    // Array.prototype.forEach.call(text, async (char) => {
     const options = {
       type: 'char',
       text: char,
       unmodifiedText: char,
     }
     const res = await Input.dispatchKeyEvent(options)
-  // })
   }
+}
+
+export async function backspace(client, useArtificialClick, n, selector) {
+  if (selector) {
+    await click(client, useArtificialClick, selector)
+    await wait(500)
+  }
+
+  const {Input} = client
+
+  for (let i = 0; i < n; i++) {
+    const options = {
+      modifiers: 8,
+      key: 'Backspace',
+      code: 'Backspace',
+      nativeVirtualKeyCode: 8,
+      windowsVirtualKeyCode: 8,
+    }
+    await Input.dispatchKeyEvent({
+      ...options,
+      type: 'rawKeyDown',
+    })
+    await Input.dispatchKeyEvent({
+      ...options,
+      type: 'keyUp',
+    })
+
+    console.log('sent backspace', options)
+  }
+  const options = {
+    type: 'rawKeyDown',
+    nativeVirtualKeyCode: 46,
+  }
+  const res = await Input.dispatchKeyEvent(options)
 }
 
 export async function getValue(client, selector) {
@@ -133,7 +221,7 @@ export async function getValue(client, selector) {
     return document.querySelector(selector).value
   }
   // console.log('getting value for', selector)
-  const expression = `(${browserCode})(${JSON.stringify(selector)})`
+  const expression = `(${browserCode})(\`${selector}\`)`
   try {
     const result = await Runtime.evaluate({
       expression,

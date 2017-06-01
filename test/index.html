@@ -23,6 +23,8 @@
       window.addEventListener('click', (e) => {
         console.log(e.pageX, e.pageY)
       })
+      document.addEventListener('keydown', e => console.log('keydown', e))
+      document.addEventListener('keyup', e => console.log('keyup', e))
     </script>
   </body>
 </html>

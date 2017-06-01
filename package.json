@@ -1,6 +1,7 @@
 {
-  "name": "daymare",
-  "version": "1.0.0",
+  "name": "chromeless",
+  "version": "0.0.1",
+  "author": "Tim Suchanek <tim.suchanek@gmail.com>",
   "main": "lib/index.js",
   "typings": "lib/index",
   "license": "MIT",
@@ -9,7 +10,7 @@
     "typescript": "^2.3.4"
   },
   "scripts": {
-    "start": "npm run build; npm run watch",
+    "start": "npm run build; node lib/index.js",
     "watch": "tsc -w",
     "build": "tsc",
     "dist": "tsc; tsc -d",
