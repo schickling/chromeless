@@ -1,32 +1,32 @@
-export async function nodeAppears(client, selector) {
-  // browser code to register and parse mutations
-  const browserCode = (selector) => {
-    return new Promise((fulfill, reject) => {
-      new MutationObserver((mutations, observer) => {
-        // add all the new nodes
-        const nodes = []
-        mutations.forEach((mutation) => {
-          nodes.push(...mutation.addedNodes)
-        })
-        // fulfills if at least one node matches the selector
-        if (nodes.find((node) => node.matches(selector))) {
-          observer.disconnect()
-          fulfill()
-        }
-      }).observe(document.body, {
-        childList: true
-      })
-    })
-  }
-  // inject the browser code
-  const {Runtime} = client
-  await Runtime.evaluate({
-    expression: `(${browserCode})(\`${selector}\`)`,
-    awaitPromise: true
-  })
-}
+// export async function nodeAppears(client, selector) {
+//   // browser code to register and parse mutations
+//   const browserCode = (selector) => {
+//     return new Promise((fulfill, reject) => {
+//       new MutationObserver((mutations, observer) => {
+//         // add all the new nodes
+//         const nodes = []
+//         mutations.forEach((mutation) => {
+//           nodes.push(...mutation.addedNodes)
+//         })
+//         // fulfills if at least one node matches the selector
+//         if (nodes.find((node) => node.matches(selector))) {
+//           observer.disconnect()
+//           fulfill()
+//         }
+//       }).observe(document.body, {
+//         childList: true
+//       })
+//     })
+//   }
+//   // inject the browser code
+//   const {Runtime} = client
+//   await Runtime.evaluate({
+//     expression: `(${browserCode})(\`${selector}\`)`,
+//     awaitPromise: true
+//   })
+// }
 
-export async function waitForNode(client, selector) {
+export async function waitForNode(client, selector, waitTimeout: number) {
   const {Runtime} = client
   const getNode = (selector) => {
     return document.querySelector(selector)
@@ -37,7 +37,26 @@ export async function waitForNode(client, selector) {
   })
 
   if (result.result.value === null) {
-    await nodeAppears(client, selector)
+    const start = new Date().getTime()
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(async () => {
+        if (new Date().getTime() - start > waitTimeout) {
+          clearInterval(interval)
+          reject(new Error(`wait() timed out after ${waitTimeout}ms`))
+        }
+
+        const result = await Runtime.evaluate({
+          expression: `(${getNode})(\`${selector}\`)`,
+        })
+
+        if (result.result.value !== null) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 500)
+    })
+  } else {
+    return
   }
 }
 
@@ -65,6 +84,7 @@ export async function nodeExists(client, selector) {
     // counter intuitive: if it is a real object and not just null,
     // the chrome debugger won't return a value but return a objectId
     const exists = typeof result.result.value === 'undefined'
+    console.log('node exists', exists)
     return exists
   } catch (e) {
     console.error('Error while trying to run nodeExists')
@@ -123,8 +143,8 @@ export async function click(client, useArtificialClick, selector) {
     const {Input} = client
 
     const options = {
-      x: position.x + 1,
-      y: position.y + 1,
+      x: position.x + 0,
+      y: position.y + 0,
       button: 'left',
       clickCount: 1
     }
@@ -156,9 +176,10 @@ export async function evaluate(client, fn) {
   const {Runtime} = client
   const expression = `(${fn})()`
 
-  return await Runtime.evaluate({
+  const result = await Runtime.evaluate({
     expression,
-  }).result.value
+  })
+  return result.result.value
 }
 
 export async function type(client, useArtificialClick, text, selector) {
@@ -179,6 +200,33 @@ export async function type(client, useArtificialClick, text, selector) {
     }
     const res = await Input.dispatchKeyEvent(options)
   }
+}
+
+export async function sendKeyCode(client, useArtificialClick, keyCode, selector, modifiers) {
+  if (selector) {
+    await click(client, useArtificialClick, selector)
+    await wait(500)
+  }
+
+  const {Input} = client
+
+  const options = {
+    nativeVirtualKeyCode: keyCode,
+    windowsVirtualKeyCode: keyCode,
+  }
+
+  if (modifiers) {
+    options['modifiers'] = modifiers
+  }
+
+  await Input.dispatchKeyEvent({
+    ...options,
+    type: 'rawKeyDown',
+  })
+  await Input.dispatchKeyEvent({
+    ...options,
+    type: 'keyUp',
+  })
 }
 
 export async function backspace(client, useArtificialClick, n, selector) {
@@ -231,3 +279,4 @@ export async function getValue(client, selector) {
     console.error(e)
   }
 }
+

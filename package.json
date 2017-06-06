@@ -1,11 +1,13 @@
 {
   "name": "chromeless",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Tim Suchanek <tim.suchanek@gmail.com>",
   "main": "lib/index.js",
   "typings": "lib/index",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^7.0.27",
+    "ava": "^0.19.1",
     "tslint": "^5.3.2",
     "typescript": "^2.3.4"
   },
@@ -13,7 +15,7 @@
     "start": "npm run build; node lib/index.js",
     "watch": "tsc -w",
     "build": "tsc",
-    "dist": "tsc; tsc -d",
+    "dist": "tsc -d",
     "prepublish": "npm run tslint; npm run dist",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
