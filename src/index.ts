@@ -62,7 +62,8 @@ class Chromeless {
 
   public goto(url: string): Chromeless {
     this.queue.push({
-      fn: async ({Network, Page}) => {
+      fn: async (client, url) => {
+        const {Network, Page} = client
         try {
           await Promise.all([Network.enable(), Page.enable()])
           await Page.navigate({url})
@@ -72,7 +73,8 @@ class Chromeless {
         } catch (e) {
           console.error(e)
         }
-      }
+      },
+      args: {url},
     })
 
     return this
@@ -203,7 +205,17 @@ class Chromeless {
     return new Promise((resolve, reject) => {
       const process = async () => {
 
-        for (const job of this.queue) {
+        // let jobs = this.queue
+        let jobs
+
+        try {
+          const jobsStr = fs.readFileSync('jobs.json')
+          jobs = this.deserializeJobs(jobsStr)
+        } catch (e) {
+          reject(e)
+        }
+
+        for (const job of jobs) {
           try {
             let args = []
             if (job.args) {
@@ -223,7 +235,8 @@ class Chromeless {
       }
 
       if (this.options.runRemote) {
-        console.log(`${this.queue[0]}`)
+        console.log(this.serializeJobs())
+        fs.writeFileSync('jobs.json', this.serializeJobs(), 'utf-8')
       } else {
         if (this.client) {
           return process()
@@ -235,12 +248,39 @@ class Chromeless {
   }
 
   private serializeJobs() {
-    return this.queue.map(job => {
+    return JSON.stringify(this.queue.map(job => {
       return {
         fn: job.fn.toString(),
         args: job.args,
       }
+    }), null, 2)
+  }
+
+  private deserializeJobs(str) {
+    const jobs = JSON.parse(str)
+    global['_this'] = this
+    return jobs.map(job => {
+      console.log('trying to deserialize')
+      const fnString = this.prepareFunction(job)
+      const fn = eval(fnString)
+      return {
+        fn,
+        args: job.args,
+      }
     })
+  }
+
+  private prepareFunction(job: Instruction) {
+    const body = this.extractFunctionBody(job.fn)
+
+    const args = ['client'].concat(job.args ? Object.keys(job.args) : [])
+
+    return `(${args}) => ${body}`
+  }
+
+  private extractFunctionBody(fn) {
+    const startIndex = fn.indexOf('{')
+    return fn.slice(startIndex, fn.length)
   }
 }
 

@@ -7,12 +7,15 @@
     "sourceMap": true,
     "outDir": "lib",
     "lib": ["es6", "dom"],
+    "strictNullChecks": false,
+    "pretty": true,
     "baseUrl": ".",
     "paths": {
       "*": [
         "node_modules/*",
         "src/types/*"
       ]
-    }
+    },
+    "importHelpers": true
   }
 }
