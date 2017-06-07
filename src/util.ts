@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 // export async function nodeAppears(client, selector) {
 //   // browser code to register and parse mutations
 //   const browserCode = (selector) => {
@@ -280,3 +281,36 @@ export async function getValue(client, selector) {
   }
 }
 
+export async function getCookies(client, url: string) {
+  const {Network} = client
+
+  const result = await Network.getCookies([url])
+  return result.cookies
+}
+
+export async function setCookies(client, cookies: any[], url) {
+  const {Network} = client
+
+  for (const cookie of cookies) {
+    await Network.setCookie({
+      ...cookie,
+      url,
+    })
+  }
+}
+
+export async function clearCookies(client) {
+  const {Network} = client
+
+  await Network.clearBrowserCookies()
+}
+
+export async function screenshot(client, outputPath) {
+  const {Page} = client
+
+  const screenshot = await Page.captureScreenshot({format: 'png'})
+  const result = screenshot.data
+
+
+  fs.writeFileSync(outputPath, result, 'base64')
+}

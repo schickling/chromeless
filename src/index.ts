@@ -1,5 +1,10 @@
 import * as CDP from 'chrome-remote-interface'
-import {wait, click, type, getValue, waitForNode, nodeExists, backspace, evaluate, sendKeyCode} from './util'
+import * as fetch from 'isomorphic-fetch'
+import {
+  wait, click, type, getValue, waitForNode, nodeExists,
+  backspace, evaluate, sendKeyCode, getCookies, setCookies, clearCookies,
+  screenshot,
+} from './util'
 import * as fs from 'fs'
 
 export interface Options {
@@ -33,6 +38,8 @@ class Chromeless {
   private processCallback: () => Promise<any>
   private lastValue: any
   private target: any
+  // public static functionUrl: string = 'http://localhost:3000/package/lambda/test'
+  public static functionUrl: string = 'https://dwrl0j96t5.execute-api.eu-west-1.amazonaws.com/dev/package/lambda/test'
 
   constructor(options?: Options) {
     this.options = {
@@ -91,7 +98,10 @@ class Chromeless {
         await click(client, fakeClick, selector)
         console.log('Clicked on ', selector)
       },
-      args: {selector, artificialClick},
+      args: {
+        selector,
+        artificialClick: artificialClick || null,
+      },
     })
 
 
@@ -112,7 +122,10 @@ class Chromeless {
         await type(client, this.options.useArtificialClick, text, selector)
         console.log(`Typed ${text} in ${selector}`)
       },
-      args: {text, selector},
+      args: {
+        text,
+        selector: selector || null,
+      },
     })
     return this
   }
@@ -129,8 +142,45 @@ class Chromeless {
         }
         await backspace(client, this.options.useArtificialClick, n, selector)
       },
-      args: {n, selector},
+      args: {
+        n,
+        selector: selector || null,
+      },
     })
+    return this
+  }
+
+  public getCookies(url: string): Chromeless {
+    this.queue.push({
+      fn: async (client, url) => {
+        const value = await getCookies(client, url)
+        console.log('got cookies', value)
+        this.lastValue = value
+      },
+      args: {url},
+    })
+
+    return this
+  }
+
+  public setCookies(cookies: any[], url: string): Chromeless {
+    this.queue.push({
+      fn: async (client, cookies, url) => {
+        await setCookies(client, cookies, url)
+      },
+      args: {cookies, url},
+    })
+
+    return this
+  }
+
+  public clearCookies(): Chromeless {
+    this.queue.push({
+      fn: async (client) => {
+        await clearCookies(client)
+      },
+    })
+
     return this
   }
 
@@ -147,7 +197,11 @@ class Chromeless {
         console.log('Sending keyCode', keyCode, modifiers)
         await sendKeyCode(client, this.options.useArtificialClick, keyCode, selector, modifiers)
       },
-      args: {keyCode, selector, modifiers},
+      args: {
+        keyCode,
+        selector: selector || null,
+        modifiers: modifiers || null,
+      },
     })
     return this
   }
@@ -201,19 +255,61 @@ class Chromeless {
     return this
   }
 
+  public screenshot(outputPath: string): Chromeless {
+    this.queue.push({
+      fn: async (client, outputPath) => {
+        const value = await screenshot(client, outputPath)
+      },
+      args: {outputPath},
+    })
+
+    return this
+  }
+
+  public async processJobs(jobs: any[]) {
+    this.queue = this.deserializeJobs(jobs)
+    console.log(`Successfully deserialized ${this.queue.length} jobs`)
+    return this.end()
+  }
+
   public async end(): Promise<any> {
+    if (this.options.runRemote) {
+      return this.processRemote()
+    } else {
+      return this.processLocal()
+    }
+  }
+
+  private async processRemote() {
+    console.log('Requesting ' + Chromeless.functionUrl)
+    const jobs = this.serializeJobs()
+    const data = await fetch(Chromeless.functionUrl, {
+      method: 'POST',
+      body: JSON.stringify({
+        jobs: this.getSerializableJobs(),
+        options: this.options,
+      })
+    })
+
+    const json = await data.json()
+
+    console.log(json)
+    if (json.message) {
+      if (json.message === 'Internal server error') {
+        console.log('Got internal server error, retrying')
+        return this.processRemote()
+      }
+      throw new Error(`Didn't get the expected response ${json}`)
+    }
+
+    return json.result
+  }
+
+  private processLocal() {
     return new Promise((resolve, reject) => {
       const process = async () => {
 
-        // let jobs = this.queue
-        let jobs
-
-        try {
-          const jobsStr = fs.readFileSync('jobs.json')
-          jobs = this.deserializeJobs(jobsStr)
-        } catch (e) {
-          reject(e)
-        }
+        const jobs = this.queue
 
         for (const job of jobs) {
           try {
@@ -234,33 +330,36 @@ class Chromeless {
         resolve(this.lastValue)
       }
 
-      if (this.options.runRemote) {
-        console.log(this.serializeJobs())
-        fs.writeFileSync('jobs.json', this.serializeJobs(), 'utf-8')
+      if (this.client) {
+        return process()
       } else {
-        if (this.client) {
-          return process()
-        } else {
-          this.processCallback = process
-        }
+        this.processCallback = process
       }
     })
   }
 
+  public async saveJobs(path) {
+    const str = this.serializeJobs()
+    fs.writeFileSync(path, str, 'utf-8')
+  }
+
   private serializeJobs() {
-    return JSON.stringify(this.queue.map(job => {
+    return JSON.stringify(this.getSerializableJobs(), null, 2)
+  }
+
+  private getSerializableJobs() {
+    return this.queue.map(job => {
       return {
         fn: job.fn.toString(),
         args: job.args,
       }
-    }), null, 2)
+    })
   }
 
-  private deserializeJobs(str) {
-    const jobs = JSON.parse(str)
+  private deserializeJobs(jobs) {
+    // const jobs = JSON.parse(str)
     global['_this'] = this
     return jobs.map(job => {
-      console.log('trying to deserialize')
       const fnString = this.prepareFunction(job)
       const fn = eval(fnString)
       return {
@@ -285,22 +384,3 @@ class Chromeless {
 }
 
 export default Chromeless
-
-const daymare = new Chromeless({
-  closeTab: false,
-  runRemote: false,
-})
-
-console.log('hi')
-
-daymare
-  .goto('http://localhost:8064')
-  .click('#submit')
-  .wait('div')
-  .end()
-  .then((result) => {
-    console.log('done, result:', result)
-  })
-  .catch(e => {
-    console.error(e)
-  })

@@ -15,7 +15,6 @@
         "node_modules/*",
         "src/types/*"
       ]
-    },
-    "importHelpers": true
+    }
   }
 }

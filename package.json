@@ -1,9 +1,12 @@
 {
   "name": "chromeless",
-  "version": "0.0.2",
+  "version": "0.1.4",
   "author": "Tim Suchanek <tim.suchanek@gmail.com>",
   "main": "lib/index.js",
   "typings": "lib/index",
+  "directories": {
+    "lib": "lib"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^7.0.27",
@@ -20,6 +23,7 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "dependencies": {
-    "chrome-remote-interface": "^0.23.0"
+    "chrome-remote-interface": "^0.23.0",
+    "isomorphic-fetch": "^2.2.1"
   }
 }
