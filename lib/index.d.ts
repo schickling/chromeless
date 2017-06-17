@@ -3,6 +3,8 @@ export interface Options {
     closeTab?: boolean;
     waitTimeout?: number;
     runRemote?: boolean;
+    accessKeyId?: string;
+    secretAccessKey?: string;
 }
 declare class Chromeless {
     private options;
@@ -12,7 +14,9 @@ declare class Chromeless {
     private processCallback;
     private lastValue;
     private target;
-    static functionUrl: string;
+    private lambda;
+    static lambdaFunctionName: string;
+    static screenshotProjectId: string;
     constructor(options?: Options);
     goto(url: string): Chromeless;
     click(selector: string, artificialClick?: boolean): Chromeless;
@@ -25,10 +29,11 @@ declare class Chromeless {
     wait(selector: string | number): Chromeless;
     evaluate(fn: string | (() => void)): Chromeless;
     value(selector: string): Chromeless;
-    screenshot(outputPath: string): Chromeless;
+    screenshot(): Chromeless;
     processJobs(jobs: any[]): Promise<any>;
     end(): Promise<any>;
     private processRemote();
+    private invokeFunction(Payload);
     private processLocal();
     saveJobs(path: any): Promise<void>;
     private serializeJobs();

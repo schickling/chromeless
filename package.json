@@ -1,6 +1,6 @@
 {
   "name": "chromeless",
-  "version": "0.1.4",
+  "version": "0.1.12",
   "author": "Tim Suchanek <tim.suchanek@gmail.com>",
   "main": "lib/index.js",
   "typings": "lib/index",
@@ -20,10 +20,14 @@
     "build": "tsc",
     "dist": "tsc -d",
     "prepublish": "npm run tslint; npm run dist",
-    "tslint": "tslint -c tslint.json -p tsconfig.json"
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "bump": "npm version patch --no-git-tag-version && git add package.json"
   },
   "dependencies": {
+    "@types/aws-sdk": "^2.7.0",
+    "aws-sdk": "^2.65.0",
     "chrome-remote-interface": "^0.23.0",
+    "form-data": "^2.1.4",
     "isomorphic-fetch": "^2.2.1"
   }
 }

@@ -1,17 +1,22 @@
 import * as CDP from 'chrome-remote-interface'
 import * as fetch from 'isomorphic-fetch'
+import * as FormData from 'form-data'
+
 import {
   wait, click, type, getValue, waitForNode, nodeExists,
   backspace, evaluate, sendKeyCode, getCookies, setCookies, clearCookies,
   screenshot,
 } from './util'
 import * as fs from 'fs'
+import {Lambda} from 'aws-sdk'
 
 export interface Options {
   useArtificialClick?: boolean
   closeTab?: boolean
   waitTimeout?: number
   runRemote?: boolean
+  accessKeyId?: string
+  secretAccessKey?: string
 }
 
 interface Client {
@@ -38,8 +43,9 @@ class Chromeless {
   private processCallback: () => Promise<any>
   private lastValue: any
   private target: any
-  // public static functionUrl: string = 'http://localhost:3000/package/lambda/test'
-  public static functionUrl: string = 'https://dwrl0j96t5.execute-api.eu-west-1.amazonaws.com/dev/package/lambda/test'
+  private lambda: Lambda
+  public static lambdaFunctionName: string = 'testless-dev-test'
+  public static screenshotProjectId: string = 'asdf'
 
   constructor(options?: Options) {
     this.options = {
@@ -51,6 +57,12 @@ class Chromeless {
     }
 
     this.queue = []
+
+    this.lambda = new Lambda({
+      region: process.env.AWS_REGION || 'eu-west-1',
+      accessKeyId: options.accessKeyId || process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: options.secretAccessKey || process.env.AWS_SECRET_ACCESS_KEY,
+    })
 
     if (!this.options.runRemote) {
       CDP.New().then((target) => {
@@ -68,11 +80,13 @@ class Chromeless {
   }
 
   public goto(url: string): Chromeless {
+    console.log('Going to ' + url)
     this.queue.push({
       fn: async (client, url) => {
         const {Network, Page} = client
         try {
           await Promise.all([Network.enable(), Page.enable()])
+          await Network.setUserAgentOverride({ userAgent: 'chromeless' })
           await Page.navigate({url})
           await Page.loadEventFired()
           await wait(500)
@@ -166,7 +180,9 @@ class Chromeless {
   public setCookies(cookies: any[], url: string): Chromeless {
     this.queue.push({
       fn: async (client, cookies, url) => {
-        await setCookies(client, cookies, url)
+        const result = await setCookies(client, cookies, url)
+        console.log('Done with setting cookies')
+        console.log(result)
       },
       args: {cookies, url},
     })
@@ -255,12 +271,32 @@ class Chromeless {
     return this
   }
 
-  public screenshot(outputPath: string): Chromeless {
+  public screenshot(): Chromeless {
     this.queue.push({
       fn: async (client, outputPath) => {
-        const value = await screenshot(client, outputPath)
+        const data = await screenshot(client)
+
+        const form = new FormData()
+
+        form.append('data', new Buffer(data, 'base64'))
+
+        console.log('uploading screenshot')
+        fetch(
+          `https://api.graph.cool/file/v1/asdf`,
+          {
+            type: 'POST',
+            body: form,
+          },
+        )
+          .then(res => res.json())
+          .then(res => {
+            console.log('uploaded screenshot')
+            console.log(res)
+          })
+          .catch(e => {
+            console.error('Error uploading screenshot')
+          })
       },
-      args: {outputPath},
     })
 
     return this
@@ -281,28 +317,60 @@ class Chromeless {
   }
 
   private async processRemote() {
-    console.log('Requesting ' + Chromeless.functionUrl)
     const jobs = this.serializeJobs()
-    const data = await fetch(Chromeless.functionUrl, {
-      method: 'POST',
+
+    const Payload = JSON.stringify({
       body: JSON.stringify({
         jobs: this.getSerializableJobs(),
         options: this.options,
       })
     })
 
-    const json = await data.json()
-
-    console.log(json)
-    if (json.message) {
-      if (json.message === 'Internal server error') {
-        console.log('Got internal server error, retrying')
-        return this.processRemote()
+    try {
+      const result = await this.invokeFunction(Payload)
+      if (result === null) {
+        console.log('Result is null, retry')
+        return await this.processRemote()
+      } else {
+        return result
       }
-      throw new Error(`Didn't get the expected response ${json}`)
+    } catch (e) {
+      console.log('getting an error', e)
+      if (e.message === 'Internal server error') {
+        return await this.processRemote()
+      } else {
+        throw e
+      }
     }
+  }
 
-    return json.result
+  private async invokeFunction(Payload) {
+    return new Promise((resolve, reject) => {
+      console.log('Invoking lambda function ' + Chromeless.lambdaFunctionName)
+      this.lambda.invoke({
+        FunctionName: Chromeless.lambdaFunctionName,
+        Payload,
+      }, (err, data) => {
+        if (err) {
+          console.log('received error from lambda function', err)
+          reject(err)
+        } else {
+          console.log(data)
+          const response = data.Payload.toString()
+          console.log(response)
+          const json = JSON.parse(response)
+          console.log('received json from lambda function', json)
+          let result = null
+          try {
+            result = JSON.parse(json.body).result
+          } catch (e) {
+            //
+          }
+          console.log('Result of invocation', result)
+          resolve(result)
+        }
+      })
+    })
   }
 
   private processLocal() {
@@ -319,12 +387,12 @@ class Chromeless {
             }
             await job.fn.apply(this, [this.client].concat(args))
           } catch (e) {
-            reject(e)
+            return reject(e)
           }
         }
-        // await this.client.close()
-        const {id} = this.target
+
         if (this.options.closeTab) {
+          const {id} = this.target
           CDP.Close({id})
         }
         resolve(this.lastValue)

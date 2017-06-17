@@ -13,7 +13,7 @@ chromeless
   .goto('http://localhost:8064')
   .click('#submit')
   .wait('div')
-  .screenshot('shot.png')
+  // .screenshot('shot.png')
   .end()
   .then((result) => {
     console.log('done running it remotely result:', result)

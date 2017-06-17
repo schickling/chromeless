@@ -185,7 +185,7 @@ export async function evaluate(client, fn) {
 
 export async function type(client, useArtificialClick, text, selector) {
   if (selector) {
-    await click(client, useArtificialClick, selector)
+    await focus(client, selector)
     await wait(500)
   }
 
@@ -291,12 +291,16 @@ export async function getCookies(client, url: string) {
 export async function setCookies(client, cookies: any[], url) {
   const {Network} = client
 
+  const successes = []
   for (const cookie of cookies) {
-    await Network.setCookie({
+    const success = await Network.setCookie({
       ...cookie,
       url,
     })
+    successes.push(success)
   }
+
+  return successes
 }
 
 export async function clearCookies(client) {
@@ -305,12 +309,9 @@ export async function clearCookies(client) {
   await Network.clearBrowserCookies()
 }
 
-export async function screenshot(client, outputPath) {
+export async function screenshot(client) {
   const {Page} = client
 
   const screenshot = await Page.captureScreenshot({format: 'png'})
-  const result = screenshot.data
-
-
-  fs.writeFileSync(outputPath, result, 'base64')
+  return screenshot.data
 }

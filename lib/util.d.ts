@@ -13,6 +13,6 @@ export declare function sendKeyCode(client: any, useArtificialClick: any, keyCod
 export declare function backspace(client: any, useArtificialClick: any, n: any, selector: any): Promise<void>;
 export declare function getValue(client: any, selector: any): Promise<any>;
 export declare function getCookies(client: any, url: string): Promise<any>;
-export declare function setCookies(client: any, cookies: any[], url: any): Promise<void>;
+export declare function setCookies(client: any, cookies: any[], url: any): Promise<any[]>;
 export declare function clearCookies(client: any): Promise<void>;
-export declare function screenshot(client: any, outputPath: any): Promise<void>;
+export declare function screenshot(client: any): Promise<any>;
