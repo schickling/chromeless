@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import { Client } from './types'
 // export async function nodeAppears(client, selector) {
 //   // browser code to register and parse mutations
 //   const browserCode = (selector) => {
@@ -21,13 +22,13 @@ import * as fs from 'fs'
 //   }
 //   // inject the browser code
 //   const {Runtime} = client
-//   await Runtime.evaluate({
+//   await Runtime.evalCode({
 //     expression: `(${browserCode})(\`${selector}\`)`,
 //     awaitPromise: true
 //   })
 // }
 
-export async function waitForNode(client, selector, waitTimeout: number) {
+export async function waitForNode(client: Client, selector: string, waitTimeout: number): Promise<void> {
   const {Runtime} = client
   const getNode = (selector) => {
     return document.querySelector(selector)
@@ -39,7 +40,7 @@ export async function waitForNode(client, selector, waitTimeout: number) {
 
   if (result.result.value === null) {
     const start = new Date().getTime()
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const interval = setInterval(async () => {
         if (new Date().getTime() - start > waitTimeout) {
           clearInterval(interval)
@@ -61,15 +62,11 @@ export async function waitForNode(client, selector, waitTimeout: number) {
   }
 }
 
-export async function wait(timeout: number) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve()
-    }, timeout)
-  })
+export async function wait(timeout: number): Promise<void> {
+  return new Promise<void>((resolve, reject) => setTimeout(resolve, timeout))
 }
 
-export async function nodeExists(client, selector) {
+export async function nodeExists(client: Client, selector: string): Promise<boolean> {
   const {Runtime} = client
   const exists = (selector) => {
     return document.querySelector(selector)
@@ -93,75 +90,49 @@ export async function nodeExists(client, selector) {
   }
 }
 
-export async function getPosition(client, selector) {
-
+export async function getClientRect(client, selector): Promise<ClientRect> {
   const {Runtime} = client
 
-  const getTop = (selector) => {
-    return document.querySelector(selector).getBoundingClientRect().top
-  }
-  const getLeft = (selector) => {
-    return document.querySelector(selector).getBoundingClientRect().left
-  }
-
-  const topExpression = `(${getTop})(\`${selector}\`)`
-  const topResult = await Runtime.evaluate({
-    expression: topExpression,
-  })
-
-  const leftExpression = `(${getLeft})(\`${selector}\`)`
-  const leftResult = await Runtime.evaluate({
-    expression: leftExpression,
-  })
-
-  const x = parseInt(leftResult.result.value, 10)
-  const y = parseInt(topResult.result.value, 10)
-
-  if (isNaN(x) || isNaN(y)) {
-    throw new Error(`The viewport position for ${selector} couldn't be determined. x: ${x} y: ${y}`)
+  const code = (selector) => {
+    const rect = document.querySelector(selector).getBoundingClientRect()
+    return JSON.stringify({
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      height: rect.height,
+      width: rect.width,
+    })
   }
 
-  return {
-    x: x,
-    y: y,
-  }
+  const expression = `(${code})(\`${selector}\`)`
+  const result = await Runtime.evaluate({expression})
+
+  return JSON.parse(result.result.value) as ClientRect
 }
 
-export async function click(client, useArtificialClick, selector) {
-  if (useArtificialClick) {
-    console.log('Using artificial .click()')
-    const {Runtime} = client
-    const click = (selector) => {
-      return document.querySelector(selector).click()
-    }
-    const expression = `(${click})(\`${selector}\`)`
+export async function click(client: Client, selector: string) {
+  const clientRect = await getClientRect(client, selector)
+  const {Input} = client
 
-    await Runtime.evaluate({
-      expression,
-    })
-  } else {
-    const position = await getPosition(client, selector)
-    const {Input} = client
-
-    const options = {
-      x: position.x + 0,
-      y: position.y + 0,
-      button: 'left',
-      clickCount: 1
-    }
-
-    await Input.dispatchMouseEvent({
-      ...options,
-      type: 'mousePressed'
-    })
-    await Input.dispatchMouseEvent({
-      ...options,
-      type: 'mouseReleased'
-    })
+  const options = {
+    x: Math.round(clientRect.left + clientRect.width / 2),
+    y: Math.round(clientRect.top + clientRect.height / 2),
+    button: 'left',
+    clickCount: 1,
   }
+
+  await Input.dispatchMouseEvent({
+    ...options,
+    type: 'mousePressed'
+  })
+  await Input.dispatchMouseEvent({
+    ...options,
+    type: 'mouseReleased'
+  })
 }
 
-export async function focus(client, selector) {
+export async function focus(client: Client, selector: string): Promise<void> {
   const {Runtime} = client
   const focus = (selector) => {
     return document.querySelector(selector).focus()
@@ -173,9 +144,11 @@ export async function focus(client, selector) {
   })
 }
 
-export async function evaluate(client, fn) {
+export async function evaluate<T>(client: Client, fn: (...args: any[]) => T, ...args: any[]): Promise<T> {
   const {Runtime} = client
-  const expression = `(${fn})()`
+  const jsonArgs = JSON.stringify(args)
+  const argStr = jsonArgs.substr(1, jsonArgs.length - 2)
+  const expression = `(${fn})(${argStr})`
 
   const result = await Runtime.evaluate({
     expression,
@@ -183,7 +156,7 @@ export async function evaluate(client, fn) {
   return result.result.value
 }
 
-export async function type(client, useArtificialClick, text, selector) {
+export async function type(client: Client, text: string, selector?: string): Promise<void> {
   if (selector) {
     await focus(client, selector)
     await wait(500)
@@ -203,13 +176,12 @@ export async function type(client, useArtificialClick, text, selector) {
   }
 }
 
-export async function sendKeyCode(client, useArtificialClick, keyCode, selector, modifiers) {
-  if (selector) {
-    await click(client, useArtificialClick, selector)
-    await wait(500)
-  }
-
+export async function press(client: Client, keyCode: number, count?: number, modifiers?: any): Promise<void> {
   const {Input} = client
+
+  if (count === undefined) {
+    count = 1
+  }
 
   const options = {
     nativeVirtualKeyCode: keyCode,
@@ -220,19 +192,21 @@ export async function sendKeyCode(client, useArtificialClick, keyCode, selector,
     options['modifiers'] = modifiers
   }
 
-  await Input.dispatchKeyEvent({
-    ...options,
-    type: 'rawKeyDown',
-  })
-  await Input.dispatchKeyEvent({
-    ...options,
-    type: 'keyUp',
-  })
+  for (let i = 0; i < count; i++) {
+    await Input.dispatchKeyEvent({
+      ...options,
+      type: 'rawKeyDown',
+    })
+    await Input.dispatchKeyEvent({
+      ...options,
+      type: 'keyUp',
+    })
+  }
 }
 
-export async function backspace(client, useArtificialClick, n, selector) {
+export async function backspace(client: Client, n: number, selector?: string): Promise<void> {
   if (selector) {
-    await click(client, useArtificialClick, selector)
+    await click(client, selector)
     await wait(500)
   }
 
@@ -264,7 +238,7 @@ export async function backspace(client, useArtificialClick, n, selector) {
   const res = await Input.dispatchKeyEvent(options)
 }
 
-export async function getValue(client, selector) {
+export async function getValue(client: Client, selector: string): Promise<string> {
   const {Runtime} = client
   const browserCode = (selector) => {
     return document.querySelector(selector).value
@@ -281,14 +255,25 @@ export async function getValue(client, selector) {
   }
 }
 
-export async function getCookies(client, url: string) {
+export async function scrollTo(client: Client, x: number, y: number): Promise<void> {
+  const {Runtime} = client
+  const browserCode = (x, y) => {
+    return window.scrollTo(x, y)
+  }
+  const expression = `(${browserCode})(${x}, ${y})`
+  await Runtime.evaluate({
+    expression,
+  })
+}
+
+export async function getCookies(client: Client, url: string): Promise<any> {
   const {Network} = client
 
   const result = await Network.getCookies([url])
   return result.cookies
 }
 
-export async function setCookies(client, cookies: any[], url) {
+export async function setCookies(client: Client, cookies: any[], url: string): Promise<void> {
   const {Network} = client
 
   const successes = []
@@ -299,19 +284,19 @@ export async function setCookies(client, cookies: any[], url) {
     })
     successes.push(success)
   }
-
-  return successes
 }
 
-export async function clearCookies(client) {
+export async function clearCookies(client: Client): Promise<void> {
   const {Network} = client
 
   await Network.clearBrowserCookies()
 }
 
-export async function screenshot(client) {
+export async function screenshot(client: Client): Promise<string> {
   const {Page} = client
 
   const screenshot = await Page.captureScreenshot({format: 'png'})
+
   return screenshot.data
 }
+

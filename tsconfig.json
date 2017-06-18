@@ -2,19 +2,15 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
-    "noImplicitAny": false,
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "lib",
-    "lib": ["es6", "dom"],
+    "outDir": "dist",
+    "lib": [
+      "es6",
+      "dom"
+    ],
     "strictNullChecks": false,
     "pretty": true,
-    "baseUrl": ".",
-    "paths": {
-      "*": [
-        "node_modules/*",
-        "src/types/*"
-      ]
-    }
+    "rootDir": "."
   }
 }

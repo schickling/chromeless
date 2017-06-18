@@ -1,13 +1,11 @@
 {
-  "name": "chromeless",
-  "version": "0.1.12",
-  "author": "Tim Suchanek <tim.suchanek@gmail.com>",
-  "main": "lib/index.js",
-  "typings": "lib/index",
-  "directories": {
-    "lib": "lib"
-  },
-  "license": "MIT",
+  "name": "chromeless-tmp",
+  "version": "0.1.21",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@types/node": "^7.0.27",
     "ava": "^0.19.1",
@@ -15,19 +13,23 @@
     "typescript": "^2.3.4"
   },
   "scripts": {
-    "start": "npm run build; node lib/index.js",
     "watch": "tsc -w",
-    "build": "tsc",
-    "dist": "tsc -d",
-    "prepublish": "npm run tslint; npm run dist",
-    "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "bump": "npm version patch --no-git-tag-version && git add package.json"
+    "build": "tsc -d",
+    "prepublish": "npm run build; npm test",
+    "test": "npm run tslint",
+    "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "dependencies": {
     "@types/aws-sdk": "^2.7.0",
+    "@types/bluebird": "^3.5.5",
+    "@types/cuid": "^1.3.0",
+    "@types/node-fetch": "^1.6.7",
+    "ably": "^1.0.4",
     "aws-sdk": "^2.65.0",
+    "bluebird": "^3.5.0",
     "chrome-remote-interface": "^0.23.0",
+    "cuid": "^1.3.8",
     "form-data": "^2.1.4",
-    "isomorphic-fetch": "^2.2.1"
+    "node-fetch": "^1.7.1"
   }
 }
