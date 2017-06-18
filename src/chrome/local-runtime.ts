@@ -91,8 +91,8 @@ export default class LocalRuntime {
     console.log('Clicked on ', selector)
   }
 
-  private async evalCode<T>(fn: (...args: any[]) => T, ...args: any[]): Promise<T> {
-    return evaluate(this.client, fn, ...args)
+  private async evalCode<T>(fn: string, ...args: any[]): Promise<T> {
+    return await evaluate(this.client, fn, ...args) as T
   }
 
   private async scrollTo<T>(x: number, y: number): Promise<void> {

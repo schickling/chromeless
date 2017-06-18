@@ -14,8 +14,6 @@ export interface ChromelessOptions {
   closeTab?: boolean
   waitTimeout?: number
   runRemote?: boolean
-  accessKeyId?: string
-  secretAccessKey?: string
   viewport?: any // TODO
 }
 
@@ -31,14 +29,14 @@ export type Command = {
   type: 'wait'
   timeout?: number
   selector?: string
-  fn?: (...args: any[]) => boolean
+  fn?: string
   args?: any[]
 } | {
   type: 'click'
   selector: string
 } | {
   type: 'evalCode'
-  fn: <T>(...args: any[]) => T
+  fn: string
   args?: any[]
 } | {
   type: 'evalInputValue'

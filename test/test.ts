@@ -1,7 +1,7 @@
 import Chromeless from '../src'
 
 async function run() {
-  const chromeless = new Chromeless({runRemote: false, closeTab: false})
+  const chromeless = new Chromeless({runRemote: true, closeTab: false})
 
   chromeless
     .goto('https://www.google.com')

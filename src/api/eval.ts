@@ -9,7 +9,7 @@ export default class Eval {
   }
 
   code<T extends any>(fn: (...args: any[]) => T, ...args: any[]): Promise<T> {
-    return this.queue.process<T>({type: 'evalCode', fn, args})
+    return this.queue.process<T>({type: 'evalCode', fn: fn.toString(), args})
   }
 
   inputValue(selector: string): Promise<string> {

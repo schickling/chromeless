@@ -45,8 +45,6 @@ export default class RemoteChrome implements Chrome {
 
     const lambda = new Lambda({
       region: process.env.AWS_REGION || 'eu-west-1',
-      accessKeyId: this.chromelessOptions.accessKeyId || process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: this.chromelessOptions.secretAccessKey || process.env.AWS_SECRET_ACCESS_KEY,
     })
 
     await lambda.invoke({

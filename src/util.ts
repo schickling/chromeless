@@ -144,7 +144,7 @@ export async function focus(client: Client, selector: string): Promise<void> {
   })
 }
 
-export async function evaluate<T>(client: Client, fn: (...args: any[]) => T, ...args: any[]): Promise<T> {
+export async function evaluate<T>(client: Client, fn: string, ...args: any[]): Promise<T> {
   const {Runtime} = client
   const jsonArgs = JSON.stringify(args)
   const argStr = jsonArgs.substr(1, jsonArgs.length - 2)
