@@ -17,14 +17,18 @@ chromeless
     .type('#password', 'secret password')
     .click('submit')
     .wait('.graphcool-console')
-    .evaluate(() => {
-        return document.querySelector('.title').text;
-    })
-    .end()
-    .then((title) => {
-        console.log('title', title)
-    })
-    .catch((error) => {
-        console.error('test failed', error)
-    })
+    
+const title = await chromeless.evaluate(() => document.querySelector('.title').text)
+    
+await chromeless.end()
 ```
+
+## Architecture
+
+### Local execution
+
+![](http://imgur.com/HGQAIoz.png)
+
+### Remote execution
+
+![](http://imgur.com/zFLQ0Lf.png)
