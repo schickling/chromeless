@@ -12,7 +12,6 @@ provider:
 plugins:
   - serverless-plugin-typescript
   - serverless-plugin-chrome
-  - serverless-offline
 
 package:
   exclude:
@@ -29,12 +28,15 @@ package:
 
 functions:
 
-  chromeless:
+  Chromeless:
     description: Chromeless Lambda Service
     memorySize: 1536
     timeout: 300
     handler: src/handler.run
-    events:
-      - http:
-          path: /
-          method: post
+
+resources:
+  Resources:
+
+    ChromelessLogGroup:
+      Properties:
+        RetentionInDays: 7

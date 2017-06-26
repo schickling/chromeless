@@ -20,7 +20,7 @@ export default class Chromeless {
       ...options,
     }
 
-    const lambdaFunctionName: string = 'chromeless-serverless-dev-chromeless'
+    const lambdaFunctionName: string = 'chromeless-serverless-dev-Chromeless'
 
     const chrome = options.runRemote
       ? new ChromeRemote({chromelessOptions, lambdaFunctionName})

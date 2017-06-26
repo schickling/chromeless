@@ -1,6 +1,6 @@
 {
-  "name": "chromeless-tmp",
-  "version": "0.1.22",
+  "name": "chromeless",
+  "version": "0.1.24",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "files": [

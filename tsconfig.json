@@ -1,16 +1,23 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "outDir": "dist",
-    "lib": [
-      "es6",
-      "dom"
-    ],
-    "strictNullChecks": false,
-    "pretty": true,
-    "rootDir": "."
-  }
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es5",
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"outDir": "dist",
+		"lib": [
+			"es6",
+			"dom"
+		],
+		"strictNullChecks": false,
+		"pretty": true,
+		"rootDir": "."
+	},
+	"exclude": [
+		"node_modules",
+		"dist"
+	],
+	"include": [
+		"./src/**/*.ts"
+	]
 }

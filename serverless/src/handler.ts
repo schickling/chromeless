@@ -1,5 +1,5 @@
 import debugLogger from 'debug'
-import { LocalChrome, Queue } from '..'
+import { LocalChrome, Queue } from 'chromeless'
 import { Realtime } from 'ably'
 
 export interface EventBody {
