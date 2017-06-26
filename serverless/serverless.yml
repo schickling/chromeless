@@ -1,0 +1,44 @@
+service: testless
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: eu-west-1
+  #deploymentBucket: serverless-deployments-${env:AWS_REGION}-${env:AWS_ACCOUNT_ID}
+  environment:
+    DEBUG: "*"
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-plugin-chrome
+  # - serverless-offline
+
+package:
+  exclude:
+    # - ./**
+    - node_modules/typescript/**
+    - node_modules/serverless-**/**
+    - node_modules/prettier**/**
+    - node_modules/lighthouse**/**
+    - node_modules/devtools-timeline-model/**
+    - node_modules/chrome-devtools-frontend/**
+    - node_modules/uglify-js/**
+  include:
+    - ./src/**.js
+    # - node_modules/chrome-remote-interface/**
+    # - node_modules/commander/**
+    # - node_modules/ws/**
+    # - node_modules/ultron/**
+
+functions:
+  chromeless:
+    description: Chromeless Lambda Service
+    memorySize: 1536
+    timeout: 300
+    handler: src/handler.run
+
+    events:
+      - http:
+          path: package/lambda/test
+          method: post
