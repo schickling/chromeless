@@ -1,8 +1,11 @@
 import debugLogger from 'debug'
-import { LocalChrome, Queue } from 'chromeless-tmp'
+import { LocalChrome, Queue } from '..'
 import { Realtime } from 'ably'
 
-import { EventBody } from './types'
+export interface EventBody {
+  options: any // @TODO: lazy.
+  pusherChannelName: string
+}
 
 const debug = debugLogger('handler')
 

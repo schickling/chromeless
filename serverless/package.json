@@ -1,42 +1,12 @@
 {
-  "name": "chromeless-lambda",
-  "version": "0.0.0",
-  "description": "Chromless Lambda service",
-  "author": "Graphcool and other cool people",
-  "keywords": [
-    "serverless",
-    "chrome",
-    "chromium",
-    "headless",
-    "aws",
-    "lambda"
-  ],
-  "repository": "git@github.com:graphcool/chromeless-lambd.git",
-  "bugs": {
-    "url": "https://github.com/graphcool/chromeless-lambd/issues"
-  },
-  "homepage": "https://github.com/graphcool/chromeless-lambda",
-  "license": "MIT",
-  "engines": {
-    "node": ">= 6.10"
-  },
   "scripts": {
-    "test": "npm run lint && nyc ava",
-    "watch:test": "ava --watch",
-    "ava": "ava",
-    "lint": "npm run lint:eslint -s",
-    "lint:eslint": "eslint $npm_package_config_jsSrc",
-    "coverage": "nyc report"
+    "deploy": "sls deploy"
   },
   "dependencies": {
     "ably": "^1.0.4",
-    "chromeless": "^0.1.11",
-    "chromeless-tmp": "^0.1.21",
-    "debug": "^2.6.8",
-    "pusher-js": "^4.1.0"
+    "debug": "^2.6.8"
   },
   "devDependencies": {
-    "prettier-eslint": "^6.3.0",
     "serverless": "^1.16.0",
     "serverless-offline": "^3.14.2",
     "serverless-plugin-chrome": "^1.0.0-6",
