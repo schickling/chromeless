@@ -77,7 +77,6 @@ interface IChromeless {
   mousedown(): IChromeless
   mouseup(): IChromeless
   mouseover(): IChromeless
-  mouseover(): IChromeless
   scrollTo(top: number, left?: number): IChromeless
   viewport(width: number, height: number): IChromeless
 }
