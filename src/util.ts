@@ -176,6 +176,12 @@ export async function type(client: Client, text: string, selector?: string): Pro
 }
 
 export async function press(client: Client, keyCode: number, count?: number, modifiers?: any): Promise<void> {
+
+  // special handling for backspace
+  if (keyCode === 8) {
+    return backspace(client, count || 1)
+  }
+
   const {Input} = client
 
   if (count === undefined) {
