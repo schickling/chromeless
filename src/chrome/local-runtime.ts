@@ -1,4 +1,4 @@
-import { Client, Command, ChromelessOptions } from '../types'
+import { Client, Command, ChromelessOptions, Cookie, CookieQuery } from '../types'
 import {
   nodeExists,
   wait,
@@ -11,6 +11,8 @@ import {
   scrollTo,
   press,
   clearCookies,
+  getCookies,
+  setCookies, getAllCookies,
 } from '../util'
 import * as FormData from 'form-data'
 import fetch from 'node-fetch'
@@ -56,6 +58,12 @@ export default class LocalRuntime {
         return this.scrollTo(command.x, command.y)
       case 'cookiesClearAll':
         return this.cookiesClearAll()
+      case 'cookiesGet':
+        return this.cookiesGet(command.nameOrQuery)
+      case 'cookiesGetAll':
+        return this.cookiesGetAll()
+      case 'cookiesSet':
+        return this.cookiesSet(command.nameOrCookies, command.value)
       default:
         throw new Error(`No such command: ${command}`)
     }
@@ -132,33 +140,36 @@ export default class LocalRuntime {
   //   return this
   // }
 
-  // async getCookies(url: string): Chromeless {
-  //   this.enqueue({
-  //     fn: async (client, url) => {
-  //       const value = await getCookies(client, url)
-  //       console.log('got cookies', value)
-  //       this.lastValue = value
-  //     },
-  //     args: {url},
-  //   })
-  //
-  //   return this
-  // }
+  async cookiesGet(nameOrQuery?: string | CookieQuery): Promise<Cookie[]> {
+    return await getCookies(this.client, nameOrQuery as string | undefined)
+  }
 
-  // async setCookies(cookies: any[], url: string): Chromeless {
-  //   this.enqueue({
-  //     fn: async (client, cookies, url) => {
-  //       const result = await setCookies(client, cookies, url)
-  //       console.log('Done with setting cookies')
-  //       console.log(result)
-  //     },
-  //     args: {cookies, url},
-  //   })
-  //
-  //   return this
-  // }
+  async cookiesGetAll(): Promise<Cookie[]> {
+    return await getAllCookies(this.client)
+  }
+
+  async cookiesSet(nameOrCookies: string | Cookie | Cookie[], value?: string): Promise<void> {
+    if (typeof nameOrCookies !== 'string' && !value) {
+      const cookies = Array.isArray(nameOrCookies) ? nameOrCookies : [nameOrCookies]
+      return await setCookies(this.client, cookies)
+    }
+
+    if (typeof nameOrCookies === 'string' && typeof value === 'string') {
+      const fn = () => location.href
+      const url = await evaluate(this.client, `${fn}`) as string
+      const cookie: Cookie = {
+        url,
+        name: nameOrCookies,
+        value,
+      }
+      return await setCookies(this.client, [cookie])
+    }
+
+    throw new Error(`cookiesSet: Invalid input ${nameOrCookies}, ${value}`)
+  }
 
   async cookiesClearAll(): Promise<void> {
+    console.log('clearing cookies')
     await clearCookies(this.client)
   }
 

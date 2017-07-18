@@ -64,6 +64,15 @@ export type Command = {
   selector?: string
 } | {
   type: 'cookiesClearAll'
+} | {
+  type: 'cookiesSet'
+  nameOrCookies: string | Cookie | Cookie[]
+  value?: string
+} | {
+  type: 'cookiesGetAll'
+} | {
+  type: 'cookiesGet'
+  nameOrQuery?: string | CookieQuery
 }
 
 interface IChromeless {
@@ -82,14 +91,15 @@ interface IChromeless {
 }
 
 export interface Cookie {
+  url?: string
   name: string
   value: string
-  path: string
-  expires: number
-  size: number
-  httpOnly: boolean
-  secure: boolean
-  session: boolean
+  path?: string
+  expires?: number
+  size?: number
+  httpOnly?: boolean
+  secure?: boolean
+  session?: boolean
 }
 
 export interface CookieQuery {

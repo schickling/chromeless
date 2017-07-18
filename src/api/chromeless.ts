@@ -28,7 +28,7 @@ export default class Chromeless {
 
     this.queue = new Queue(chrome)
     this.eval = new Eval(this.queue)
-    this.cookies = new Cookies(this.queue)
+    this.cookies = new Cookies(this.queue, this)
   }
 
   goto(url: string): Chromeless {

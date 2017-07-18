@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { Client } from './types'
+import { Client, Cookie } from './types'
 // export async function nodeAppears(client, selector) {
 //   // browser code to register and parse mutations
 //   const browserCode = (selector) => {
@@ -82,7 +82,6 @@ export async function nodeExists(client: Client, selector: string): Promise<bool
     // counter intuitive: if it is a real object and not just null,
     // the chrome debugger won't return a value but return a objectId
     const exists = typeof result.result.value === 'undefined'
-    console.log('node exists', exists)
     return exists
   } catch (e) {
     console.error('Error while trying to run nodeExists')
@@ -266,14 +265,25 @@ export async function scrollTo(client: Client, x: number, y: number): Promise<vo
   })
 }
 
-export async function getCookies(client: Client, url: string): Promise<any> {
+export async function getCookies(client: Client, nameOrQuery?: string | Cookie): Promise<any> {
   const {Network} = client
+
+  const fn = () => location.href
+
+  const url = await evaluate(client, `${fn}`) as string
 
   const result = await Network.getCookies([url])
   return result.cookies
 }
 
-export async function setCookies(client: Client, cookies: any[], url: string): Promise<void> {
+export async function getAllCookies(client: Client): Promise<any> {
+  const {Network} = client
+
+  const result = await Network.getAllCookies()
+  return result.cookies
+}
+
+export async function setCookies(client: Client, cookies: Cookie[], url?: string): Promise<void> {
   const {Network} = client
 
   const successes = []
