@@ -200,7 +200,7 @@ export default class LocalRuntime {
 
     form.append('data', new Buffer(data, 'base64'), {filename: 'screen.png'})
 
-    const response = await fetch(`https://api.graph.cool/file/v1/cj42v5dg2643y018514ociq4u`, {
+    const response = await fetch(`https://api.graph.cool/file/v1/cj5bdau9ocrca01138o62oe7b`, {
       method: 'post',
       body: form,
     })
