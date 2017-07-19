@@ -289,17 +289,20 @@ export async function getAllCookies(client: Client): Promise<any> {
   return result.cookies
 }
 
-export async function setCookies(client: Client, cookies: Cookie[], url?: string): Promise<void> {
+export async function setCookies(client: Client, cookies: Cookie[]): Promise<void> {
   const {Network} = client
 
-  const successes = []
   for (const cookie of cookies) {
-    const success = await Network.setCookie({
+    await Network.setCookie({
       ...cookie,
-      url,
+      url: getUrlFromCookie(cookie)
     })
-    successes.push(success)
   }
+}
+
+function getUrlFromCookie(cookie: Cookie) {
+  const domain = cookie.domain.slice(1, cookie.domain.length)
+  return `https://${domain}`
 }
 
 export async function clearCookies(client: Client): Promise<void> {

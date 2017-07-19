@@ -65,7 +65,7 @@ export default class LocalRuntime {
       case 'cookiesSet':
         return this.cookiesSet(command.nameOrCookies, command.value)
       default:
-        throw new Error(`No such command: ${command}`)
+        throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
   }
 

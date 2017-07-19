@@ -92,6 +92,7 @@ interface IChromeless {
 
 export interface Cookie {
   url?: string
+  domain?: string
   name: string
   value: string
   path?: string
