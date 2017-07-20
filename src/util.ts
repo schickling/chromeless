@@ -115,8 +115,8 @@ export async function click(client: Client, selector: string, scale: number) {
   const {Input} = client
 
   const options = {
-    x: Math.round(clientRect.left + clientRect.width / 2) * scale,
-    y: Math.round(clientRect.top + clientRect.height / 2) * scale,
+    x: Math.round((clientRect.left + clientRect.width / 2) * scale),
+    y: Math.round((clientRect.top + clientRect.height / 2) * scale),
     button: 'left',
     clickCount: 1,
   }
