@@ -11,7 +11,8 @@
 		],
 		"strictNullChecks": false,
 		"pretty": true,
-		"rootDir": "."
+		"rootDir": ".",
+		"forceConsistentCasingInFileNames": true
 	},
 	"exclude": [
 		"node_modules",
