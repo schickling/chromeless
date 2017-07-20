@@ -564,16 +564,16 @@ chrome-launcher@^0.1.3:
     "@types/node" "6.0.66"
     lighthouse "2.1"
 
-chrome-remote-interface@^0.23.0:
-  version "0.23.3"
-  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.23.3.tgz#686fcb3f9c1e1abd88ce69b6bb7bc9f6afd85562"
+chrome-remote-interface@^0.24.2:
+  version "0.24.2"
+  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.24.2.tgz#43a05440a1fa60b73769e72f3e7892ac11d66eba"
   dependencies:
     commander "2.1.x"
     ws "2.0.x"
 
-chromeless@^0.1.28:
-  version "0.1.28"
-  resolved "https://registry.yarnpkg.com/chromeless/-/chromeless-0.1.28.tgz#d392616b6a0629111730dcd6e63f7ad874c96e9a"
+chromeless@^0.1.29:
+  version "0.1.29"
+  resolved "https://registry.yarnpkg.com/chromeless/-/chromeless-0.1.29.tgz#958c8eac616106a0420f0c6b301fbf6826ab8c09"
   dependencies:
     "@types/aws-sdk" "^2.7.0"
     "@types/bluebird" "^3.5.5"
@@ -582,7 +582,7 @@ chromeless@^0.1.28:
     ably "^1.0.4"
     aws-sdk "^2.65.0"
     bluebird "^3.5.0"
-    chrome-remote-interface "^0.23.0"
+    chrome-remote-interface "^0.24.2"
     cuid "^1.3.8"
     form-data "^2.1.4"
     node-fetch "^1.7.1"
