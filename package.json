@@ -1,6 +1,6 @@
 {
   "name": "chromeless",
-  "version": "0.1.28",
+  "version": "0.1.29",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "files": [
