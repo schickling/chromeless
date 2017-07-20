@@ -110,16 +110,18 @@ export async function getClientRect(client, selector): Promise<ClientRect> {
   return JSON.parse(result.result.value) as ClientRect
 }
 
-export async function click(client: Client, selector: string) {
+export async function click(client: Client, selector: string, scale: number) {
   const clientRect = await getClientRect(client, selector)
   const {Input} = client
 
   const options = {
-    x: Math.round(clientRect.left + clientRect.width / 2),
-    y: Math.round(clientRect.top + clientRect.height / 2),
+    x: Math.round(clientRect.left + clientRect.width / 2) * scale,
+    y: Math.round(clientRect.top + clientRect.height / 2) * scale,
     button: 'left',
     clickCount: 1,
   }
+
+  console.log(`Clicking to (${options.x},${options.y})`)
 
   await Input.dispatchMouseEvent({
     ...options,
@@ -165,21 +167,20 @@ export async function type(client: Client, text: string, selector?: string): Pro
 
   for (let i = 0; i < text.length; i++) {
     const char = text[i]
-    // Array.prototype.forEach.call(text, async (char) => {
     const options = {
       type: 'char',
       text: char,
       unmodifiedText: char,
     }
-    const res = await Input.dispatchKeyEvent(options)
+    await Input.dispatchKeyEvent(options)
   }
 }
 
-export async function press(client: Client, keyCode: number, count?: number, modifiers?: any): Promise<void> {
+export async function press(client: Client, keyCode: number, scale: number, count?: number, modifiers?: any): Promise<void> {
 
   // special handling for backspace
   if (keyCode === 8) {
-    return backspace(client, count || 1)
+    return backspace(client, scale, count || 1)
   }
 
   const {Input} = client
@@ -209,9 +210,9 @@ export async function press(client: Client, keyCode: number, count?: number, mod
   }
 }
 
-export async function backspace(client: Client, n: number, selector?: string): Promise<void> {
+export async function backspace(client: Client, n: number, scale: number, selector?: string): Promise<void> {
   if (selector) {
-    await click(client, selector)
+    await click(client, selector, scale)
     await wait(500)
   }
 

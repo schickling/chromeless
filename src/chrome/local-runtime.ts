@@ -41,7 +41,7 @@ export default class LocalRuntime {
         }
       }
       case 'click':
-        return this.click(command.selector)
+        return this.click(command.selector, this.chromlessOptions.viewport.scale)
       case 'evalCode':
         return this.evalCode(command.fn, ...command.args)
       case 'evalExists':
@@ -70,7 +70,7 @@ export default class LocalRuntime {
   }
 
   private async goto(url: string): Promise<void> {
-    const {Network, Page} = this.client
+    const {Network, Page, Emulation} = this.client
     await Promise.all([Network.enable(), Page.enable()])
     await Network.setUserAgentOverride({userAgent: 'chromeless'})
     await Page.navigate({url})
@@ -89,13 +89,13 @@ export default class LocalRuntime {
     console.log(`Waited for ${selector}`)
   }
 
-  private async click(selector: string): Promise<void> {
+  private async click(selector: string, scale: number): Promise<void> {
     const exists = await nodeExists(this.client, selector)
     if (!exists) {
       throw new Error(`click(): node for selector ${selector} doesn't exist`)
     }
 
-    await click(this.client, selector)
+    await click(this.client, selector, scale)
     console.log('Clicked on ', selector)
   }
 
@@ -175,7 +175,7 @@ export default class LocalRuntime {
 
   async press(keyCode: number, count?: number, modifiers?: any): Promise<void> {
     console.log('Sending keyCode', keyCode, modifiers)
-    await press(this.client, keyCode, count, modifiers)
+    await press(this.client, keyCode, count, this.chromlessOptions.viewport.scale, modifiers)
   }
 
   async evalExists(selector: string): Promise<boolean> {

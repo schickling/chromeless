@@ -4,7 +4,7 @@
   },
   "dependencies": {
     "ably": "^1.0.4",
-    "chromeless": "^0.1.27",
+    "chromeless": "^0.1.28",
     "debug": "^2.6.8"
   },
   "devDependencies": {

@@ -3,6 +3,7 @@ export interface Client {
   Page: any
   Input: any
   Runtime: any
+  Emulation: any
   close: () => void
   target: {
     id: string
@@ -14,7 +15,11 @@ export interface ChromelessOptions {
   closeTab?: boolean
   waitTimeout?: number
   runRemote?: boolean
-  viewport?: any // TODO
+  viewport?: {
+    width?: number
+    height?: number
+    scale?: number
+  }
 }
 
 export interface Chrome {
