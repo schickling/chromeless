@@ -1,4 +1,4 @@
-import Chromeless from './api/Chromeless'
+import Chromeless from './api/chromeless'
 import Queue from './queue'
 import LocalChrome from './chrome/local'
 import {Cookie} from './types'
