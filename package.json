@@ -14,7 +14,7 @@
   },
   "scripts": {
     "watch": "tsc -w",
-    "build": "tsc -d",
+    "build": "rm -rf build; tsc -d",
     "prepublish": "npm run build; npm test",
     "test": "npm run tslint",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
