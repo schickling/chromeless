@@ -33,4 +33,4 @@ await chromeless.end()
 
 ### Remote execution
 
-![](http://imgur.com/RWJF5Zp.png)
+![](http://imgur.com/nQSk7Gj.png)
