@@ -1,4 +1,6 @@
 import { Client, Command, ChromelessOptions, Cookie, CookieQuery } from '../types'
+import * as FormData from 'form-data'
+import fetch from 'node-fetch'
 import {
   nodeExists,
   wait,
@@ -12,10 +14,8 @@ import {
   press,
   clearCookies,
   getCookies,
-  setCookies, getAllCookies,
+  setCookies, getAllCookies, version,
 } from '../util'
-import * as FormData from 'form-data'
-import fetch from 'node-fetch'
 
 export default class LocalRuntime {
 
@@ -42,14 +42,14 @@ export default class LocalRuntime {
       }
       case 'click':
         return this.click(command.selector, this.chromlessOptions.viewport.scale)
-      case 'evalCode':
-        return this.evalCode(command.fn, ...command.args)
-      case 'evalExists':
-        return this.evalExists(command.selector)
-      case 'evalScreenshot':
-        return this.evalScreenshot()
-      case 'evalInputValue':
-        return this.evalInputValue(command.selector)
+      case 'returnCode':
+        return this.returnCode(command.fn, ...command.args)
+      case 'returnExists':
+        return this.returnExists(command.selector)
+      case 'returnScreenshot':
+        return this.returnScreenshot()
+      case 'returnInputValue':
+        return this.returnInputValue(command.selector)
       case 'type':
         return this.type(command.input, command.selector)
       case 'press':
@@ -70,23 +70,23 @@ export default class LocalRuntime {
   }
 
   private async goto(url: string): Promise<void> {
-    const {Network, Page, Emulation} = this.client
+    const {Network, Page} = this.client
     await Promise.all([Network.enable(), Page.enable()])
-    await Network.setUserAgentOverride({userAgent: 'chromeless'})
+    await Network.setUserAgentOverride({userAgent: `Chromeless ${version}`})
     await Page.navigate({url})
     await Page.loadEventFired()
-    console.log('Navigated to', url)
+    this.log(`Navigated to ${url}`)
   }
 
   private async waitTimeout(timeout: number): Promise<void> {
-    console.log(`Waiting for ${timeout}ms`)
+    this.log(`Waiting for ${timeout}ms`)
     await wait(timeout)
   }
 
   private async waitSelector(selector: string): Promise<void> {
-    console.log(`Waiting for ${selector}`)
+    this.log(`Waiting for ${selector}`)
     await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
-    console.log(`Waited for ${selector}`)
+    this.log(`Waited for ${selector}`)
   }
 
   private async click(selector: string, scale: number): Promise<void> {
@@ -96,10 +96,10 @@ export default class LocalRuntime {
     }
 
     await click(this.client, selector, scale)
-    console.log('Clicked on ', selector)
+    this.log(`Clicked on ${selector}`)
   }
 
-  private async evalCode<T>(fn: string, ...args: any[]): Promise<T> {
+  private async returnCode<T>(fn: string, ...args: any[]): Promise<T> {
     return await evaluate(this.client, fn, ...args) as T
   }
 
@@ -111,34 +111,12 @@ export default class LocalRuntime {
     if (selector) {
       const exists = await nodeExists(this.client, selector)
       if (!exists) {
-        console.log('throwing')
-        throw new Error(`type(): node for selector ${selector} doesn't exist`)
+        throw new Error(`type(): Node not found for selector: ${selector}`)
       }
-      console.log('Node exists', exists)
     }
     await type(this.client, text, selector)
-    console.log(`Typed ${text} in ${selector}`)
+    this.log(`Typed ${text} in ${selector}`)
   }
-
-  // async backspace(n: number, selector?: string): Chromeless {
-  //   this.enqueue({
-  //     fn: async (client: Client, n: number, selector: string) => {
-  //       if (selector) {
-  //         const exists = await nodeExists(client, selector)
-  //         if (!exists) {
-  //           throw new Error(`type(): node for selector ${selector} doesn't exist`)
-  //         }
-  //         console.log('Node exists', exists)
-  //       }
-  //       await backspace(client, this.options.useArtificialClick, n, selector)
-  //     },
-  //     args: {
-  //       n,
-  //       selector: selector || null,
-  //     },
-  //   })
-  //   return this
-  // }
 
   async cookiesGet(nameOrQuery?: string | CookieQuery): Promise<Cookie[]> {
     return await getCookies(this.client, nameOrQuery as string | undefined)
@@ -165,24 +143,24 @@ export default class LocalRuntime {
       return await setCookies(this.client, [cookie])
     }
 
-    throw new Error(`cookiesSet: Invalid input ${nameOrCookies}, ${value}`)
+    throw new Error(`cookiesSet(): Invalid input ${nameOrCookies}, ${value}`)
   }
 
   async cookiesClearAll(): Promise<void> {
-    console.log('clearing cookies')
     await clearCookies(this.client)
+    this.log('Cookies cleared')
   }
 
   async press(keyCode: number, count?: number, modifiers?: any): Promise<void> {
-    console.log('Sending keyCode', keyCode, modifiers)
+    this.log(`Sending keyCode ${keyCode} (modifiers: ${modifiers})`)
     await press(this.client, keyCode, count, this.chromlessOptions.viewport.scale, modifiers)
   }
 
-  async evalExists(selector: string): Promise<boolean> {
+  async returnExists(selector: string): Promise<boolean> {
     return await nodeExists(this.client, selector)
   }
 
-  async evalInputValue(selector: string): Promise<string> {
+  async returnInputValue(selector: string): Promise<string> {
     const exists = await nodeExists(this.client, selector)
     if (!exists) {
       throw new Error(`value: node for selector ${selector} doesn't exist`)
@@ -190,7 +168,7 @@ export default class LocalRuntime {
     return getValue(this.client, selector)
   }
 
-  async evalScreenshot(): Promise<string> {
+  async returnScreenshot(): Promise<string> {
     const data = await screenshot(this.client)
 
     // const filePath = `/tmp/${cuid()}.png`
@@ -208,6 +186,12 @@ export default class LocalRuntime {
     const result = await response.json()
 
     return result.url
+  }
+
+  private log(msg: string): void {
+    if (this.chromlessOptions.debug) {
+      console.log(msg)
+    }
   }
 
 }

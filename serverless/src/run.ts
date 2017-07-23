@@ -1,24 +1,16 @@
-import debugLogger from 'debug'
-import { LocalChrome, Queue } from 'chromeless'
+import { LocalChrome, Queue, ChromelessOptions } from 'chromeless'
 import { Realtime } from 'ably'
 
+const debug = require('debug')('serverless')
+
 export interface EventBody {
-  options: any // @TODO: lazy.
+  options: ChromelessOptions
   pusherChannelName: string
 }
 
-const debug = debugLogger('handler')
+export default async (event, context, callback): Promise<void> => {
 
-export async function run(
-  event,
-  context,
-  callback,
-  chromeInstance
-): Promise<void> {
-  debug('started', chromeInstance)
-
-  // @TODO: lazy
-  let eventBody: EventBody = { options: {}, pusherChannelName: '' }
+  let eventBody: EventBody = {options: {}, pusherChannelName: ''}
 
   try {
     eventBody = JSON.parse(event.body)
@@ -32,26 +24,24 @@ export async function run(
   }
 
   const chrome = new LocalChrome({
-    chromelessOptions: {
-      ...eventBody.options,
-      runRemote: false,
-    },
+    ...eventBody.options,
+    remote: false,
   })
 
   const queue = new Queue(chrome)
   const ably = new Realtime('eiPuOw.DUAicQ:yq9jJ5164vdtBFIA')
   const channel = ably.channels.get(eventBody.pusherChannelName)
 
-  console.log(eventBody.pusherChannelName)
+  debug('channel', channel.name)
 
   channel.publish('connected', '')
 
-  console.log('triggered connection')
+  debug('confirmed-connection')
 
   channel.subscribe('request', async msg => {
     const command = JSON.parse(msg.data)
 
-    console.log('command', command)
+    debug('received-command', command)
 
     try {
       const result = await queue.process(command)
@@ -59,7 +49,7 @@ export async function run(
         value: result,
       })
 
-      console.log(result)
+      debug('chrome-result', result)
 
       channel.publish('response', remoteResult)
     } catch (error) {

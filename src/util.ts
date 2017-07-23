@@ -1,32 +1,16 @@
 import * as fs from 'fs'
+import * as path from 'path'
 import { Client, Cookie } from './types'
-// export async function nodeAppears(client, selector) {
-//   // browser code to register and parse mutations
-//   const browserCode = (selector) => {
-//     return new Promise((fulfill, reject) => {
-//       new MutationObserver((mutations, observer) => {
-//         // add all the new nodes
-//         const nodes = []
-//         mutations.forEach((mutation) => {
-//           nodes.push(...mutation.addedNodes)
-//         })
-//         // fulfills if at least one node matches the selector
-//         if (nodes.find((node) => node.matches(selector))) {
-//           observer.disconnect()
-//           fulfill()
-//         }
-//       }).observe(document.body, {
-//         childList: true
-//       })
-//     })
-//   }
-//   // inject the browser code
-//   const {Runtime} = client
-//   await Runtime.evalCode({
-//     expression: `(${browserCode})(\`${selector}\`)`,
-//     awaitPromise: true
-//   })
-// }
+
+export const version: string = ((): string => {
+  if (fs.existsSync(path.join(__dirname, '../package.json'))) {
+    // development (look in /src)
+    return require('../package.json').version
+  } else {
+    // production (look in /dist/src)
+    return require('../../package.json').version
+  }
+})()
 
 export async function waitForNode(client: Client, selector: string, waitTimeout: number): Promise<void> {
   const {Runtime} = client
@@ -44,7 +28,7 @@ export async function waitForNode(client: Client, selector: string, waitTimeout:
       const interval = setInterval(async () => {
         if (new Date().getTime() - start > waitTimeout) {
           clearInterval(interval)
-          reject(new Error(`wait() timed out after ${waitTimeout}ms`))
+          reject(new Error(`wait("${selector}") timed out after ${waitTimeout}ms`))
         }
 
         const result = await Runtime.evaluate({
@@ -74,26 +58,25 @@ export async function nodeExists(client: Client, selector: string): Promise<bool
 
   const expression = `(${exists})(\`${selector}\`)`
 
-  try {
-    const result = await Runtime.evaluate({
-      expression,
-    })
+  const result = await Runtime.evaluate({
+    expression,
+  })
 
-    // counter intuitive: if it is a real object and not just null,
-    // the chrome debugger won't return a value but return a objectId
-    const exists = typeof result.result.value === 'undefined'
-    return exists
-  } catch (e) {
-    console.error('Error while trying to run nodeExists')
-    console.error(e)
-  }
+  // counter intuitive: if it is a real object and not just null,
+  // the chrome debugger won't return a value but return a objectId
+  return typeof result.result.value === 'undefined'
 }
 
 export async function getClientRect(client, selector): Promise<ClientRect> {
   const {Runtime} = client
 
   const code = (selector) => {
-    const rect = document.querySelector(selector).getBoundingClientRect()
+    const element = document.querySelector(selector)
+    if (!element) {
+      return undefined
+    }
+
+    const rect = element.getBoundingClientRect()
     return JSON.stringify({
       left: rect.left,
       top: rect.top,
@@ -106,6 +89,10 @@ export async function getClientRect(client, selector): Promise<ClientRect> {
 
   const expression = `(${code})(\`${selector}\`)`
   const result = await Runtime.evaluate({expression})
+
+  if (!result.result.value) {
+    throw new Error(`No element found for selector: ${selector}`)
+  }
 
   return JSON.parse(result.result.value) as ClientRect
 }
@@ -120,8 +107,6 @@ export async function click(client: Client, selector: string, scale: number) {
     button: 'left',
     clickCount: 1,
   }
-
-  console.log(`Clicking to (${options.x},${options.y})`)
 
   await Input.dispatchMouseEvent({
     ...options,
@@ -180,7 +165,8 @@ export async function press(client: Client, keyCode: number, scale: number, coun
 
   // special handling for backspace
   if (keyCode === 8) {
-    return backspace(client, scale, count || 1)
+    await backspace(client, scale, count || 1)
+    return
   }
 
   const {Input} = client
@@ -234,14 +220,12 @@ export async function backspace(client: Client, n: number, scale: number, select
       ...options,
       type: 'keyUp',
     })
-
-    console.log('sent backspace', options)
   }
   const options = {
     type: 'rawKeyDown',
     nativeVirtualKeyCode: 46,
   }
-  const res = await Input.dispatchKeyEvent(options)
+  await Input.dispatchKeyEvent(options)
 }
 
 export async function getValue(client: Client, selector: string): Promise<string> {
@@ -249,16 +233,12 @@ export async function getValue(client: Client, selector: string): Promise<string
   const browserCode = (selector) => {
     return document.querySelector(selector).value
   }
-  // console.log('getting value for', selector)
   const expression = `(${browserCode})(\`${selector}\`)`
-  try {
-    const result = await Runtime.evaluate({
-      expression,
-    })
-    return result.result.value
-  } catch (e) {
-    console.error(e)
-  }
+  const result = await Runtime.evaluate({
+    expression,
+  })
+
+  return result.result.value
 }
 
 export async function scrollTo(client: Client, x: number, y: number): Promise<void> {
@@ -273,6 +253,10 @@ export async function scrollTo(client: Client, x: number, y: number): Promise<vo
 }
 
 export async function getCookies(client: Client, nameOrQuery?: string | Cookie): Promise<any> {
+  if (nameOrQuery) {
+    throw new Error('Not yet implemented')
+  }
+
   const {Network} = client
 
   const fn = () => location.href
@@ -318,5 +302,13 @@ export async function screenshot(client: Client): Promise<string> {
   const screenshot = await Page.captureScreenshot({format: 'png'})
 
   return screenshot.data
+}
+
+export function getDebugOption(): boolean {
+  if (process && process.env && process.env['DEBUG'] && process.env['DEBUG'].includes('chromeless')) {
+    return true
+  }
+
+  return false
 }
 

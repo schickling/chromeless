@@ -1,12 +1,7 @@
-import { Chrome, ChromelessOptions, Command } from '../types'
-import { Lambda } from 'aws-sdk'
+import { Chrome, ChromelessOptions, Command, RemoteOptions } from '../types'
+import { Lambda, Credentials } from 'aws-sdk'
 import { Realtime, ablyLib } from 'ably'
 import * as cuid from 'cuid'
-
-export interface Props {
-  lambdaFunctionName: string
-  chromelessOptions: ChromelessOptions
-}
 
 interface RemoteResult {
   value?: any
@@ -15,40 +10,48 @@ interface RemoteResult {
 
 export default class RemoteChrome implements Chrome {
 
-  private lambdaFunctionName: string
-  private chromelessOptions: ChromelessOptions
+  private options: ChromelessOptions
   private channelName: string
   private channel: ablyLib.RealtimeChannel
   private ably: Realtime
   private lambdaPromise: Promise<void>
   private connectionPromise: Promise<void>
 
-  constructor(props: Props) {
-    this.lambdaFunctionName = props.lambdaFunctionName
-    this.chromelessOptions = props.chromelessOptions
+  constructor(options: ChromelessOptions) {
+    this.options = options
 
     this.channelName = cuid()
     this.ably = new Realtime('eiPuOw.DUAicQ:yq9jJ5164vdtBFIA')
     this.channel = this.ably.channels.get(this.channelName)
 
-    this.lambdaPromise = this.initLambda()
+    this.lambdaPromise = this.initLambda(options.remote)
     this.connectionPromise = this.initConnection()
   }
 
-  private async initLambda(): Promise<void> {
+  private async initLambda(remoteOptions: RemoteOptions | boolean): Promise<void> {
     const Payload = JSON.stringify({
       body: JSON.stringify({
-        options: this.chromelessOptions,
+        options: this.options,
         pusherChannelName: this.channelName,
       })
     })
 
-    const lambda = new Lambda({
-      region: process.env.AWS_REGION || 'eu-west-1',
-    })
+    const lambdaOptions: Lambda.Types.ClientConfiguration = {}
+
+    if (typeof remoteOptions === 'object') {
+      if (remoteOptions.credentials) {
+        lambdaOptions.credentials = new Credentials(remoteOptions.credentials.accessKeyId, remoteOptions.credentials.secretAccessKey)
+      }
+
+      if (remoteOptions.region) {
+        lambdaOptions.region = remoteOptions.region
+      }
+    }
+
+    const lambda = new Lambda(lambdaOptions)
 
     await lambda.invoke({
-      FunctionName: this.lambdaFunctionName,
+      FunctionName: getFunctionName(remoteOptions),
       Payload,
     }).promise()
   }
@@ -74,7 +77,9 @@ export default class RemoteChrome implements Chrome {
     // wait until lambda connection is established
     await this.connectionPromise
 
-    console.log(`Running remotely: ${JSON.stringify(command)}`)
+    if (this.options.debug) {
+      console.log(`Running remotely: ${JSON.stringify(command)}`)
+    }
 
     const promise = new Promise<T>((resolve, reject) => {
       this.channel.subscribe('response', data => {
@@ -113,4 +118,16 @@ export default class RemoteChrome implements Chrome {
     clearTimeout(timeout)
   }
 
+}
+
+function getFunctionName(remoteOptions: RemoteOptions | boolean): string {
+  if (typeof remoteOptions === 'object' && remoteOptions.functionName) {
+    return remoteOptions.functionName
+  }
+
+  if (process.env['CHROMELESS_LAMBDA_FUNCTION_NAME']) {
+    return process.env['CHROMELESS_LAMBDA_FUNCTION_NAME']
+  }
+
+  throw new Error('No AWS Lambda function name provided. Either set as `remote` option in constructor or set as `CHROMELESS_LAMBDA_FUNCTION_NAME` env variable.')
 }

@@ -25,18 +25,29 @@ package:
     - node_modules/uglify-js/**
   include:
     - ./src/**.js
+  excludeDevDependencies: false
 
 functions:
 
-  Chromeless:
-    description: Chromeless Lambda Service
+  run:
     memorySize: 1536
     timeout: 300
-    handler: src/handler.run
+    handler: src/run.default
+
+  version:
+    memorySize: 128
+    handler: src/version.default
+    events:
+    - http:
+        path: /version
+        method: get
 
 resources:
   Resources:
 
-    ChromelessLogGroup:
+    RunLogGroup:
+      Properties:
+        RetentionInDays: 7
+    VersionLogGroup:
       Properties:
         RetentionInDays: 7

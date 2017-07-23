@@ -10,16 +10,32 @@ export interface Client {
   }
 }
 
-export interface ChromelessOptions {
-  useArtificialClick?: boolean
-  closeTab?: boolean
-  waitTimeout?: number
-  runRemote?: boolean
-  viewport?: {
-    width?: number
-    height?: number
-    scale?: number
+export interface RemoteOptions {
+  functionName?: string
+  region?: string
+  credentials?: {
+    accessKeyId: string
+    secretAccessKey: string
   }
+}
+
+export interface CDPOptions {
+  host?: string // localhost
+  port?: number // 9222
+  secure?: boolean // false
+  closeTab?: boolean // true
+}
+
+export interface ChromelessOptions {
+  debug?: boolean // false
+  waitTimeout?: number // 10000ms
+  viewport?: {
+    width?: number // 1440 if headless
+    height?: number // 900 if headless
+    scale?: number // 1
+  }
+  cdp?: CDPOptions
+  remote?: RemoteOptions | boolean // false
 }
 
 export interface Chrome {
@@ -40,20 +56,20 @@ export type Command = {
   type: 'click'
   selector: string
 } | {
-  type: 'evalCode'
+  type: 'returnCode'
   fn: string
   args?: any[]
 } | {
-  type: 'evalInputValue'
+  type: 'returnInputValue'
   selector: string
 } | {
-  type: 'evalExists'
+  type: 'returnExists'
   selector: string
 } | {
-  type: 'evalValue'
+  type: 'returnValue'
   selector: string
 } | {
-  type: 'evalScreenshot'
+  type: 'returnScreenshot'
 } | {
   type: 'scrollTo'
   x: number
@@ -78,21 +94,6 @@ export type Command = {
 } | {
   type: 'cookiesGet'
   nameOrQuery?: string | CookieQuery
-}
-
-interface IChromeless {
-  focus(selector: string): IChromeless
-  press(keyCode: number, count: number): IChromeless
-  type(input: string, selector?: string): IChromeless
-  screenshot(): IChromeless
-  back(): IChromeless
-  forward(): IChromeless
-  refresh(): IChromeless
-  mousedown(): IChromeless
-  mouseup(): IChromeless
-  mouseover(): IChromeless
-  scrollTo(top: number, left?: number): IChromeless
-  viewport(width: number, height: number): IChromeless
 }
 
 export interface Cookie {

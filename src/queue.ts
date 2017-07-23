@@ -2,12 +2,18 @@ import { Chrome, Command } from './types'
 
 export default class Queue {
 
-  private commandQueue: Command[]
+  private flushCount: number
+  private commandQueue: {
+    [flushCount: number]: Command[]
+  }
   private chrome: Chrome
 
   constructor(chrome: Chrome) {
     this.chrome = chrome
-    this.commandQueue = []
+    this.flushCount = 0
+    this.commandQueue = {
+      0: [],
+    }
   }
 
   async end(): Promise<void> {
@@ -16,7 +22,7 @@ export default class Queue {
   }
 
   enqueue(command: Command): void {
-    this.commandQueue.push(command)
+    this.commandQueue[this.flushCount].push(command)
   }
 
   async process<T extends any>(command: Command): Promise<T> {
@@ -26,9 +32,13 @@ export default class Queue {
   }
 
   private async waitAll(): Promise<void> {
-    while (this.commandQueue.length > 0) {
-      const job = this.commandQueue.shift()
-      await this.chrome.process(job)
+    const previousFlushCount = this.flushCount
+
+    this.flushCount++
+    this.commandQueue[this.flushCount] = []
+
+    for (const command of this.commandQueue[previousFlushCount]) {
+      await this.chrome.process(command)
     }
   }
 

@@ -1,10 +1,7 @@
 import { Chrome, Command, ChromelessOptions, Client } from '../types'
 import * as CDP from 'chrome-remote-interface'
 import LocalRuntime from './local-runtime'
-
-export interface Props {
-  chromelessOptions: ChromelessOptions
-}
+import { evaluate } from '../util'
 
 interface RuntimeClient {
   client: Client
@@ -13,19 +10,11 @@ interface RuntimeClient {
 
 export default class LocalChrome implements Chrome {
 
-  private chromelessOptions: ChromelessOptions
+  private options: ChromelessOptions
   private runtimeClientPromise: Promise<RuntimeClient>
 
-  constructor(props: Props) {
-    this.chromelessOptions = {
-      ...props.chromelessOptions,
-      viewport: {
-        scale: 1,
-        width: 1920,
-        height: 1080,
-        ...props.chromelessOptions.viewport,
-      }
-    }
+  constructor(options: ChromelessOptions) {
+    this.options = options
 
     this.runtimeClientPromise = this.initRuntimeClient()
   }
@@ -34,23 +23,40 @@ export default class LocalChrome implements Chrome {
     const target = await CDP.New()
     const client = await CDP({target})
 
-    this.setViewport(client)
+    await this.setViewport(client)
 
-    const runtime = new LocalRuntime(client, this.chromelessOptions)
+    const runtime = new LocalRuntime(client, this.options)
 
     return {client, runtime}
   }
 
   private async setViewport(client: Client) {
-    const {viewport} = this.chromelessOptions
-    await client.Emulation.setDeviceMetricsOverride({
-      width: viewport.width,
-      height: viewport.height,
-      deviceScaleFactor: 0,
+    const {viewport} = this.options
+
+    const config: any = {
+      deviceScaleFactor: 1,
       mobile: false,
-      fitWindow: false,
       scale: viewport.scale,
-    })
+      fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
+    }
+
+    const versionResult = await CDP.Version()
+    const isHeadless = versionResult['User-Agent'].includes('Headless')
+
+    if (viewport.height && viewport.width) {
+      config.height = viewport.height
+      config.width = viewport.width
+    } else if (isHeadless) {
+      // just apply default value in headless mode to maintain original browser viewport
+      config.height = 900
+      config.width = 1440
+    } else {
+      config.height = await evaluate(client, (() => window.innerHeight).toString())
+      config.width = await evaluate(client, (() => window.innerWidth).toString())
+    }
+
+    await client.Emulation.setDeviceMetricsOverride(config)
+    await client.Emulation.setVisibleSize({ width: config.width, height: config.height })
   }
 
   async process<T extends any>(command: Command): Promise<T> {
@@ -62,7 +68,7 @@ export default class LocalChrome implements Chrome {
   async close(): Promise<void> {
     const {client} = await this.runtimeClientPromise
 
-    if (this.chromelessOptions.closeTab) {
+    if (this.options.cdp.closeTab) {
       CDP.Close({id: client.target.id})
     }
 
