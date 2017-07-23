@@ -32,6 +32,10 @@ async function run() {
 run().catch(console.error.bind(console))
 ```
 
+### API
+
+*TODO*
+
 ## Architecture
 
 ### Local execution
@@ -41,6 +45,27 @@ run().catch(console.error.bind(console))
 ### Remote execution
 
 ![](http://imgur.com/nYGKGpp.png)
+
+## FAQ
+
+### How is this different from [NightmareJS](https://github.com/segmentio/nightmare), Selenium or similar?
+
+## Contributors
+
+A big thank you to all contributors and supporters of this repository 💚 
+
+<a href="https://github.com/adieuadieu/" target="_blank">
+  <img src="https://github.com/adieuadieu?size=64" width="64" height="64" alt="adieuadieu">
+</a>
+<a href="https://github.com/schickling/" target="_blank">
+  <img src="https://github.com/schickling.png?size=64" width="64" height="64" alt="schickling">
+</a>
+<a href="https://github.com/timsuchanek/" target="_blank">
+  <img src="https://github.com/timsuchanek?size=64" width="64" height="64" alt="timsuchanek">
+</a>
+<a href="https://github.com/matthewmueller/" target="_blank">
+  <img src="https://github.com/matthewmueller?size=64" width="64" height="64" alt="matthewmueller">
+</a>
 
 
 ## Help & Community [![Slack Status](https://slack.graph.cool/badge.svg)](https://slack.graph.cool)
