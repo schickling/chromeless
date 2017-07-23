@@ -55,16 +55,16 @@ run().catch(console.error.bind(console))
 A big thank you to all contributors and supporters of this repository 💚 
 
 <a href="https://github.com/adieuadieu/" target="_blank">
-  <img src="https://github.com/adieuadieu?size=64" width="64" height="64" alt="adieuadieu">
+  <img src="https://github.com/adieuadieu.png?size=64" width="64" height="64" alt="adieuadieu">
 </a>
 <a href="https://github.com/schickling/" target="_blank">
   <img src="https://github.com/schickling.png?size=64" width="64" height="64" alt="schickling">
 </a>
 <a href="https://github.com/timsuchanek/" target="_blank">
-  <img src="https://github.com/timsuchanek?size=64" width="64" height="64" alt="timsuchanek">
+  <img src="https://github.com/timsuchanek.png?size=64" width="64" height="64" alt="timsuchanek">
 </a>
 <a href="https://github.com/matthewmueller/" target="_blank">
-  <img src="https://github.com/matthewmueller?size=64" width="64" height="64" alt="matthewmueller">
+  <img src="https://github.com/matthewmueller.png?size=64" width="64" height="64" alt="matthewmueller">
 </a>
 
 
