@@ -9,6 +9,26 @@ Headless Chrome running on AWS Lambda (or locally)
 npm install chromeless
 ```
 
+### Remote Setup
+
+1. Deploy Chrome to AWS Lambda via [Serverless](https://serverless.com/)
+
+```sh
+git clone git@github.com:graphcool/chromeless.git
+cd chromeless/serverless
+serverless deploy
+```
+
+2. Copy the deployed function name (something like `chromeless-serverless-dev-run`) and provide it for the local `Chromeless` client either by setting the `CHROMELESS_LAMBDA_FUNCTION_NAME` environment variable or as constructor argument:
+
+```js
+const chromeless = new Chromeless({
+  remote: {
+    functionName: 'chromeless-serverless-dev-run',
+  }
+})
+```
+
 ## Usage
 ```js
 import Chromeless from 'chromeless'
