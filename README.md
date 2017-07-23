@@ -29,8 +29,8 @@ await chromeless.end()
 
 ### Local execution
 
-![](http://imgur.com/eLoK5IT.png)
+![](http://imgur.com/1eM8Bda.png)
 
 ### Remote execution
 
-![](http://imgur.com/nQSk7Gj.png)
+![](http://imgur.com/nYGKGpp.png)
