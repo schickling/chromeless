@@ -1,32 +1,46 @@
-import { LocalChrome, Queue, ChromelessOptions } from 'chromeless'
+//import { LocalChrome, Queue, ChromelessOptions } from 'chromeless'
 import { connect as mqtt, MqttClient } from 'mqtt'
+import * as cuid from 'cuid'
 import { createPresignedURL } from './utils'
 
 const debug = require('debug')('session handler')
 
 export async function run(event, context, callback): Promise<void> {
-  context.callbackWaitsForEmptyEventLoop = false
+  //context.callbackWaitsForEmptyEventLoop = false
 
   debug('function invoked with event data: ', event)
 
-  const chrome = new LocalChrome({
+  /*const chrome = new LocalChrome({
     // @TODO ...eventBody.options,
     remote: false,
     cdp: { closeTab: true },
   })
-  const queue = new Queue(chrome)
-  const channelId = await chrome.getTargetId()
+  const queue = new Queue(chrome)*/
+  const channelId = cuid() //await chrome.getTargetId()
 
   const TOPIC_CONNECTED = `chrome/${channelId}/connected`
   const TOPIC_REQUEST = `chrome/${channelId}/request`
   const TOPIC_RESPONSE = `chrome/${channelId}/response`
   const TOPIC_END = `chrome/${channelId}/end`
 
+
+/*
+  const lambda = new Lambda()
+
+  await lambda.invoke({
+    FunctionName: getFunctionName(remoteOptions),
+    Payload,
+  }).promise()
+*/
+
   callback(null, {
     statusCode: 200,
     body: JSON.stringify({ url: createPresignedURL(), channelId }),
   })
 
+
+
+/*
   const client = mqtt(createPresignedURL())
 
   // @TODO just... remove this.
@@ -89,4 +103,5 @@ export async function run(event, context, callback): Promise<void> {
       })
     })
   })
+  */
 }

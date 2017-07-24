@@ -15,6 +15,7 @@ export default class RemoteChrome implements Chrome {
   private channel: MqttClient
   private lambdaPromise: Promise<void>
   private connectionPromise: Promise<void>
+  private TOPIC_NEW_SESSION: string
   private TOPIC_CONNECTED: string
   private TOPIC_REQUEST: string
   private TOPIC_RESPONSE: string
@@ -76,14 +77,15 @@ export default class RemoteChrome implements Chrome {
           }
         )
         this.channelId = channelId
-        this.TOPIC_CONNECTED = `${channelId}/connected`
-        this.TOPIC_REQUEST = `${channelId}/request`
-        this.TOPIC_RESPONSE = `${channelId}/response`
-        this.TOPIC_END = `${channelId}/end`
+        this.TOPIC_NEW_SESSION = 'chrome/new-session'
+        this.TOPIC_CONNECTED = `chrome/${channelId}/connected`
+        this.TOPIC_REQUEST = `chrome/${channelId}/request`
+        this.TOPIC_RESPONSE = `chrome/${channelId}/response`
+        this.TOPIC_END = `chrome/${channelId}/end`
 
         const channel = mqtt(url, {
           will: {
-            topic: 'last-will',
+            topic: 'chrome/last-will',
             payload: channelId,
             qos: 1,
             retain: false,
@@ -107,13 +109,19 @@ export default class RemoteChrome implements Chrome {
         channel.on('connect', () => {
           console.log('Connected to AWS IoT Broker')
 
-          channel.subscribe(this.TOPIC_CONNECTED, { qos:1}, () => {
+          channel.subscribe(this.TOPIC_CONNECTED, { qos: 1 }, () => {
             channel.on('message', async topic => {
               if (this.TOPIC_CONNECTED === topic) {
                 clearTimeout(timeout)
                 resolve()
               }
             })
+
+            channel.publish(
+              this.TOPIC_NEW_SESSION,
+              JSON.stringify({ channelId }),
+              { qos: 1 }
+            )
           })
         })
       } catch (error) {
@@ -163,7 +171,7 @@ export default class RemoteChrome implements Chrome {
   }
 
   async close(): Promise<void> {
-    this.channel.publish(this.TOPIC_END, 'end')
+    this.channel.publish(this.TOPIC_END, JSON.stringify({end: true}))
     this.channel.end()
 
     const timeout = setTimeout(() => {

@@ -2,7 +2,7 @@ const Chromeless = require('chromeless').default
 
 async function run() {
   const chromeless = new Chromeless({
-    remote: { endpoint: 'https://lk9n5m7sjf.execute-api.eu-west-1.amazonaws.com/dev/session' }
+    remote: { endpoint: 'https://285elhm6ce.execute-api.eu-west-1.amazonaws.com/dev/session' }
   })
 
   const screenshot = await chromeless
