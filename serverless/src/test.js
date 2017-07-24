@@ -1,0 +1,18 @@
+const Chromeless = require('chromeless').default
+
+async function run() {
+  const chromeless = new Chromeless({
+    remote: { endpoint: 'https://lk9n5m7sjf.execute-api.eu-west-1.amazonaws.com/dev/session' }
+  })
+
+  const screenshot = await chromeless
+    .goto('https://www.google.com')
+    .type('chromeless', 'input[name="q"]')
+    .press(13)
+    .wait('#resultStats')
+    .scrollTo(0, 1000)
+
+  await chromeless.end()
+}
+
+run().catch(console.error.bind(console))

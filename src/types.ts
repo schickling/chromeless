@@ -11,6 +11,7 @@ export interface Client {
 }
 
 export interface RemoteOptions {
+  endpoint: string,
   functionName?: string
   region?: string
   credentials?: {
@@ -35,10 +36,11 @@ export interface ChromelessOptions {
     scale?: number // 1
   }
   cdp?: CDPOptions
-  remote?: RemoteOptions | boolean // false
+  remote?: RemoteOptions | boolean
 }
 
 export interface Chrome {
+  getTargetId(): Promise<string>
   process<T extends any>(command: Command): Promise<T>
   close(): Promise<void>
 }

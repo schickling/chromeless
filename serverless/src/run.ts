@@ -1,5 +1,6 @@
 import { LocalChrome, Queue, ChromelessOptions } from 'chromeless'
-import { Realtime } from 'ably'
+import { connect as mqtt, MqttClient } from 'mqtt'
+import { createPresignedURL } from './utils'
 
 const debug = require('debug')('serverless')
 
@@ -9,6 +10,8 @@ export interface EventBody {
 }
 
 export default async (event, context, callback): Promise<void> => {
+
+  debug('invoke', event)
 
   let eventBody: EventBody = {options: {}, pusherChannelName: ''}
 
@@ -29,17 +32,17 @@ export default async (event, context, callback): Promise<void> => {
   })
 
   const queue = new Queue(chrome)
-  const ably = new Realtime('eiPuOw.DUAicQ:yq9jJ5164vdtBFIA')
-  const channel = ably.channels.get(eventBody.pusherChannelName)
 
-  debug('channel', channel.name)
+  const url = createPresignedURL()
+
+  const channel = mqtt(url)
 
   channel.publish('connected', '')
 
   debug('confirmed-connection')
 
   channel.subscribe('request', async msg => {
-    const command = JSON.parse(msg.data)
+    const command = JSON.parse("{}")
 
     debug('received-command', command)
 
@@ -63,7 +66,7 @@ export default async (event, context, callback): Promise<void> => {
 
   channel.subscribe('end', async () => {
     channel.unsubscribe('end')
-    ably.close()
+    channel.end()
     await queue.end()
 
     callback(null, {

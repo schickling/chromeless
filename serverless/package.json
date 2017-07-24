@@ -4,9 +4,10 @@
     "deploy": "sls deploy"
   },
   "dependencies": {
-    "ably": "^1.0.5",
+    "aws4": "^1.6.0",
     "chromeless": "^0.2.4",
-    "debug": "^2.6.8"
+    "debug": "^2.6.8",
+    "mqtt": "^2.9.2"
   },
   "devDependencies": {
     "serverless": "^1.18.0",

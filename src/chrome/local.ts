@@ -9,11 +9,11 @@ interface RuntimeClient {
 }
 
 export default class LocalChrome implements Chrome {
-
   private options: ChromelessOptions
   private runtimeClientPromise: Promise<RuntimeClient>
+  private targetId: string
 
-  constructor(options: ChromelessOptions) {
+  constructor(options: ChromelessOptions = {}) {
     this.options = options
 
     this.runtimeClientPromise = this.initRuntimeClient()
@@ -21,22 +21,24 @@ export default class LocalChrome implements Chrome {
 
   private async initRuntimeClient(): Promise<RuntimeClient> {
     const target = await CDP.New()
-    const client = await CDP({target})
+    const client = await CDP({ target })
 
+    this.targetId = target.id
+    
     await this.setViewport(client)
 
     const runtime = new LocalRuntime(client, this.options)
 
-    return {client, runtime}
+    return { client, runtime }
   }
 
   private async setViewport(client: Client) {
-    const {viewport} = this.options
+    const { viewport = {} } = this.options
 
     const config: any = {
       deviceScaleFactor: 1,
       mobile: false,
-      scale: viewport.scale,
+      scale: viewport.scale || 1,
       fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
     }
 
@@ -51,28 +53,42 @@ export default class LocalChrome implements Chrome {
       config.height = 900
       config.width = 1440
     } else {
-      config.height = await evaluate(client, (() => window.innerHeight).toString())
-      config.width = await evaluate(client, (() => window.innerWidth).toString())
+      config.height = await evaluate(
+        client,
+        (() => window.innerHeight).toString()
+      )
+      config.width = await evaluate(
+        client,
+        (() => window.innerWidth).toString()
+      )
     }
 
     await client.Emulation.setDeviceMetricsOverride(config)
-    await client.Emulation.setVisibleSize({ width: config.width, height: config.height })
+    await client.Emulation.setVisibleSize({
+      width: config.width,
+      height: config.height,
+    })
+  }
+
+  async getTargetId(): Promise<string> {
+    await this.runtimeClientPromise
+
+    return this.targetId
   }
 
   async process<T extends any>(command: Command): Promise<T> {
-    const {runtime} = await this.runtimeClientPromise
+    const { runtime } = await this.runtimeClientPromise
 
-    return await runtime.run(command) as T
+    return (await runtime.run(command)) as T
   }
 
   async close(): Promise<void> {
-    const {client} = await this.runtimeClientPromise
+    const { client } = await this.runtimeClientPromise
 
     if (this.options.cdp.closeTab) {
-      CDP.Close({id: client.target.id})
+      CDP.Close({ id: client.target.id })
     }
 
     await client.close()
   }
-
 }
