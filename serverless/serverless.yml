@@ -1,13 +1,18 @@
 service: chromeless-serverless
 
+custom:
+  bucket: chromeless-${env:AWS_ACCOUNT_ID}
+
 provider:
   name: aws
   runtime: nodejs6.10
   stage: dev
   region: eu-west-1
   deploymentBucket: serverless-deployments-${env:AWS_REGION}-${env:AWS_ACCOUNT_ID}
-  environment:
-    DEBUG: "*"
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action: ["s3:*"]
+      Resource: ["arn:aws:s3:::${self:custom.bucket}/*"]
 
 plugins:
   - serverless-plugin-typescript
@@ -33,6 +38,9 @@ functions:
     memorySize: 1536
     timeout: 300
     handler: src/run.default
+    environment:
+      CHROMELESS_S3_BUCKET_NAME: ${self:custom.bucket}
+      CHROMELESS_S3_BUCKET_URL: { "Fn::GetAtt" : [ "Bucket", "DomainName" ] }
 
   version:
     memorySize: 128
@@ -51,3 +59,12 @@ resources:
     VersionLogGroup:
       Properties:
         RetentionInDays: 7
+
+    Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: chromeless-${env:AWS_ACCOUNT_ID}
+        LifecycleConfiguration:
+          Rules:
+          - ExpirationInDays: 1
+            Status: Enabled

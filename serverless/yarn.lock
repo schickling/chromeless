@@ -34,16 +34,6 @@
   version "0.0.34"
   resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.34.tgz#3c3483e606c041378438e951464f00e4e60706d6"
 
-"@types/node-fetch@^1.6.7":
-  version "1.6.7"
-  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-1.6.7.tgz#521078e8f0c69a158e5022005aca92d2620f6d57"
-  dependencies:
-    "@types/node" "*"
-
-"@types/node@*":
-  version "6.0.66"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.66.tgz#5680b74a6135d33d4c00447e7c3dc691a4601625"
-
 ably@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/ably/-/ably-1.0.5.tgz#7b65954ce2850fe2c52e2b207daa5bf07fb7444b"
@@ -494,21 +484,18 @@ chrome-remote-interface@^0.24.2:
     commander "2.1.x"
     ws "2.0.x"
 
-chromeless@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/chromeless/-/chromeless-0.2.4.tgz#16c0e457c303354e661d6dba6f4818c7310ece20"
+chromeless@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/chromeless/-/chromeless-0.2.6.tgz#ae7717c71d713d691ca51e36e9317a1afda3130a"
   dependencies:
     "@types/aws-sdk" "^2.7.0"
     "@types/bluebird" "^3.5.8"
     "@types/cuid" "^1.3.0"
-    "@types/node-fetch" "^1.6.7"
     ably "^1.0.5"
     aws-sdk "^2.88.0"
     bluebird "^3.5.0"
     chrome-remote-interface "^0.24.2"
     cuid "^1.3.8"
-    form-data "^2.1.4"
-    node-fetch "^1.7.1"
 
 ci-info@^1.0.0:
   version "1.0.0"
@@ -859,7 +846,7 @@ forever-agent@~0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/forever-agent/-/forever-agent-0.6.1.tgz#fbc71f0c41adeb37f96c577ad1ed42d8fdacca91"
 
-form-data@^2.1.1, form-data@^2.1.4, form-data@~2.1.1:
+form-data@^2.1.1, form-data@~2.1.1:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/form-data/-/form-data-2.1.4.tgz#33c183acf193276ecaa98143a69e94bfee1750d1"
   dependencies:
@@ -1483,7 +1470,7 @@ nigel@2.x.x:
     hoek "4.x.x"
     vise "2.x.x"
 
-node-fetch@^1.6.0, node-fetch@^1.7.1:
+node-fetch@^1.6.0:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.7.1.tgz#899cb3d0a3c92f952c47f1b876f4c8aeabd400d5"
   dependencies:

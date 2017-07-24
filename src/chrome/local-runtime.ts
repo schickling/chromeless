@@ -1,6 +1,7 @@
+import * as AWS from 'aws-sdk'
 import { Client, Command, ChromelessOptions, Cookie, CookieQuery } from '../types'
-import * as FormData from 'form-data'
-import fetch from 'node-fetch'
+import * as cuid from 'cuid'
+import * as fs from 'fs'
 import {
   nodeExists,
   wait,
@@ -168,24 +169,32 @@ export default class LocalRuntime {
     return getValue(this.client, selector)
   }
 
+  // Returns the S3 url or local file path
   async returnScreenshot(): Promise<string> {
     const data = await screenshot(this.client)
 
-    // const filePath = `/tmp/${cuid()}.png`
-    // fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
+    // check if S3 configured
+    if (process.env['CHROMELESS_S3_BUCKET_NAME'] && process.env['CHROMELESS_S3_BUCKET_URL']) {
+      const s3Path = `${cuid()}.png`
+      const s3 = new AWS.S3()
+      await s3.putObject({
+        Bucket: process.env['CHROMELESS_S3_BUCKET_NAME'],
+        Key: s3Path,
+        ContentType: 'image/png',
+        ACL: 'public-read',
+        Body: new Buffer(data, 'base64'),
+      }).promise()
 
-    const form = new FormData()
+      return `https://${process.env['CHROMELESS_S3_BUCKET_URL']}/${s3Path}`
+    }
 
-    form.append('data', new Buffer(data, 'base64'), {filename: 'screen.png'})
+    // write to `/tmp` instead
+    else {
+      const filePath = `/tmp/${cuid()}.png`
+      fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
 
-    const response = await fetch(`https://api.graph.cool/file/v1/cj5bdau9ocrca01138o62oe7b`, {
-      method: 'post',
-      body: form,
-    })
-
-    const result = await response.json()
-
-    return result.url
+      return filePath
+    }
   }
 
   private log(msg: string): void {
