@@ -9,11 +9,7 @@ export default async (event, context, callback): Promise<void> => {
     qos: 1,
   }
 
-  iotData.publish(params, function(err, data) {
-    if (err) {
-      console.log(`Unable to notify IoT of stories update: ${err}`)
-    } else {
-      console.log('Successfully notified IoT of stories update')
-    }
+  iotData.publish(params, function(error, data) {
+    callback(error, data)
   })
 }
