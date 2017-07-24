@@ -9,7 +9,5 @@ export default async (event, context, callback): Promise<void> => {
     qos: 1,
   }
 
-  iotData.publish(params, function(error, data) {
-    callback(error, data)
-  })
+  iotData.publish(params, callback)
 }
