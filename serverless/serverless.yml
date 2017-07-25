@@ -1,16 +1,19 @@
 service: chromeless-serverless
 
 custom:
+  stage: dev
+  debug: "*"
   bucket: chromeless-data
+  awsIotHost: ${env:AWS_IOT_HOST}
 
 provider:
   name: aws
   runtime: nodejs6.10
-  stage: dev
+  stage: ${self:custom.stage}
   region: eu-west-1
   environment:
-    DEBUG: "*"
-    AWS_IOT_HOST: ${env:AWS_IOT_HOST}
+    DEBUG: ${self:custom.debug}
+    AWS_IOT_HOST: ${self:custom.awsIotHost}
   iamRoleStatements:
     - Effect: "Allow"
       Action:
