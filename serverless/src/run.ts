@@ -4,7 +4,12 @@ import { createPresignedURL } from './utils'
 
 const debug = require('debug')('run handler')
 
-export default async ({ channelId, options }, context, callback): Promise<void> => {
+export default async (
+  { channelId, options },
+  context,
+  callback,
+  chromeInstance
+): Promise<void> => {
   debug('function invoked with event data: ', channelId, options)
 
   const chrome = new LocalChrome({
@@ -35,8 +40,9 @@ export default async ({ channelId, options }, context, callback): Promise<void> 
     client.subscribe(TOPIC_REQUEST, () => {
       debug(`Subscribed to ${TOPIC_REQUEST}`)
 
-      let timeout = setTimeout(() => {
+      let timeout = setTimeout(async () => {
         callback('Timed out after 30sec. No requests received.')
+        await chromeInstance.kill()
         process.exit()
       }, 30000) // give up after 30sec
 
@@ -68,8 +74,10 @@ export default async ({ channelId, options }, context, callback): Promise<void> 
           }
 
           clearTimeout(timeout)
-          timeout = setTimeout(() => {
+
+          timeout = setTimeout(async () => {
             callback('Timed out after 30sec. No further requests received.')
+            await chromeInstance.kill()
             process.exit()
           }, 30000) // give up after 30sec
         }
@@ -88,6 +96,7 @@ export default async ({ channelId, options }, context, callback): Promise<void> 
           await queue.end()
 
           chrome.close()
+          await chromeInstance.kill()
 
           callback(null, {
             statusCode: 204,
