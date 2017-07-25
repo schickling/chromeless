@@ -69,7 +69,9 @@ export default class RemoteChrome implements Chrome {
         }
 
         channel.on('connect', () => {
-          console.log('Connected to AWS IoT Broker')
+          if (this.options.debug) {
+            console.log('Connected to AWS IoT Broker')
+          }
 
           channel.subscribe(this.TOPIC_CONNECTED, { qos: 1 }, () => {
             channel.on('message', async topic => {
@@ -147,12 +149,12 @@ function getEndpoint(remoteOptions: RemoteOptions | boolean): RemoteOptions {
   }
 
   if (
-    process.env.CHROMELESS_ENDPOINT_URL &&
-    process.env.CHROMELESS_ENDPOINT_API_KEY
+    process.env['CHROMELESS_ENDPOINT_URL'] &&
+    process.env['CHROMELESS_ENDPOINT_API_KEY']
   ) {
     return {
-      endpointUrl: process.env.CHROMELESS_ENDPOINT_URL,
-      apiKey: process.env.CHROMELESS_ENDPOINT_API_KEY,
+      endpointUrl: process.env['CHROMELESS_ENDPOINT_URL'],
+      apiKey: process.env['CHROMELESS_ENDPOINT_API_KEY'],
     }
   }
 
