@@ -1,7 +1,7 @@
 service: chromeless-serverless
 
 custom:
-  bucket: chromeless-${env:AWS_ACCOUNT_ID}
+  bucket: chromeless-data
 
 provider:
   name: aws
@@ -106,7 +106,7 @@ resources:
     Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: chromeless-${env:AWS_ACCOUNT_ID}
+        BucketName: ${self:custom.bucket}
         LifecycleConfiguration:
           Rules:
           - ExpirationInDays: 1

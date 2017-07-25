@@ -2,19 +2,18 @@ import { LocalChrome, Queue, ChromelessOptions } from 'chromeless'
 import { connect as mqtt, MqttClient } from 'mqtt'
 import { createPresignedURL } from './utils'
 
-const debug = require('debug')('session handler')
+const debug = require('debug')('run handler')
 
-export async function run(event, context, callback): Promise<void> {
-  debug('function invoked with event data: ', event)
+export default async ({ channelId, options }, context, callback): Promise<void> => {
+  debug('function invoked with event data: ', channelId, options)
 
   const chrome = new LocalChrome({
-    // @TODO ...eventBody.options,
+    ...options,
     remote: false,
     cdp: { closeTab: true },
   })
+
   const queue = new Queue(chrome)
-  const targetId = await chrome.getTargetId()
-  const channelId = event.channelId
 
   const TOPIC_CONNECTED = `chrome/${channelId}/connected`
   const TOPIC_REQUEST = `chrome/${channelId}/request`
@@ -29,11 +28,13 @@ export async function run(event, context, callback): Promise<void> {
   }
 
   client.on('connect', () => {
-    debug('Connected to AWS IoT Broker')
+    debug('Connected to AWS IoT broker')
 
     client.publish(TOPIC_CONNECTED, JSON.stringify({}), { qos: 1 })
 
     client.subscribe(TOPIC_REQUEST, () => {
+      debug(`Subscribed to ${TOPIC_REQUEST}`)
+
       let timeout = setTimeout(() => {
         callback('Timed out after 30sec. No requests received.')
         process.exit()
@@ -42,9 +43,10 @@ export async function run(event, context, callback): Promise<void> {
       client.on('message', async (topic, buffer) => {
         if (TOPIC_REQUEST === topic) {
           const message = buffer.toString()
-          const command = JSON.parse(message)
 
-          debug('received-command', command)
+          debug(`Mesage ${TOPIC_REQUEST}`, message)
+
+          const command = JSON.parse(message)
 
           try {
             const result = await queue.process(command)
@@ -52,13 +54,15 @@ export async function run(event, context, callback): Promise<void> {
               value: result,
             })
 
-            debug('chrome-result', result)
+            debug('Chrome result', result)
 
             client.publish(TOPIC_RESPONSE, remoteResult)
           } catch (error) {
             const remoteResult = JSON.stringify({
               error: error.toString(),
             })
+
+            debug('Chrome error', error)
 
             client.publish(TOPIC_RESPONSE, remoteResult)
           }
@@ -76,6 +80,8 @@ export async function run(event, context, callback): Promise<void> {
       client.on('message', async (topic, buffer) => {
         if (TOPIC_END === topic) {
           const message = buffer.toString()
+
+          debug(`Mesage ${TOPIC_END}`, message)
 
           client.unsubscribe(TOPIC_END)
           client.end()

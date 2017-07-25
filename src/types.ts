@@ -11,13 +11,7 @@ export interface Client {
 }
 
 export interface RemoteOptions {
-  endpoint: string,
-  functionName?: string
-  region?: string
-  credentials?: {
-    accessKeyId: string
-    secretAccessKey: string
-  }
+  endpoint: string
 }
 
 export interface CDPOptions {
@@ -44,58 +38,73 @@ export interface Chrome {
   close(): Promise<void>
 }
 
-export type Command = {
-  type: 'goto'
-  url: string
-} | {
-  type: 'wait'
-  timeout?: number
-  selector?: string
-  fn?: string
-  args?: any[]
-} | {
-  type: 'click'
-  selector: string
-} | {
-  type: 'returnCode'
-  fn: string
-  args?: any[]
-} | {
-  type: 'returnInputValue'
-  selector: string
-} | {
-  type: 'returnExists'
-  selector: string
-} | {
-  type: 'returnValue'
-  selector: string
-} | {
-  type: 'returnScreenshot'
-} | {
-  type: 'scrollTo'
-  x: number
-  y: number
-} | {
-  type: 'press'
-  keyCode: number
-  count?: number
-  modifiers?: any
-} | {
-  type: 'type'
-  input: string
-  selector?: string
-} | {
-  type: 'cookiesClearAll'
-} | {
-  type: 'cookiesSet'
-  nameOrCookies: string | Cookie | Cookie[]
-  value?: string
-} | {
-  type: 'cookiesGetAll'
-} | {
-  type: 'cookiesGet'
-  nameOrQuery?: string | CookieQuery
-}
+export type Command =
+  | {
+      type: 'goto'
+      url: string
+    }
+  | {
+      type: 'wait'
+      timeout?: number
+      selector?: string
+      fn?: string
+      args?: any[]
+    }
+  | {
+      type: 'click'
+      selector: string
+    }
+  | {
+      type: 'returnCode'
+      fn: string
+      args?: any[]
+    }
+  | {
+      type: 'returnInputValue'
+      selector: string
+    }
+  | {
+      type: 'returnExists'
+      selector: string
+    }
+  | {
+      type: 'returnValue'
+      selector: string
+    }
+  | {
+      type: 'returnScreenshot'
+    }
+  | {
+      type: 'scrollTo'
+      x: number
+      y: number
+    }
+  | {
+      type: 'press'
+      keyCode: number
+      count?: number
+      modifiers?: any
+    }
+  | {
+      type: 'type'
+      input: string
+      selector?: string
+    }
+  | {
+      type: 'cookiesClearAll'
+    }
+  | {
+      type: 'cookiesSet'
+      nameOrCookies: string | Cookie | Cookie[]
+      value?: string
+    }
+  | {
+      type: 'cookiesGetAll'
+    }
+  | {
+      type: 'cookiesGet'
+      nameOrQuery?: string | CookieQuery
+    }
 
 export interface Cookie {
   url?: string

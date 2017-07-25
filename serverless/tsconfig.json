@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "rootDir": "./",
+    "rootDir": ".",
     "target": "es6",
     "sourceMap": true,
     "moduleResolution": "node"

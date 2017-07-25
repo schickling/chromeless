@@ -41,6 +41,7 @@ export default class RemoteChrome implements Chrome {
             json: true,
           }
         )
+
         this.channelId = channelId
         this.TOPIC_NEW_SESSION = 'chrome/new-session'
         this.TOPIC_CONNECTED = `chrome/${channelId}/connected`
@@ -59,15 +60,8 @@ export default class RemoteChrome implements Chrome {
 
         this.channel = channel
 
-        // @TODO just... remove this.
-        if (true || this.options.debug) {
+        if (this.options.debug) {
           channel.on('error', error => console.log('WebSocket error', error))
-          channel.on('packetsend', packet =>
-            console.log('WebSocket packet sent', packet)
-          )
-          channel.on('packetreceive', packet =>
-            console.log('WebSocket packet received', packet)
-          )
           channel.on('offline', () => console.log('WebSocket offline'))
         }
 
@@ -84,7 +78,7 @@ export default class RemoteChrome implements Chrome {
 
             channel.publish(
               this.TOPIC_NEW_SESSION,
-              JSON.stringify({ channelId }),
+              JSON.stringify({ channelId, options: this.options }),
               { qos: 1 }
             )
           })
