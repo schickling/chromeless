@@ -1602,9 +1602,9 @@ ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
 
-"msgpack-js@git://github.com/ably-forks/msgpack-js.git":
+"msgpack-js@git://github.com/ably-forks/msgpack-js":
   version "0.3.2-v5"
-  resolved "git://github.com/ably-forks/msgpack-js.git#dc33040d70fda1bc3d531d5293cf43394b2faf09"
+  resolved "git://github.com/ably-forks/msgpack-js#dc33040d70fda1bc3d531d5293cf43394b2faf09"
   dependencies:
     bops "~0.0.6"
 

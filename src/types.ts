@@ -12,6 +12,7 @@ export interface Client {
 
 export interface RemoteOptions {
   endpoint: string
+  apiKey?: string
 }
 
 export interface CDPOptions {

@@ -35,12 +35,15 @@ export default class RemoteChrome implements Chrome {
       }, 30000) // give up after 30sec
 
       try {
-        const { body: { url, channelId } } = await got(
-          getEndpoint(this.options.remote),
-          {
-            json: true,
-          }
-        )
+        const { endpoint, apiKey } = getEndpoint(this.options.remote)
+        const { body: { url, channelId } } = await got(endpoint, {
+          headers: apiKey
+            ? {
+                'x-api-key': apiKey,
+              }
+            : undefined,
+          json: true,
+        })
 
         this.channelId = channelId
         this.TOPIC_NEW_SESSION = 'chrome/new-session'
@@ -84,6 +87,7 @@ export default class RemoteChrome implements Chrome {
           })
         })
       } catch (error) {
+        console.error(error)
         reject(
           new Error('Unable to get presigned websocket URL and connect to it.')
         )
@@ -137,16 +141,22 @@ export default class RemoteChrome implements Chrome {
   }
 }
 
-function getEndpoint(remoteOptions: RemoteOptions | boolean): string {
+function getEndpoint(remoteOptions: RemoteOptions | boolean): RemoteOptions {
   if (typeof remoteOptions === 'object' && remoteOptions.endpoint) {
-    return remoteOptions.endpoint
+    return remoteOptions
   }
 
-  if (process.env['CHROMELESS_REMOTE_ENDPOINT']) {
-    return process.env['CHROMELESS_REMOTE_ENDPOINT']
+  if (
+    process.env.CHROMELESS_ENDPOINT_URL &&
+    process.env.CHROMELESS_ENDPOINT_KEY
+  ) {
+    return {
+      endpoint: process.env.CHROMELESS_ENDPOINT_URL,
+      apiKey: process.env.CHROMELESS_ENDPOINT_KEY,
+    }
   }
 
   throw new Error(
-    'No Chromeless remote endpoint provided. Either set as `remote` option in constructor or set as `CHROMELESS_REMOTE_ENDPOINT` env variable.'
+    'No Chromeless remote endpoint & API key provided. Either set as "remote" option in constructor or set as "CHROMELESS_ENDPOINT_URL" and "CHROMELESS_ENDPOINT_KEY" env variables.'
   )
 }

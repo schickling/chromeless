@@ -13,6 +13,8 @@ provider:
   environment:
     DEBUG: ${self:custom.debug}
     AWS_IOT_HOST: ${self:custom.awsIotHost}
+  apiKeys:
+    - ${self:custom.stage}-chromeless-session-key
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -46,7 +48,6 @@ package:
     # - ./**
     - node_modules/typescript/**
     - node_modules/serverless-**/**
-    - node_modules/prettier**/**
     - node_modules/lighthouse**/**
     - node_modules/devtools-timeline-model/**
     - node_modules/chrome-devtools-frontend/**
@@ -62,7 +63,6 @@ package:
   excludeDevDependencies: false
 
 functions:
-
   run:
     memorySize: 1536
     timeout: 300
@@ -82,7 +82,6 @@ functions:
         Fn::GetAtt:
           - Bucket
           - DomainName
-
   version:
     memorySize: 128
     handler: src/version.default
@@ -90,19 +89,21 @@ functions:
     - http:
         path: /version
         method: get
-
   session:
-    memorySize: 1536
-    timeout: 300
+    memorySize: 1536 # @TODO(marco): decrease to 128 when chrome-plugin supports per-function wrapper
+    timeout: 30
     handler: src/session.default
     events:
-      - http: OPTIONS /session
+      - http:
+          method: OPTIONS
+          path: /session
+          private: true
       - http:
           method: GET
           path: /session
-
+          private: true
   disconnect:
-    memorySize: 128
+    memorySize: 1536 # @TODO(marco): decrease to 128 when chrome-plugin supports per-function wrapper
     handler: src/disconnect.default
     timeout: 30
     events:
