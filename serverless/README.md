@@ -1,6 +1,6 @@
 # RemoteChrome Chromeless Serverless service
 
-A Serverless AWS Lambda service for running Chrome remotely with Chromeless.
+A [Serverless](https://serverless.com/) AWS Lambda service for running and interacting with Chrome remotely with Chromeless.
 
 
 ## Contents
