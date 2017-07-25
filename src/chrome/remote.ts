@@ -35,8 +35,8 @@ export default class RemoteChrome implements Chrome {
       }, 30000) // give up after 30sec
 
       try {
-        const { endpoint, apiKey } = getEndpoint(this.options.remote)
-        const { body: { url, channelId } } = await got(endpoint, {
+        const { endpointUrl, apiKey } = getEndpoint(this.options.remote)
+        const { body: { url, channelId } } = await got(endpointUrl, {
           headers: apiKey
             ? {
                 'x-api-key': apiKey,
@@ -142,21 +142,21 @@ export default class RemoteChrome implements Chrome {
 }
 
 function getEndpoint(remoteOptions: RemoteOptions | boolean): RemoteOptions {
-  if (typeof remoteOptions === 'object' && remoteOptions.endpoint) {
+  if (typeof remoteOptions === 'object' && remoteOptions.endpointUrl) {
     return remoteOptions
   }
 
   if (
     process.env.CHROMELESS_ENDPOINT_URL &&
-    process.env.CHROMELESS_ENDPOINT_KEY
+    process.env.CHROMELESS_ENDPOINT_API_KEY
   ) {
     return {
-      endpoint: process.env.CHROMELESS_ENDPOINT_URL,
-      apiKey: process.env.CHROMELESS_ENDPOINT_KEY,
+      endpointUrl: process.env.CHROMELESS_ENDPOINT_URL,
+      apiKey: process.env.CHROMELESS_ENDPOINT_API_KEY,
     }
   }
 
   throw new Error(
-    'No Chromeless remote endpoint & API key provided. Either set as "remote" option in constructor or set as "CHROMELESS_ENDPOINT_URL" and "CHROMELESS_ENDPOINT_KEY" env variables.'
+    'No Chromeless remote endpoint & API key provided. Either set as "remote" option in constructor or set as "CHROMELESS_ENDPOINT_URL" and "CHROMELESS_ENDPOINT_API_KEY" env variables.'
   )
 }

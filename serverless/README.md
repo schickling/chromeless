@@ -35,7 +35,7 @@ custom:
 Once configured, deploying the service can be done with:
 
 ```bash
-yarn deploy
+npm deploy
 ```
 
 Once completed, some service information will be logged. Make note of the `session` GET endpoint and the value of the `dev-chromeless-session-key` API key. You'll need them when using RemoteChrome.
@@ -65,7 +65,7 @@ Interacting with an instance of RemoteChrome can be done by using the `remote` o
 
 ```bash
 export CHROMELESS_ENDPOINT_URL=https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session
-export CHROMELESS_ENDPOINT_KEY=your-api-key-here
+export CHROMELESS_ENDPOINT_API_KEY=your-api-key-here
 ```
 
 Or
@@ -73,7 +73,7 @@ Or
 ```js
 const chromeless = new Chromeless({
   remote: {
-    endpoint: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session'
+    endpointUrl: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session'
     apiKey: 'your-api-key-here'
   },
 })
@@ -88,7 +88,7 @@ const Chromeless = require('chromeless').default
 async function run() {
   const chromeless = new Chromeless({
     remote: {
-      endpoint: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session'
+      endpointUrl: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session'
       apiKey: 'your-api-key-here'
     },
   })

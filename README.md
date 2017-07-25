@@ -19,7 +19,7 @@ The project contains a [Serverless](https://serverless.com/) service for running
 ```js
 const chromeless = new Chromeless({
   remote: {
-    endpoint: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session'
+    endpointUrl: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session'
     apiKey: 'your-api-key-here'
   },
 })

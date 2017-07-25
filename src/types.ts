@@ -11,7 +11,7 @@ export interface Client {
 }
 
 export interface RemoteOptions {
-  endpoint: string
+  endpointUrl: string
   apiKey?: string
 }
 
