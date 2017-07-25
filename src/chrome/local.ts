@@ -24,7 +24,7 @@ export default class LocalChrome implements Chrome {
     const client = await CDP({ target })
 
     this.targetId = target.id
-    
+
     await this.setViewport(client)
 
     const runtime = new LocalRuntime(client, this.options)

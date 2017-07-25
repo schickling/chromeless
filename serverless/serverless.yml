@@ -1,5 +1,8 @@
 service: chromeless-serverless
 
+custom:
+  bucket: chromeless-${env:AWS_ACCOUNT_ID}
+
 provider:
   name: aws
   runtime: nodejs6.10
@@ -18,6 +21,9 @@ provider:
         - "iot:GetThingShadow"
         - "iot:UpdateThingShadow"
       Resource: "*"
+    - Effect: "Allow"
+      Action: ["s3:*"]
+      Resource: ["arn:aws:s3:::${self:custom.bucket}/*"]
 
 plugins:
   - serverless-plugin-typescript
@@ -49,10 +55,13 @@ functions:
   run:
     memorySize: 1536
     timeout: 300
-    handler: src/run.run
+    handler: src/run.default
     events:
       - iot:
           sql: "SELECT * FROM 'chrome/new-session'"
+    environment:
+      CHROMELESS_S3_BUCKET_NAME: ${self:custom.bucket}
+      CHROMELESS_S3_BUCKET_URL: { "Fn::GetAtt" : [ "Bucket", "DomainName" ] }
 
   version:
     memorySize: 128
@@ -65,7 +74,7 @@ functions:
   session:
     memorySize: 1536
     timeout: 300
-    handler: src/session.run
+    handler: src/session.default
     events:
       - http: OPTIONS /session
       - http:
@@ -94,3 +103,11 @@ resources:
     DisconnectLogGroup:
       Properties:
         RetentionInDays: 7
+    Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: chromeless-${env:AWS_ACCOUNT_ID}
+        LifecycleConfiguration:
+          Rules:
+          - ExpirationInDays: 1
+            Status: Enabled

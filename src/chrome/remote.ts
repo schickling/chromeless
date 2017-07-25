@@ -1,5 +1,4 @@
 import { Chrome, ChromelessOptions, Command, RemoteOptions } from '../types'
-import { Lambda, Credentials } from 'aws-sdk'
 import { connect as mqtt, MqttClient } from 'mqtt'
 import * as cuid from 'cuid'
 import * as got from 'got'
@@ -23,41 +22,8 @@ export default class RemoteChrome implements Chrome {
 
   constructor(options: ChromelessOptions) {
     this.options = options
-
-    //this.channelTopic = cuid()
-    //this.lambdaPromise = this.initLambda(options.remote)
     this.connectionPromise = this.initConnection()
   }
-
-  /*
-  private async initLambda(remoteOptions: RemoteOptions | boolean): Promise<void> {
-    const Payload = JSON.stringify({
-      body: JSON.stringify({
-        options: this.options,
-        pusherChannelName: this.channelName,
-      })
-    })
-
-    const lambdaOptions: Lambda.Types.ClientConfiguration = {}
-
-    if (typeof remoteOptions === 'object') {
-      if (remoteOptions.credentials) {
-        lambdaOptions.credentials = new Credentials(remoteOptions.credentials.accessKeyId, remoteOptions.credentials.secretAccessKey)
-      }
-
-      if (remoteOptions.region) {
-        lambdaOptions.region = remoteOptions.region
-      }
-    }
-
-    const lambda = new Lambda(lambdaOptions)
-
-    await lambda.invoke({
-      FunctionName: getFunctionName(remoteOptions),
-      Payload,
-    }).promise()
-  }
-  */
 
   private async initConnection(): Promise<void> {
     await new Promise(async (resolve, reject) => {
@@ -171,7 +137,7 @@ export default class RemoteChrome implements Chrome {
   }
 
   async close(): Promise<void> {
-    this.channel.publish(this.TOPIC_END, JSON.stringify({end: true}))
+    this.channel.publish(this.TOPIC_END, JSON.stringify({ end: true }))
     this.channel.end()
 
     const timeout = setTimeout(() => {

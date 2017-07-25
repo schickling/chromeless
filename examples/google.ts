@@ -11,7 +11,7 @@ async function run() {
     .screenshot()
     .scrollTo(0, 1000)
 
-  console.log(screenshot)
+  console.log(screenshot) // prints local file path or S3 url
 
   await chromeless.end()
 }
