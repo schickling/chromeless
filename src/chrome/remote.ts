@@ -12,7 +12,6 @@ export default class RemoteChrome implements Chrome {
   private options: ChromelessOptions
   private channelId: string
   private channel: MqttClient
-  private lambdaPromise: Promise<void>
   private connectionPromise: Promise<void>
   private TOPIC_NEW_SESSION: string
   private TOPIC_CONNECTED: string
@@ -96,12 +95,6 @@ export default class RemoteChrome implements Chrome {
         )
       }
     })
-  }
-
-  async getTargetId(): Promise<string> {
-    await this.initConnection
-
-    return this.channelId
   }
 
   async process<T extends any>(command: Command): Promise<T> {

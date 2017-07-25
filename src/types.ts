@@ -40,7 +40,6 @@ export interface ChromelessOptions {
 }
 
 export interface Chrome {
-  getTargetId(): Promise<string>
   process<T extends any>(command: Command): Promise<T>
   close(): Promise<void>
 }

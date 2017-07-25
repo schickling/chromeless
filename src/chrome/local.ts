@@ -11,7 +11,6 @@ interface RuntimeClient {
 export default class LocalChrome implements Chrome {
   private options: ChromelessOptions
   private runtimeClientPromise: Promise<RuntimeClient>
-  private targetId: string
 
   constructor(options: ChromelessOptions = {}) {
     this.options = options
@@ -22,8 +21,6 @@ export default class LocalChrome implements Chrome {
   private async initRuntimeClient(): Promise<RuntimeClient> {
     const target = await CDP.New()
     const client = await CDP({ target })
-
-    this.targetId = target.id
 
     await this.setViewport(client)
 
@@ -68,12 +65,6 @@ export default class LocalChrome implements Chrome {
       width: config.width,
       height: config.height,
     })
-  }
-
-  async getTargetId(): Promise<string> {
-    await this.runtimeClientPromise
-
-    return this.targetId
   }
 
   async process<T extends any>(command: Command): Promise<T> {
