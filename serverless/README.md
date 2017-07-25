@@ -9,10 +9,11 @@ A Serverless AWS Lambda service for running Chrome remotely with Chromeless.
 
 ## Installation
 
-Clone this repository and enter the `serverless` directory, or install directly with Serverless:
+Clone this repository and enter the `serverless` directory:
 
 ```bash
-serverless install --url https://github.com/graphcool/chromeless/tree/master/serverless chromeless-remote
+git clone https://github.com/graphcool/chromeless.git
+cd chromeless/serverless
 ```
 
 Next, modify the `custom` section in `serverless.yml`.
