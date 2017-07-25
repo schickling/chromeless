@@ -1,73 +1,100 @@
 import { LocalChrome, Queue, ChromelessOptions } from 'chromeless'
-import { Realtime } from 'ably'
+import { connect as mqtt, MqttClient } from 'mqtt'
+import { createPresignedURL } from './utils'
 
-const debug = require('debug')('serverless')
+const debug = require('debug')('run handler')
 
-export interface EventBody {
-  options: ChromelessOptions
-  pusherChannelName: string
-}
-
-export default async (event, context, callback): Promise<void> => {
-
-  let eventBody: EventBody = {options: {}, pusherChannelName: ''}
-
-  try {
-    eventBody = JSON.parse(event.body)
-  } catch (error) {
-    return callback(null, {
-      statusCode: 400,
-      eventBody: JSON.stringify({
-        error: 'Malformed request eventBody. Expected JSON.',
-      }),
-    })
-  }
+export default async ({ channelId, options }, context, callback): Promise<void> => {
+  debug('function invoked with event data: ', channelId, options)
 
   const chrome = new LocalChrome({
-    ...eventBody.options,
+    ...options,
     remote: false,
+    cdp: { closeTab: true },
   })
 
   const queue = new Queue(chrome)
-  const ably = new Realtime('eiPuOw.DUAicQ:yq9jJ5164vdtBFIA')
-  const channel = ably.channels.get(eventBody.pusherChannelName)
 
-  debug('channel', channel.name)
+  const TOPIC_CONNECTED = `chrome/${channelId}/connected`
+  const TOPIC_REQUEST = `chrome/${channelId}/request`
+  const TOPIC_RESPONSE = `chrome/${channelId}/response`
+  const TOPIC_END = `chrome/${channelId}/end`
 
-  channel.publish('connected', '')
+  const client = mqtt(createPresignedURL())
 
-  debug('confirmed-connection')
+  if (process.env.DEBUG) {
+    client.on('error', error => debug('WebSocket error', error))
+    client.on('offline', () => debug('WebSocket offline'))
+  }
 
-  channel.subscribe('request', async msg => {
-    const command = JSON.parse(msg.data)
+  client.on('connect', () => {
+    debug('Connected to AWS IoT broker')
 
-    debug('received-command', command)
+    client.publish(TOPIC_CONNECTED, JSON.stringify({}), { qos: 1 })
 
-    try {
-      const result = await queue.process(command)
-      const remoteResult = JSON.stringify({
-        value: result,
+    client.subscribe(TOPIC_REQUEST, () => {
+      debug(`Subscribed to ${TOPIC_REQUEST}`)
+
+      let timeout = setTimeout(() => {
+        callback('Timed out after 30sec. No requests received.')
+        process.exit()
+      }, 30000) // give up after 30sec
+
+      client.on('message', async (topic, buffer) => {
+        if (TOPIC_REQUEST === topic) {
+          const message = buffer.toString()
+
+          debug(`Mesage ${TOPIC_REQUEST}`, message)
+
+          const command = JSON.parse(message)
+
+          try {
+            const result = await queue.process(command)
+            const remoteResult = JSON.stringify({
+              value: result,
+            })
+
+            debug('Chrome result', result)
+
+            client.publish(TOPIC_RESPONSE, remoteResult)
+          } catch (error) {
+            const remoteResult = JSON.stringify({
+              error: error.toString(),
+            })
+
+            debug('Chrome error', error)
+
+            client.publish(TOPIC_RESPONSE, remoteResult)
+          }
+
+          clearTimeout(timeout)
+          timeout = setTimeout(() => {
+            callback('Timed out after 30sec. No further requests received.')
+            process.exit()
+          }, 30000) // give up after 30sec
+        }
       })
+    })
 
-      debug('chrome-result', result)
+    client.subscribe(TOPIC_END, async () => {
+      client.on('message', async (topic, buffer) => {
+        if (TOPIC_END === topic) {
+          const message = buffer.toString()
 
-      channel.publish('response', remoteResult)
-    } catch (error) {
-      const remoteResult = JSON.stringify({
-        error: error.toString(),
+          debug(`Mesage ${TOPIC_END}`, message)
+
+          client.unsubscribe(TOPIC_END)
+          client.end()
+          await queue.end()
+
+          chrome.close()
+
+          callback(null, {
+            statusCode: 204,
+            channelId,
+          })
+        }
       })
-
-      channel.publish('response', remoteResult)
-    }
-  })
-
-  channel.subscribe('end', async () => {
-    channel.unsubscribe('end')
-    ably.close()
-    await queue.end()
-
-    callback(null, {
-      statusCode: 204,
     })
   })
 }

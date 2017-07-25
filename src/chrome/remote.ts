@@ -1,7 +1,7 @@
 import { Chrome, ChromelessOptions, Command, RemoteOptions } from '../types'
-import { Lambda, Credentials } from 'aws-sdk'
-import { Realtime, ablyLib } from 'ably'
+import { connect as mqtt, MqttClient } from 'mqtt'
 import * as cuid from 'cuid'
+import * as got from 'got'
 
 interface RemoteResult {
   value?: any
@@ -9,67 +9,89 @@ interface RemoteResult {
 }
 
 export default class RemoteChrome implements Chrome {
-
   private options: ChromelessOptions
-  private channelName: string
-  private channel: ablyLib.RealtimeChannel
-  private ably: Realtime
-  private lambdaPromise: Promise<void>
+  private channelId: string
+  private channel: MqttClient
   private connectionPromise: Promise<void>
+  private TOPIC_NEW_SESSION: string
+  private TOPIC_CONNECTED: string
+  private TOPIC_REQUEST: string
+  private TOPIC_RESPONSE: string
+  private TOPIC_END: string
 
   constructor(options: ChromelessOptions) {
     this.options = options
-
-    this.channelName = cuid()
-    this.ably = new Realtime('eiPuOw.DUAicQ:yq9jJ5164vdtBFIA')
-    this.channel = this.ably.channels.get(this.channelName)
-
-    this.lambdaPromise = this.initLambda(options.remote)
     this.connectionPromise = this.initConnection()
   }
 
-  private async initLambda(remoteOptions: RemoteOptions | boolean): Promise<void> {
-    const Payload = JSON.stringify({
-      body: JSON.stringify({
-        options: this.options,
-        pusherChannelName: this.channelName,
-      })
-    })
-
-    const lambdaOptions: Lambda.Types.ClientConfiguration = {}
-
-    if (typeof remoteOptions === 'object') {
-      if (remoteOptions.credentials) {
-        lambdaOptions.credentials = new Credentials(remoteOptions.credentials.accessKeyId, remoteOptions.credentials.secretAccessKey)
-      }
-
-      if (remoteOptions.region) {
-        lambdaOptions.region = remoteOptions.region
-      }
-    }
-
-    const lambda = new Lambda(lambdaOptions)
-
-    await lambda.invoke({
-      FunctionName: getFunctionName(remoteOptions),
-      Payload,
-    }).promise()
-  }
-
   private async initConnection(): Promise<void> {
-    await new Promise((resolve, reject) => {
-      const timeout = setTimeout(
-        () => {
-          reject(new Error('Timed out after 30sec. Connection couldn\'t be established.'))
-        },
-        30000
-      ) // give up after 10sec
+    await new Promise(async (resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(
+          new Error(
+            "Timed out after 30sec. Connection couldn't be established."
+          )
+        )
+      }, 30000) // give up after 30sec
 
-      this.channel.subscribe('connected', () => {
-        clearTimeout(timeout)
-        this.channel.unsubscribe('connected')
-        resolve()
-      })
+      try {
+        const { endpoint, apiKey } = getEndpoint(this.options.remote)
+        const { body: { url, channelId } } = await got(endpoint, {
+          headers: apiKey
+            ? {
+                'x-api-key': apiKey,
+              }
+            : undefined,
+          json: true,
+        })
+
+        this.channelId = channelId
+        this.TOPIC_NEW_SESSION = 'chrome/new-session'
+        this.TOPIC_CONNECTED = `chrome/${channelId}/connected`
+        this.TOPIC_REQUEST = `chrome/${channelId}/request`
+        this.TOPIC_RESPONSE = `chrome/${channelId}/response`
+        this.TOPIC_END = `chrome/${channelId}/end`
+
+        const channel = mqtt(url, {
+          will: {
+            topic: 'chrome/last-will',
+            payload: channelId,
+            qos: 1,
+            retain: false,
+          },
+        })
+
+        this.channel = channel
+
+        if (this.options.debug) {
+          channel.on('error', error => console.log('WebSocket error', error))
+          channel.on('offline', () => console.log('WebSocket offline'))
+        }
+
+        channel.on('connect', () => {
+          console.log('Connected to AWS IoT Broker')
+
+          channel.subscribe(this.TOPIC_CONNECTED, { qos: 1 }, () => {
+            channel.on('message', async topic => {
+              if (this.TOPIC_CONNECTED === topic) {
+                clearTimeout(timeout)
+                resolve()
+              }
+            })
+
+            channel.publish(
+              this.TOPIC_NEW_SESSION,
+              JSON.stringify({ channelId, options: this.options }),
+              { qos: 1 }
+            )
+          })
+        })
+      } catch (error) {
+        console.error(error)
+        reject(
+          new Error('Unable to get presigned websocket URL and connect to it.')
+        )
+      }
     })
   }
 
@@ -82,52 +104,59 @@ export default class RemoteChrome implements Chrome {
     }
 
     const promise = new Promise<T>((resolve, reject) => {
-      this.channel.subscribe('response', data => {
-        this.channel.unsubscribe('response')
+      this.channel.subscribe(this.TOPIC_RESPONSE, () => {
+        this.channel.on('message', (topic, buffer) => {
+          if (this.TOPIC_RESPONSE === topic) {
+            const message = buffer.toString()
+            const result = JSON.parse(message) as RemoteResult
 
-        const result = JSON.parse(data.data) as RemoteResult
-
-        if (result.error) {
-          reject(result.error)
-        } else if (result.value) {
-          resolve(result.value)
-        } else {
-          resolve()
-        }
+            if (result.error) {
+              reject(result.error)
+            } else if (result.value) {
+              resolve(result.value)
+            } else {
+              resolve()
+            }
+          }
+        })
       })
     })
 
-    this.channel.publish('request', JSON.stringify(command))
+    this.channel.publish(this.TOPIC_REQUEST, JSON.stringify(command))
 
     return promise
   }
 
   async close(): Promise<void> {
-    this.channel.publish('end', '')
-    this.ably.close()
+    this.channel.publish(this.TOPIC_END, JSON.stringify({ end: true }))
+    this.channel.end()
 
-    const timeout = setTimeout(
-      () => {
-        throw new Error('End timed out after 10 seconds without response from Lambda')
-      },
-      30000
-    )
-
-    await this.lambdaPromise
+    const timeout = setTimeout(() => {
+      throw new Error(
+        'End timed out after 30 seconds without response from Lambda'
+      )
+    }, 30000)
 
     clearTimeout(timeout)
   }
-
 }
 
-function getFunctionName(remoteOptions: RemoteOptions | boolean): string {
-  if (typeof remoteOptions === 'object' && remoteOptions.functionName) {
-    return remoteOptions.functionName
+function getEndpoint(remoteOptions: RemoteOptions | boolean): RemoteOptions {
+  if (typeof remoteOptions === 'object' && remoteOptions.endpoint) {
+    return remoteOptions
   }
 
-  if (process.env['CHROMELESS_LAMBDA_FUNCTION_NAME']) {
-    return process.env['CHROMELESS_LAMBDA_FUNCTION_NAME']
+  if (
+    process.env.CHROMELESS_ENDPOINT_URL &&
+    process.env.CHROMELESS_ENDPOINT_KEY
+  ) {
+    return {
+      endpoint: process.env.CHROMELESS_ENDPOINT_URL,
+      apiKey: process.env.CHROMELESS_ENDPOINT_KEY,
+    }
   }
 
-  throw new Error('No AWS Lambda function name provided. Either set as `remote` option in constructor or set as `CHROMELESS_LAMBDA_FUNCTION_NAME` env variable.')
+  throw new Error(
+    'No Chromeless remote endpoint & API key provided. Either set as "remote" option in constructor or set as "CHROMELESS_ENDPOINT_URL" and "CHROMELESS_ENDPOINT_KEY" env variables.'
+  )
 }

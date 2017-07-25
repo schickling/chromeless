@@ -1,47 +1,87 @@
 service: chromeless-serverless
 
 custom:
-  bucket: chromeless-${env:AWS_ACCOUNT_ID}
+  stage: dev
+  debug: "*"
+  awsIotHost: ${env:AWS_IOT_HOST}
 
 provider:
   name: aws
   runtime: nodejs6.10
-  stage: dev
+  stage: ${self:custom.stage}
   region: eu-west-1
-  deploymentBucket: serverless-deployments-${env:AWS_REGION}-${env:AWS_ACCOUNT_ID}
+  environment:
+    DEBUG: ${self:custom.debug}
+    AWS_IOT_HOST: ${self:custom.awsIotHost}
+  apiKeys:
+    - ${self:custom.stage}-chromeless-session-key
   iamRoleStatements:
     - Effect: "Allow"
-      Action: ["s3:*"]
-      Resource: ["arn:aws:s3:::${self:custom.bucket}/*"]
+      Action:
+        - "iot:Connect"
+        - "iot:Publish"
+        - "iot:Subscribe"
+        - "iot:Receive"
+        - "iot:GetThingShadow"
+        - "iot:UpdateThingShadow"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - s3:*
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:s3:::"
+            - Ref: AWS::AccountId
+            - "-"
+            - Ref: AWS::Region
+            - -chromeless
+            - /*
 
 plugins:
   - serverless-plugin-typescript
   - serverless-plugin-chrome
+  - serverless-offline
 
 package:
   exclude:
     # - ./**
     - node_modules/typescript/**
     - node_modules/serverless-**/**
-    - node_modules/prettier**/**
     - node_modules/lighthouse**/**
     - node_modules/devtools-timeline-model/**
     - node_modules/chrome-devtools-frontend/**
     - node_modules/uglify-js/**
+    # - node_modules/chromeless/**
+    # - '!node_modules/chromeless/dist/**'
+    # - '!node_modules/chromeless/package.json'
   include:
     - ./src/**.js
+    # - node_modules/chromeless/dist/**
+    # - node_modules/chromeless/package.json
+
   excludeDevDependencies: false
 
 functions:
-
   run:
     memorySize: 1536
     timeout: 300
     handler: src/run.default
+    events:
+      - iot:
+          sql: "SELECT * FROM 'chrome/new-session'"
     environment:
-      CHROMELESS_S3_BUCKET_NAME: ${self:custom.bucket}
-      CHROMELESS_S3_BUCKET_URL: { "Fn::GetAtt" : [ "Bucket", "DomainName" ] }
-
+      CHROMELESS_S3_BUCKET_NAME:
+        Fn::Join:
+          - ""
+          - - Ref: AWS::AccountId
+            - "-"
+            - Ref: AWS::Region
+            - -chromeless
+      CHROMELESS_S3_BUCKET_URL:
+        Fn::GetAtt:
+          - Bucket
+          - DomainName
   version:
     memorySize: 128
     handler: src/version.default
@@ -49,21 +89,51 @@ functions:
     - http:
         path: /version
         method: get
+  session:
+    memorySize: 1536 # @TODO(marco): decrease to 128 when chrome-plugin supports per-function wrapper
+    timeout: 30
+    handler: src/session.default
+    events:
+      - http:
+          method: OPTIONS
+          path: /session
+          private: true
+      - http:
+          method: GET
+          path: /session
+          private: true
+  disconnect:
+    memorySize: 1536 # @TODO(marco): decrease to 128 when chrome-plugin supports per-function wrapper
+    handler: src/disconnect.default
+    timeout: 30
+    events:
+      - iot:
+          sql: "SELECT * FROM 'chrome/last-will'"
 
 resources:
   Resources:
-
     RunLogGroup:
       Properties:
         RetentionInDays: 7
     VersionLogGroup:
       Properties:
         RetentionInDays: 7
-
+    SessionLogGroup:
+      Properties:
+        RetentionInDays: 7
+    DisconnectLogGroup:
+      Properties:
+        RetentionInDays: 7
     Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: chromeless-${env:AWS_ACCOUNT_ID}
+        BucketName:
+          Fn::Join:
+            - ""
+            - - Ref: AWS::AccountId
+              - "-"
+              - Ref: AWS::Region
+              - -chromeless
         LifecycleConfiguration:
           Rules:
           - ExpirationInDays: 1
