@@ -3,7 +3,6 @@ service: chromeless-serverless
 custom:
   stage: dev
   debug: "*"
-  bucket: chromeless-data
   awsIotHost: ${env:AWS_IOT_HOST}
 
 provider:
@@ -25,8 +24,17 @@ provider:
         - "iot:UpdateThingShadow"
       Resource: "*"
     - Effect: "Allow"
-      Action: ["s3:*"]
-      Resource: ["arn:aws:s3:::${self:custom.bucket}/*"]
+      Action:
+        - s3:*
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:s3:::"
+            - Ref: AWS::AccountId
+            - "-"
+            - Ref: AWS::Region
+            - -chromeless
+            - /*
 
 plugins:
   - serverless-plugin-typescript
@@ -63,8 +71,17 @@ functions:
       - iot:
           sql: "SELECT * FROM 'chrome/new-session'"
     environment:
-      CHROMELESS_S3_BUCKET_NAME: ${self:custom.bucket}
-      CHROMELESS_S3_BUCKET_URL: { "Fn::GetAtt" : [ "Bucket", "DomainName" ] }
+      CHROMELESS_S3_BUCKET_NAME:
+        Fn::Join:
+          - ""
+          - - Ref: AWS::AccountId
+            - "-"
+            - Ref: AWS::Region
+            - -chromeless
+      CHROMELESS_S3_BUCKET_URL:
+        Fn::GetAtt:
+          - Bucket
+          - DomainName
 
   version:
     memorySize: 128
@@ -109,7 +126,13 @@ resources:
     Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.bucket}
+        BucketName:
+          Fn::Join:
+            - ""
+            - - Ref: AWS::AccountId
+              - "-"
+              - Ref: AWS::Region
+              - -chromeless
         LifecycleConfiguration:
           Rules:
           - ExpirationInDays: 1

@@ -1,5 +1,7 @@
 {
+  "name": "chromeless-remotechrome-servie",
   "version": "0.1.0",
+  "license": "MIT",
   "scripts": {
     "deploy": "sls deploy"
   },

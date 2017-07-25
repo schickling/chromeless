@@ -17,8 +17,7 @@ serverless install --url https://github.com/graphcool/chromeless/tree/master/ser
 
 Next, modify the `custom` section in `serverless.yml`.
 
-- Set `bucket` to a unique bucket name where Chromeless should store screenshots or PDFs
-- Set `awsIotHost` to the your AWS IoT Custom Endpoint for your AWS region. You can find this with the AWS CLI with `aws iot describe-endpoint` or by navigating to the AWS IoT Console and going to Settings.
+You must set `awsIotHost` to the your AWS IoT Custom Endpoint for your AWS region. You can find this with the AWS CLI with `aws iot describe-endpoint` or by navigating to the AWS IoT Console and going to Settings.
 
 For example:
 
@@ -28,7 +27,6 @@ For example:
 custom:
   stage: dev
   debug: "*" # false if you don't want noise in CloudWatch
-  bucket: chromeless-data-change-me
   awsIotHost: ${env:AWS_IOT_HOST}
 
 ...
@@ -96,7 +94,6 @@ async function run() {
     .press(13)
     .wait('#resultStats')
     .screenshot()
-    .scrollTo(0, 1000)
 
   console.log(screenshot) // prints local file path or S3 url
 
