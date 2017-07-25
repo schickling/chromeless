@@ -4,8 +4,8 @@ A Serverless AWS Lambda service for running Chrome remotely with Chromeless.
 
 
 ## Contents
-1. [Setup](#Setup)
-1. [RemoteChrome](#RemoteChrome)
+1. [Setup](#setup)
+1. [RemoteChrome](#remotechrome)
 
 ## Installation
 
@@ -87,8 +87,10 @@ const Chromeless = require('chromeless').default
 
 async function run() {
   const chromeless = new Chromeless({
-    remote: { endpoint: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session' },
-    debug: true,
+    remote: {
+      endpoint: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session'
+      apiKey: 'your-api-key-here'
+    },
   })
 
   const screenshot = await chromeless

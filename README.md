@@ -11,21 +11,17 @@ npm install chromeless
 
 ### Remote Setup
 
-1. Deploy Chrome to AWS Lambda via [Serverless](https://serverless.com/)
+The project contains a [Serverless](https://serverless.com/) service for running and driving Chrome remotely on AWS Lambda.
 
-```sh
-git clone git@github.com:graphcool/chromeless.git
-cd chromeless/serverless
-serverless deploy
-```
-
-2. Copy the deployed function name (something like `chromeless-serverless-dev-run`) and provide it for the local `Chromeless` client either by setting the `CHROMELESS_LAMBDA_FUNCTION_NAME` environment variable or as constructor argument:
+1. Deploy The RemoteChrome service to AWS Lambda. More details [here](https://github.com/graphcool/chromeless/tree/master/serverless#setup)
+2. Follow the setup instructions [here](https://github.com/graphcool/chromeless/tree/master/serverless#remotechrome).
 
 ```js
 const chromeless = new Chromeless({
   remote: {
-    functionName: 'chromeless-serverless-dev-run',
-  }
+    endpoint: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session'
+    apiKey: 'your-api-key-here'
+  },
 })
 ```
 
@@ -71,7 +67,7 @@ run().catch(console.error.bind(console))
 
 ## Contributors
 
-A big thank you to all contributors and supporters of this repository 💚 
+A big thank you to all contributors and supporters of this repository 💚
 
 <a href="https://github.com/adieuadieu/" target="_blank">
   <img src="https://github.com/adieuadieu.png?size=64" width="64" height="64" alt="adieuadieu">
