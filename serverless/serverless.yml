@@ -4,6 +4,10 @@ custom:
   stage: dev
   debug: "*"
   awsIotHost: ${env:AWS_IOT_HOST}
+  chrome:
+    functions:
+      - run
+      - version
 
 provider:
   name: aws
@@ -90,7 +94,7 @@ functions:
         path: /version
         method: get
   session:
-    memorySize: 1536 # @TODO(marco): decrease to 128 when chrome-plugin supports per-function wrapper
+    memorySize: 128
     timeout: 30
     handler: src/session.default
     events:
@@ -103,7 +107,7 @@ functions:
           path: /session
           private: true
   disconnect:
-    memorySize: 1536 # @TODO(marco): decrease to 128 when chrome-plugin supports per-function wrapper
+    memorySize: 128
     handler: src/disconnect.default
     timeout: 30
     events:
