@@ -9,7 +9,6 @@ async function run() {
     .press(13)
     .wait('#resultStats')
     .screenshot()
-    .scrollTo(0, 1000)
 
   console.log(screenshot) // prints local file path or S3 url
 
