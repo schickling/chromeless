@@ -400,9 +400,9 @@ chrome-remote-interface@^0.24.2:
     commander "2.1.x"
     ws "2.0.x"
 
-chromeless@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/chromeless/-/chromeless-0.3.0.tgz#dabe754f5cc6fd2d717a7972ecc080f0935d4e85"
+chromeless@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/chromeless/-/chromeless-0.3.2.tgz#dc14d8884c9f1a02bf099c5baa4c73f40add66bf"
   dependencies:
     aws-sdk "^2.88.0"
     bluebird "^3.5.0"
@@ -1761,13 +1761,9 @@ safe-buffer@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.0.1.tgz#d263ca54696cd8a306b5ca6551e92de57918fbe7"
 
-sax@1.2.1:
+sax@1.2.1, sax@>=0.6.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.1.tgz#7b8e656190b228e81a66aea748480d828cd2d37a"
-
-sax@>=0.6.0:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
 seek-bzip@^1.0.5:
   version "1.0.5"
@@ -1802,17 +1798,17 @@ serverless-offline@^3.15.1:
     lodash "^4.17.4"
     velocityjs "^0.9.3"
 
-serverless-plugin-chrome@^1.0.0-9:
-  version "1.0.0-9"
-  resolved "https://registry.yarnpkg.com/serverless-plugin-chrome/-/serverless-plugin-chrome-1.0.0-9.tgz#01fee9915f5d6b706ee90028bf3811da6f61a3be"
+serverless-plugin-chrome@^1.0.0-10:
+  version "1.0.0-10"
+  resolved "https://registry.yarnpkg.com/serverless-plugin-chrome/-/serverless-plugin-chrome-1.0.0-10.tgz#921f18e7a3b21caba27786eb9ef0ba32f21109f1"
   dependencies:
     "@serverless-chrome/lambda" "^1.0.0-5"
     fs-p "^2.0.0"
     globby "^6.1.0"
 
-serverless-plugin-typescript@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/serverless-plugin-typescript/-/serverless-plugin-typescript-0.5.0.tgz#4a5c4cd933c18262444fb6deb64901032eab16a3"
+serverless-plugin-typescript@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/serverless-plugin-typescript/-/serverless-plugin-typescript-1.0.0.tgz#b1aca64b8be2e3c341380d17bbc0beeeb4044605"
   dependencies:
     fs-p "2.0.0"
     globby "^6.1.0"
