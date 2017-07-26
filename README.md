@@ -107,7 +107,7 @@ const chromeless = new Chromeless({
 
 ## API Documentation
 
-Chromeless provides TypeScripe typings.
+Chromeless provides TypeScrip typings.
 
 **Chromeless methods**
 - [`end()`](#api-end)
@@ -269,7 +269,7 @@ Send a key press. Enter, for example.
 
 __Arguments__
 - `keyCode` - Key code to send
-- `count?` - How many times to send the key press
+- `count` - How many times to send the key press
 - `modifiers` - Modifiers to send along with the press (e.g. control, command, or alt)
 
 __Example__
