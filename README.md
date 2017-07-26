@@ -1,22 +1,31 @@
 # Chromeless [![npm version](https://badge.fury.io/js/chromeless.svg)](https://badge.fury.io/js/chromeless)
 
-Chrome automation made simple. Runs locally or headless on AWS Lambda.
+Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[Demo](https://chromeless.netlify.com/)**)
 
-## ▶️ Try it out ([Demo](https://chromeless.netlify.com/))
+## Chromeless can be used to...
+
+* Run 1000s of **integration tests in parallel** ⚡️
+* Crawl the web & automated screenshots
+* Write bots that require a real browser
+* *Do pretty much everything you've used __PhantomJS, NightmareJS or Selenium__ before*
+
+### Examples
+
+* [prep](https://github.com/graphcool/prep): Compile-time prerendering for SPA/PWA (like React, Vue...) instead of server-side rendering (SSR)
+* See the full [examples list](/examples) for more
+
+## ▶️ Try it out
+
+You can try out Chromeless and explore the API in the browser-based **[demo playground](https://chromeless.netlify.com/)**.
 
 [![](http://i.imgur.com/i1gtCzy.png)](https://chromeless.netlify.com/)
 
-## Chromeless can be used for...
-
-* Running 1000s of **integration tests in parallel** ⚡️
-* Crawling the web
-* Automated screenshots
-* Bots that require a real browser
-* *Pretty much everything you've used PhantomJS, NightmareJS or Selenium before*
-
-See [examples](/examples) for some inspiration 💡
-
 ## How it works
+
+There are two ways to use Chromeless:
+
+1. Locally
+2. Via Proxy
 
 *TODO*
 
@@ -79,7 +88,11 @@ canary --remote-debugging-port=9222 --disable-gpu http://localhost:9222 --headle
 
 ## FAQ
 
-### How is this different from [NightmareJS](https://github.com/segmentio/nightmare), Selenium or similar?
+### How is this different from [NightmareJS](https://github.com/segmentio/nightmare), PhantomJS or Selenium?
+
+### Are there any limitations?
+
+If you're running Chromeless on AWS Lambda, the execution cannot take longer than 5 minutes which is the current limit of Lambda. Besides that, every feature that's supported in Chrome is also working with Chromeless.
 
 ## Contributors
 
