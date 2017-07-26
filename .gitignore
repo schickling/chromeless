@@ -1,7 +1,7 @@
 node_modules
+dist
 .idea
 *.log
-dist
 .DS_Store
 .serverless
 .build
