@@ -6,7 +6,7 @@ Chrome automation made simple. Runs locally or headless on AWS Lambda.
 
 [▶️ Demo Playground](https://chromeless.netlify.com/)
 
-[![http://imgur.com/i1gtCzy.png]()](https://chromeless.netlify.com/)
+[![](http://i.imgur.com/i1gtCzy.png)](https://chromeless.netlify.com/)
 
 ## Installation
 ```sh
