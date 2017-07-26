@@ -32,7 +32,7 @@ export default class RemoteChrome implements Chrome {
             "Timed out after 30sec. Connection couldn't be established."
           )
         )
-      }, 30000) // give up after 30sec
+      }, 30000)
 
       try {
         const { endpointUrl, apiKey } = getEndpoint(this.options.remote)
@@ -46,6 +46,7 @@ export default class RemoteChrome implements Chrome {
         })
 
         this.channelId = channelId
+
         this.TOPIC_NEW_SESSION = 'chrome/new-session'
         this.TOPIC_CONNECTED = `chrome/${channelId}/connected`
         this.TOPIC_REQUEST = `chrome/${channelId}/request`
@@ -55,7 +56,7 @@ export default class RemoteChrome implements Chrome {
         const channel = mqtt(url, {
           will: {
             topic: 'chrome/last-will',
-            payload: channelId,
+            payload: JSON.stringify({ channelId }),
             qos: 1,
             retain: false,
           },

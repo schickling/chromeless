@@ -34,3 +34,16 @@ export function createPresignedURL(
     sessionToken
   )}`
 }
+
+export function debug(...log) {
+  if (process.env.DEBUG) {
+    console.log(
+      ...log.map(
+        argument =>
+          typeof argument === 'object'
+            ? JSON.stringify(argument, null, 2)
+            : argument
+      )
+    )
+  }
+}

@@ -1,8 +1,6 @@
 import { connect as mqtt, MqttClient } from 'mqtt'
 import * as cuid from 'cuid'
-import { createPresignedURL } from './utils'
-
-const debug = require('debug')('session handler')
+import { createPresignedURL, debug } from './utils'
 
 export default async (event, context, callback): Promise<void> => {
   debug('function invoked with event data: ', event)

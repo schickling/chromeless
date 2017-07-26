@@ -1,8 +1,6 @@
 import { LocalChrome, Queue, ChromelessOptions } from 'chromeless'
 import { connect as mqtt, MqttClient } from 'mqtt'
-import { createPresignedURL } from './utils'
-
-const debug = require('debug')('run handler')
+import { createPresignedURL, debug } from './utils'
 
 export default async (
   { channelId, options },
@@ -32,7 +30,23 @@ export default async (
     client.on('offline', () => debug('WebSocket offline'))
   }
 
+  const end = async () => {
+    await queue.end()
+    await chrome.close()
+    await chromeInstance.kill()
+    client.unsubscribe(TOPIC_END)
+    client.end()
+  }
+
+  const newTimeout = () => setTimeout(async () => {
+    callback('Timed out after 30sec. No requests received.')
+    await end()
+    process.exit()
+  }, 30000)
+
   client.on('connect', () => {
+    let timeout
+
     debug('Connected to AWS IoT broker')
 
     client.publish(TOPIC_CONNECTED, JSON.stringify({}), { qos: 1 })
@@ -40,17 +54,13 @@ export default async (
     client.subscribe(TOPIC_REQUEST, () => {
       debug(`Subscribed to ${TOPIC_REQUEST}`)
 
-      let timeout = setTimeout(async () => {
-        callback('Timed out after 30sec. No requests received.')
-        await chromeInstance.kill()
-        process.exit()
-      }, 30000)
+      timeout = newTimeout()
 
       client.on('message', async (topic, buffer) => {
         if (TOPIC_REQUEST === topic) {
           const message = buffer.toString()
 
-          debug(`Mesage ${TOPIC_REQUEST}`, message)
+          debug(`Mesage from ${TOPIC_REQUEST}`, message)
 
           const command = JSON.parse(message)
 
@@ -74,12 +84,7 @@ export default async (
           }
 
           clearTimeout(timeout)
-
-          timeout = setTimeout(async () => {
-            callback('Timed out after 30sec. No further requests received.')
-            await chromeInstance.kill()
-            process.exit()
-          }, 30000)
+          timeout = newTimeout()
         }
       })
     })
@@ -91,12 +96,9 @@ export default async (
 
           debug(`Mesage ${TOPIC_END}`, message)
 
-          client.unsubscribe(TOPIC_END)
-          client.end()
-          await queue.end()
+          clearTimeout(timeout)
 
-          chrome.close()
-          await chromeInstance.kill()
+          await end()
 
           callback(null, {
             statusCode: 204,
