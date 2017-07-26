@@ -10,6 +10,8 @@ Chrome automation made simple. Runs locally or headless on AWS Lambda.
 
 *TODO*
 
+![](http://imgur.com/FlYmenL.png)
+
 ## Installation
 ```sh
 npm install chromeless
@@ -56,16 +58,6 @@ run().catch(console.error.bind(console))
 ### API
 
 *TODO*
-
-## Architecture
-
-### Local execution
-
-![](http://imgur.com/1eM8Bda.png)
-
-### Remote execution
-
-![](http://imgur.com/nYGKGpp.png)
 
 ## FAQ
 
