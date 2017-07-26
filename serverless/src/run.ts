@@ -30,13 +30,17 @@ export default async (
     channel.on('offline', () => debug('WebSocket offline'))
   }
 
-  const end = async () => {
-    channel.unsubscribe(TOPIC_END)
-    channel.publish(TOPIC_END, JSON.stringify({ channelId, chrome: true }), { qos: 1 })
-    channel.end()
+  const end = () => {
+    channel.unsubscribe(TOPIC_END, async () => {
+      channel.publish(TOPIC_END, JSON.stringify({ channelId, chrome: true }), {
+        qos: 1,
+      })
 
-    await chrome.close()
-    await chromeInstance.kill()
+      channel.end()
+
+      await chrome.close()
+      await chromeInstance.kill()
+    })
   }
 
   const newTimeout = () =>
@@ -44,8 +48,6 @@ export default async (
       await end()
 
       callback('Timed out after 30sec. No requests received.')
-
-      // process.exit()
     }, 30000)
 
   channel.on('connect', () => {
@@ -102,13 +104,13 @@ export default async (
           clearTimeout(timeout)
 
           debug(`Mesage from ${TOPIC_END}`, message)
-          debug(`Client ${data.end ? 'ended session' : 'disconnected'}.`)
+          debug(
+            `Client ${data.disconnected ? 'disconnected' : 'ended session'}.`
+          )
 
           await end()
 
           callback(null, { success: true })
-
-          // process.exit()
         }
       })
     })

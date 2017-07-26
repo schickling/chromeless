@@ -119,7 +119,7 @@ export default class RemoteChrome implements Chrome {
                 const message = buffer.toString()
                 const data = JSON.parse(message) as RemoteResult
 
-                console.log('Received disconnect notice from Chromeless Proxy.', data)
+                console.log('Chromeless Proxy disconnected (most likely due to inactivity).')
 
                 await this.close()
               }

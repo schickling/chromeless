@@ -1,4 +1,4 @@
-# RemoteChrome Chromeless Serverless service
+# Chromeless Proxy service
 
 A [Serverless](https://serverless.com/) AWS Lambda service for running and interacting with Chrome remotely with Chromeless.
 
