@@ -101,7 +101,7 @@ canary --remote-debugging-port=9222 --disable-gpu http://localhost:9222 --headle
 - [`goto(url: string)`](#api-goto)
 - [`click(selector: string)`](#api-click)
 - [`wait(timeout: number)`](#api-wait-timeout)
-- [`wait(selector: string)`](#api-goto-selector)
+- [`wait(selector: string)`](#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`](#api-wait-fn)
 - [`focus(selector: string)`](#api-focus)
 - [`press(keyCode: number, count?: number, modifiers?: any)`](#api-press)
@@ -547,7 +547,7 @@ await chromeless.cookiesSet({
 
 ---------------------------------------
 
-<a name="api-goto" />
+<a name="api-cookiesset-many" />
 
 ### cookiesSet(cookies: Cookie[]): Chromeless<T>
 
