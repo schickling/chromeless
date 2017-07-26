@@ -44,7 +44,7 @@ export default async (
         callback('Timed out after 30sec. No requests received.')
         await chromeInstance.kill()
         process.exit()
-      }, 30000) // give up after 30sec
+      }, 30000)
 
       client.on('message', async (topic, buffer) => {
         if (TOPIC_REQUEST === topic) {
@@ -79,7 +79,7 @@ export default async (
             callback('Timed out after 30sec. No further requests received.')
             await chromeInstance.kill()
             process.exit()
-          }, 30000) // give up after 30sec
+          }, 30000)
         }
       })
     })

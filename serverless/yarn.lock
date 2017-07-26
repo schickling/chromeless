@@ -1798,7 +1798,7 @@ serverless-offline@^3.15.1:
     lodash "^4.17.4"
     velocityjs "^0.9.3"
 
-serverless-plugin-chrome@^1.0.0-10:
+serverless-plugin-chrome@^1.0.0-11:
   version "1.0.0-11"
   resolved "https://registry.yarnpkg.com/serverless-plugin-chrome/-/serverless-plugin-chrome-1.0.0-11.tgz#edaf1d6d9beebf54a78a31d3af03e0d3a2e79a50"
   dependencies:

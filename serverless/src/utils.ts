@@ -1,5 +1,10 @@
 import * as aws4 from 'aws4'
 
+/*
+  This creates a presigned URL for accessing the AWS IoT MQTT Broker.
+  Notably, the sessionToken is simply tacked on to the end, and not signed.
+  Because AWS. Thank you @shortjared for your help pointing this out.
+*/
 export function createPresignedURL(
   {
     host = process.env.AWS_IOT_HOST,
