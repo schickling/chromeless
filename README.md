@@ -10,7 +10,7 @@ Chrome automation made simple. Runs locally or headless on AWS Lambda.
 
 *TODO*
 
-![](http://imgur.com/FlYmenL.png)
+![](http://imgur.com/pvnaOnk.png)
 
 ## Installation
 ```sh
