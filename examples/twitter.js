@@ -1,4 +1,4 @@
-const Chromeless = require('chromeless')
+const { Chromeless } = require('chromeless')
 
 const twitterUsername = "xxx"
 const twitterPassword = "xxx"
