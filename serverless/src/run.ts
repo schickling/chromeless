@@ -38,12 +38,12 @@ export default async (
     Importantly we publish a message that we're disconnecting, and then
     we kill the running Chrome instance.
   */
-  const end = () => {
+  const end = (topic_end_data = {}) => {
     if (!endingInvocation) {
       endingInvocation = true
 
       channel.unsubscribe(TOPIC_END, async () => {
-        channel.publish(TOPIC_END, JSON.stringify({ channelId, chrome: true }), {
+        channel.publish(TOPIC_END, JSON.stringify({ channelId, chrome: true, ...topic_end_data }), {
           qos: 1,
         })
 
@@ -57,7 +57,7 @@ export default async (
 
   const newTimeout = () =>
     setTimeout(async () => {
-      await end()
+      await end({ inactivity: true })
       callback(new Error('Timeout. No requests received for 30 seconds.'))
     }, 30000)
 
@@ -148,7 +148,7 @@ export default async (
     */
     setInterval(async () => {
       if (context.getRemainingTimeInMillis() < 5000) {
-        await end()
+        await end({ outOfTime: true })
         callback(new Error('Ran out of execution time.'))
       }
     }, 1000)

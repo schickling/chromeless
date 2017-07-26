@@ -117,9 +117,22 @@ export default class RemoteChrome implements Chrome {
             channel.on('message', async (topic, buffer) => {
               if (this.TOPIC_END === topic) {
                 const message = buffer.toString()
-                const data = JSON.parse(message) as RemoteResult
+                const data = JSON.parse(message)
 
-                console.log('Chromeless Proxy disconnected (most likely due to inactivity).')
+                if (data.outOfTime) {
+                  console.log(
+                    `Chromeless Proxy reached it's execution time limit (5 minutes).`
+                  )
+                } else if (data.inactivity) {
+                  console.log(
+                    'Chromeless Proxy disconnected due to inactivity (no commands sent for 30 seconds).'
+                  )
+                } else {
+                  console.log(
+                    `Chromeless Proxy disconnected (we don't know why).`,
+                    data
+                  )
+                }
 
                 await this.close()
               }
