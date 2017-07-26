@@ -22,6 +22,8 @@ You can try out Chromeless and explore the API in the browser-based **[demo play
 
 ## How it works
 
+With Chromeless you can control Chrome (open website, click elements, fill out forms...) using an [elegant API](#api). This is useful for integration tests or any other scenario where you'd need to script a real browser.
+
 There are two ways to use Chromeless:
 
 1. Locally
@@ -54,7 +56,7 @@ const chromeless = new Chromeless({
 
 ## Usage
 ```js
-import Chromeless from 'chromeless'
+const Chromeless = require('chromeless')
 
 async function run() {
   const chromeless = new Chromeless()
