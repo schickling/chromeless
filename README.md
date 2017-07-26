@@ -147,9 +147,17 @@ const chromeless = new Chromeless({
 
 ### How is this different from [NightmareJS](https://github.com/segmentio/nightmare), PhantomJS or Selenium?
 
+`Chromeless` has a very similar API as NightmareJS as the their API is pretty awesome. The big difference is, that `Chromeless`  is based on Chrome in [headless-mode](https://developers.google.com/web/updates/2017/04/headless-chrome) and runs in a serverless function in AWS Lambda. The advantage of this is, that you can run hundreds of browsers in parallel without having to think about parallelisation. Running integration Tests for example is much faster.
+
 ### I'm new to AWS Lambda, is this still for me?
 
+You still can use this locally without Lambda, so yes. Besides that, here is a [simple guide](https://github.com/graphcool/chromeless/tree/master/serverless) on how to set the lambda function up for `Chromeless`.
+
 ### How much does it cost to run Chromeless in production?
+
+> The monthly compute price is $0.00001667 per GB-s and the free tier provides 400,000 GB-s. The monthly request price is $0.20 per 1 million requests and the free tier provides 1M requests per month.
+
+This means you can easily execute > 100.000 tests for free in the free tier.
 
 ### Are there any limitations?
 
