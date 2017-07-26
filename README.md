@@ -8,13 +8,13 @@ Chrome automation made simple. Runs locally or headless on AWS Lambda.
 
 ## Chromeless can be used for...
 
-* Integration testing
+* Running 1000s of **integration tests in parallel** ⚡️
 * Crawling the web
 * Automated screenshots
 * Bots that require a real browser
 * *Pretty much everything you've used PhantomJS, NightmareJS or Selenium before*
 
-> See [examples](/examples) for some inspiration 💡
+See [examples](/examples) for some inspiration 💡
 
 ## How it works
 
