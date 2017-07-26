@@ -8,7 +8,7 @@ export default async ({ channelId }, context, callback): Promise<void> => {
 
   let params = {
     topic: `chrome/${channelId}/end`,
-    payload: JSON.stringify({ channelId, disconnected: true }),
+    payload: JSON.stringify({ channelId, client: true, disconnected: true }),
     qos: 1,
   }
 

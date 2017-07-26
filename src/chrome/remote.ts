@@ -112,6 +112,19 @@ export default class RemoteChrome implements Chrome {
               { qos: 1 }
             )
           })
+
+          channel.subscribe(this.TOPIC_END, () => {
+            channel.on('message', async (topic, buffer) => {
+              if (this.TOPIC_END === topic) {
+                const message = buffer.toString()
+                const data = JSON.parse(message) as RemoteResult
+
+                console.log('Received disconnect notice from Chromeless Proxy.', data)
+
+                await this.close()
+              }
+            })
+          })
         })
       } catch (error) {
         console.error(error)
@@ -158,16 +171,9 @@ export default class RemoteChrome implements Chrome {
   async close(): Promise<void> {
     this.channel.publish(
       this.TOPIC_END,
-      JSON.stringify({ channelId: this.channelId, end: true })
+      JSON.stringify({ channelId: this.channelId, client: true })
     )
+
     this.channel.end()
-
-    const timeout = setTimeout(() => {
-      throw new Error(
-        'End timed out after 30 seconds without response from Lambda'
-      )
-    }, 30000)
-
-    clearTimeout(timeout)
   }
 }
