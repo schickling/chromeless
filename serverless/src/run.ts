@@ -8,6 +8,9 @@ export default async (
   callback,
   chromeInstance
 ): Promise<void> => {
+  // used to block requests from being processed while we're exiting
+  let endingInvocation = false
+
   debug('Invoked with data: ', channelId, options)
 
   const chrome = new LocalChrome({
@@ -36,16 +39,20 @@ export default async (
     we kill the running Chrome instance.
   */
   const end = () => {
-    channel.unsubscribe(TOPIC_END, async () => {
-      channel.publish(TOPIC_END, JSON.stringify({ channelId, chrome: true }), {
-        qos: 1,
+    if (!endingInvocation) {
+      endingInvocation = true
+
+      channel.unsubscribe(TOPIC_END, async () => {
+        channel.publish(TOPIC_END, JSON.stringify({ channelId, chrome: true }), {
+          qos: 1,
+        })
+
+        channel.end()
+
+        await chrome.close()
+        await chromeInstance.kill()
       })
-
-      channel.end()
-
-      await chrome.close()
-      await chromeInstance.kill()
-    })
+    }
   }
 
   const newTimeout = () =>
@@ -75,7 +82,7 @@ export default async (
       timeout = newTimeout()
 
       channel.on('message', async (topic, buffer) => {
-        if (TOPIC_REQUEST === topic) {
+        if (TOPIC_REQUEST === topic && !endingInvocation) {
           const message = buffer.toString()
 
           clearTimeout(timeout)
