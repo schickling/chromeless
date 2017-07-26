@@ -95,7 +95,7 @@ export default class RemoteChrome implements Chrome {
 
         channel.on('connect', () => {
           if (this.options.debug) {
-            console.log('Connected to AWS IoT Broker')
+            console.log('Connected to message broker.')
           }
 
           channel.subscribe(this.TOPIC_CONNECTED, { qos: 1 }, () => {
@@ -120,15 +120,15 @@ export default class RemoteChrome implements Chrome {
                 const data = JSON.parse(message)
 
                 if (data.outOfTime) {
-                  console.log(
+                  console.warn(
                     `Chromeless Proxy disconnected because it reached it's execution time limit (5 minutes).`
                   )
                 } else if (data.inactivity) {
-                  console.log(
+                  console.warn(
                     'Chromeless Proxy disconnected due to inactivity (no commands sent for 30 seconds).'
                   )
                 } else {
-                  console.log(
+                  console.warn(
                     `Chromeless Proxy disconnected (we don't know why).`,
                     data
                   )

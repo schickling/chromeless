@@ -94,7 +94,39 @@ canary --remote-debugging-port=9222 --disable-gpu http://localhost:9222 --headle
 
 ### API
 
-*TODO*
+#### Methods
+
+- goto(url: string)
+- click(selector: string)
+- wait(timeout: number)
+- wait(selector: string)
+- wait(fn: (...args: any[]) => boolean, ...args: any[])
+- wait(firstArg, ...args: any[])
+- focus(selector: string)
+- press(keyCode: number, count?: number, modifiers?: any)
+- type(input: string, selector?: string)
+- back() - Not implemented yet
+- forward() - Not implemented yet
+- refresh() - Not implemented yet
+- mousedown() - Not implemented yet
+- mouseup() - Not implemented yet
+- scrollTo(x: number, y: number)
+- viewport(width: number, height: number)
+- evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])
+- inputValue(selector: string)
+- exists(selector: string)
+- screenshot()
+- cookiesGet()
+- cookiesGet(name: string)
+- cookiesGet(query: CookieQuery) - Not implemented yet
+- cookiesGetAll()
+- cookiesSet(name: string, value: string)
+- cookiesSet(cookie: Cookie)
+- cookiesSet(cookies: Cookie[])
+- cookiesSet(nameOrCookies, value?: string)
+- cookiesClear(name: string)
+- cookiesClearAll()
+- end()
 
 ## FAQ
 
@@ -129,7 +161,7 @@ A big thank you to all contributors and supporters of this repository 💚
 ## Credits
 
 * [chrome-remote-interface](https://github.com/cyrus-and/chrome-remote-interface): Chromeless uses this package as an interface to Chrome
-* [serverless-chrome](https://github.com/adieuadieu/serverless-chrome): Compiled Chrome binary that runs on AWS Lambda
+* [serverless-chrome](https://github.com/adieuadieu/serverless-chrome): Compiled Chrome binary that runs on AWS Lambda (Azure and GCP soon, too.)
 * [NightmareJS](https://github.com/segmentio/nightmare): We draw a lot of inspiration for the API from this great tool
 
 
