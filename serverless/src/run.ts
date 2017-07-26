@@ -8,7 +8,7 @@ export default async (
   callback,
   chromeInstance
 ): Promise<void> => {
-  debug('function invoked with event data: ', channelId, options)
+  debug('Invoked with data: ', channelId, options)
 
   const chrome = new LocalChrome({
     ...options,
@@ -31,18 +31,22 @@ export default async (
   }
 
   const end = async () => {
+    client.unsubscribe(TOPIC_END)
+    client.end()
+
     await queue.end()
     await chrome.close()
     await chromeInstance.kill()
-    client.unsubscribe(TOPIC_END)
-    client.end()
   }
 
-  const newTimeout = () => setTimeout(async () => {
-    callback('Timed out after 30sec. No requests received.')
-    await end()
-    process.exit()
-  }, 30000)
+  const newTimeout = () =>
+    setTimeout(async () => {
+      await end()
+
+      callback('Timed out after 30sec. No requests received.')
+
+      process.exit()
+    }, 30000)
 
   client.on('connect', () => {
     let timeout
@@ -93,17 +97,16 @@ export default async (
       client.on('message', async (topic, buffer) => {
         if (TOPIC_END === topic) {
           const message = buffer.toString()
+          const data = JSON.parse(message)
 
-          debug(`Mesage ${TOPIC_END}`, message)
+          debug(`Mesage from ${TOPIC_END}`, message)
 
           clearTimeout(timeout)
 
-          await end()
+          callback(null, `Client ${data.end ? 'ended session' : 'disconnected'}.`)
 
-          callback(null, {
-            statusCode: 204,
-            channelId,
-          })
+          await end()
+          process.exit()
         }
       })
     })

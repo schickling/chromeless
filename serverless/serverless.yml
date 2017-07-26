@@ -91,24 +91,24 @@ functions:
     events:
     - http:
         path: /version
-        method: get
+        method: GET
   session:
     memorySize: 128
-    timeout: 30
+    timeout: 10
     handler: src/session.default
     events:
       - http:
           method: OPTIONS
-          path: /session
+          path: /
           private: true
       - http:
           method: GET
-          path: /session
+          path: /
           private: true
   disconnect:
-    memorySize: 128
+    memorySize: 256
     handler: src/disconnect.default
-    timeout: 30
+    timeout: 10
     events:
       - iot:
           sql: "SELECT * FROM 'chrome/last-will'"

@@ -27,6 +27,10 @@ export default class RemoteChrome implements Chrome {
   private async initConnection(): Promise<void> {
     await new Promise(async (resolve, reject) => {
       const timeout = setTimeout(() => {
+        if (this.channel) {
+            this.channel.end()
+        }
+        
         reject(
           new Error(
             "Timed out after 30sec. Connection couldn't be established."
@@ -91,6 +95,7 @@ export default class RemoteChrome implements Chrome {
         })
       } catch (error) {
         console.error(error)
+
         reject(
           new Error('Unable to get presigned websocket URL and connect to it.')
         )
@@ -131,7 +136,7 @@ export default class RemoteChrome implements Chrome {
   }
 
   async close(): Promise<void> {
-    this.channel.publish(this.TOPIC_END, JSON.stringify({ end: true }))
+    this.channel.publish(this.TOPIC_END, JSON.stringify({ channelId: this.channelId, end: true }))
     this.channel.end()
 
     const timeout = setTimeout(() => {
