@@ -5,9 +5,9 @@ Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[See D
 ## Chromeless can be used to...
 
 * Run 1000s of **browser integration tests in parallel** ⚡️
-* Crawl the web & automated screenshots
+* Crawl the web & automate screenshots
 * Write bots that require a real browser
-* *Do pretty much everything you've used __PhantomJS, NightmareJS or Selenium__ before*
+* *Do pretty much everything you've used __PhantomJS, NightmareJS or Selenium__ for before*
 
 ### Examples
 
@@ -39,7 +39,7 @@ With Chromeless you can control Chrome (open website, click elements, fill out f
 ### There are 2 ways to use Chromeless
 
 1. Running Chrome on your local computer
-2. Running Chrome on AWS Lambda and control it remotely
+2. Running Chrome on AWS Lambda and controlling it remotely
 
 ![](http://imgur.com/2bgTyAi.png)
 
@@ -51,7 +51,7 @@ For local development purposes where a fast feedback loop is necessary, the easi
 
 You can also run Chrome in [headless-mode](https://developers.google.com/web/updates/2017/04/headless-chrome) on AWS Lambda. This way you can speed up your tests by running them in parallel. (In [Graphcool](https://www.graph.cool/)'s case this decreased test durations from ~20min to a few seconds.)
 
-Chromeless comes out of the box with a remote proxy built-in - the usage stays completely the same. This way you can write and run your tests locally by they will actually be executed remotely on AWS Lambda. The proxy connects to Lambda through a Websocket connection to forward commands and return the evaluation results.
+Chromeless comes out of the box with a remote proxy built-in - the usage stays completely the same. This way you can write and run your tests locally and have them be executed remotely on AWS Lambda. The proxy connects to Lambda through a Websocket connection to forward commands and return the evaluation results.
 
 ## Installation
 ```sh
@@ -163,7 +163,7 @@ const chromeless = new Chromeless({
 
 ### How is this different from [NightmareJS](https://github.com/segmentio/nightmare), PhantomJS or Selenium?
 
-`Chromeless` has a very similar API as NightmareJS as the their API is pretty awesome. The big difference is, that `Chromeless`  is based on Chrome in [headless-mode](https://developers.google.com/web/updates/2017/04/headless-chrome) and runs in a serverless function in AWS Lambda. The advantage of this is, that you can run hundreds of browsers in parallel without having to think about parallelisation. Running integration Tests for example is much faster.
+The `Chromeless` API is very similar to NightmareJS as their API is pretty awesome. The big difference is that `Chromeless` is based on Chrome in [headless-mode](https://developers.google.com/web/updates/2017/04/headless-chrome), and runs in a serverless function in AWS Lambda. The advantage of this is that you can run hundreds of browsers in parallel, without having to think about parallelisation. Running integration Tests for example is much faster.
 
 ### I'm new to AWS Lambda, is this still for me?
 
@@ -171,7 +171,7 @@ You still can use this locally without Lambda, so yes. Besides that, here is a [
 
 ### How much does it cost to run Chromeless in production?
 
-> The monthly compute price is $0.00001667 per GB-s and the free tier provides 400,000 GB-s. The monthly request price is $0.20 per 1 million requests and the free tier provides 1M requests per month.
+> The compute price is $0.00001667 per GB-s and the free tier provides 400,000 GB-s. The request price is $0.20 per 1 million requests and the free tier provides 1M requests per month.
 
 This means you can easily execute > 100.000 tests for free in the free tier.
 
