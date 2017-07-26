@@ -30,6 +30,11 @@ export default async (
     channel.on('offline', () => debug('WebSocket offline'))
   }
 
+  /*
+    Clean up function whenever we want to end the invocation.
+    Importantly we publish a message that we're disconnecting, and then
+    we kill the running Chrome instance.
+  */
   const end = () => {
     channel.unsubscribe(TOPIC_END, async () => {
       channel.publish(TOPIC_END, JSON.stringify({ channelId, chrome: true }), {
@@ -46,8 +51,7 @@ export default async (
   const newTimeout = () =>
     setTimeout(async () => {
       await end()
-
-      callback('Timed out after 30sec. No requests received.')
+      callback(new Error('Timeout. No requests received for 30 seconds.'))
     }, 30000)
 
   channel.on('connect', () => {
@@ -55,8 +59,16 @@ export default async (
 
     debug('Connected to AWS IoT broker')
 
+    /*
+      Publish that we've connected. This lets the client know that
+      it can start sending requests (commands) for us to process.
+    */
     channel.publish(TOPIC_CONNECTED, JSON.stringify({}), { qos: 1 })
 
+    /*
+      The main bit. Listen for requests from the client, handle them
+      and respond with the result.
+    */
     channel.subscribe(TOPIC_REQUEST, () => {
       debug(`Subscribed to ${TOPIC_REQUEST}`)
 
@@ -65,6 +77,8 @@ export default async (
       channel.on('message', async (topic, buffer) => {
         if (TOPIC_REQUEST === topic) {
           const message = buffer.toString()
+
+          clearTimeout(timeout)
 
           debug(`Mesage from ${TOPIC_REQUEST}`, message)
 
@@ -89,12 +103,17 @@ export default async (
             channel.publish(TOPIC_RESPONSE, remoteResult, { qos: 1 })
           }
 
-          clearTimeout(timeout)
           timeout = newTimeout()
         }
       })
     })
 
+    /*
+      Handle diconnection from the client.
+      Either the client purposfully ended the session, or the client
+      connection was abruptly ended resulting in a last-will message
+      being dispatched by the IoT MQTT broker.
+      */
     channel.subscribe(TOPIC_END, async () => {
       channel.on('message', async (topic, buffer) => {
         if (TOPIC_END === topic) {
@@ -114,5 +133,17 @@ export default async (
         }
       })
     })
+
+    /*
+      When we're almost out of time, we clean up.
+      Importantly this makes sure that Chrome isn't running on the next invocation
+      and publishes a message to the client letting it know we're disconnecting.
+    */
+    setInterval(async () => {
+      if (context.getRemainingTimeInMillis() < 5000) {
+        await end()
+        callback(new Error('Ran out of execution time.'))
+      }
+    }, 1000)
   })
 }
