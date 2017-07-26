@@ -1,6 +1,6 @@
 # Chromeless [![npm version](https://badge.fury.io/js/chromeless.svg)](https://badge.fury.io/js/chromeless)
 
-Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[See Demo](https://chromeless.netlify.com/)**.)
+Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[See Demo](https://chromeless.netlify.com/)**)
 
 ## Chromeless can be used to...
 
@@ -16,7 +16,7 @@ Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[See D
 
 ## ▶️ Try it out
 
-You can try out Chromeless and explore the API in the browser-based **[demo playground](https://chromeless.netlify.com/)**.
+You can try out Chromeless and explore the API in the browser-based **[demo playground](https://chromeless.netlify.com/)**
 
 [![](http://i.imgur.com/i1gtCzy.png)](https://chromeless.netlify.com/)
 
@@ -24,14 +24,18 @@ You can try out Chromeless and explore the API in the browser-based **[demo play
 
 With Chromeless you can control Chrome (open website, click elements, fill out forms...) using an [elegant API](#api). This is useful for integration tests or any other scenario where you'd need to script a real browser.
 
-There are two ways to use Chromeless:
+### There are 2 ways to use Chromeless
 
-1. Locally
-2. Via Proxy
+1. Running Chrome on your local computer
+2. Running Chrome on AWS Lambda and control it remotely
 
-*TODO*
+![](http://imgur.com/2bgTyAi.png)
 
-![](http://imgur.com/pvnaOnk.png)
+### 1. Local Setup
+
+For local development purposes where a fast feedback loop is necessary, the easiest way to use Chromeless is by controlling your local Chrome browser. Just follow the [usage guide](#usage) to get started.
+
+### 2. Remote Proxy Setup
 
 ## Installation
 ```sh
