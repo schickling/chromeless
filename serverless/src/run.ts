@@ -23,20 +23,24 @@ export default async (
   const TOPIC_RESPONSE = `chrome/${channelId}/response`
   const TOPIC_END = `chrome/${channelId}/end`
 
-  const client = mqtt(createPresignedURL())
+  const channel = mqtt(createPresignedURL())
 
   if (process.env.DEBUG) {
-    client.on('error', error => debug('WebSocket error', error))
-    client.on('offline', () => debug('WebSocket offline'))
+    channel.on('error', error => debug('WebSocket error', error))
+    channel.on('offline', () => debug('WebSocket offline'))
   }
 
-  const end = async () => {
-    client.unsubscribe(TOPIC_END)
-    client.end()
+  const end = () => {
+    channel.unsubscribe(TOPIC_END, async () => {
+      channel.publish(TOPIC_END, JSON.stringify({ channelId, chrome: true }), {
+        qos: 1,
+      })
 
-    await queue.end()
-    await chrome.close()
-    await chromeInstance.kill()
+      channel.end()
+
+      await chrome.close()
+      await chromeInstance.kill()
+    })
   }
 
   const newTimeout = () =>
@@ -44,23 +48,21 @@ export default async (
       await end()
 
       callback('Timed out after 30sec. No requests received.')
-
-      process.exit()
     }, 30000)
 
-  client.on('connect', () => {
+  channel.on('connect', () => {
     let timeout
 
     debug('Connected to AWS IoT broker')
 
-    client.publish(TOPIC_CONNECTED, JSON.stringify({}), { qos: 1 })
+    channel.publish(TOPIC_CONNECTED, JSON.stringify({}), { qos: 1 })
 
-    client.subscribe(TOPIC_REQUEST, () => {
+    channel.subscribe(TOPIC_REQUEST, () => {
       debug(`Subscribed to ${TOPIC_REQUEST}`)
 
       timeout = newTimeout()
 
-      client.on('message', async (topic, buffer) => {
+      channel.on('message', async (topic, buffer) => {
         if (TOPIC_REQUEST === topic) {
           const message = buffer.toString()
 
@@ -76,7 +78,7 @@ export default async (
 
             debug('Chrome result', result)
 
-            client.publish(TOPIC_RESPONSE, remoteResult)
+            channel.publish(TOPIC_RESPONSE, remoteResult, { qos: 1 })
           } catch (error) {
             const remoteResult = JSON.stringify({
               error: error.toString(),
@@ -84,7 +86,7 @@ export default async (
 
             debug('Chrome error', error)
 
-            client.publish(TOPIC_RESPONSE, remoteResult)
+            channel.publish(TOPIC_RESPONSE, remoteResult, { qos: 1 })
           }
 
           clearTimeout(timeout)
@@ -93,20 +95,22 @@ export default async (
       })
     })
 
-    client.subscribe(TOPIC_END, async () => {
-      client.on('message', async (topic, buffer) => {
+    channel.subscribe(TOPIC_END, async () => {
+      channel.on('message', async (topic, buffer) => {
         if (TOPIC_END === topic) {
           const message = buffer.toString()
           const data = JSON.parse(message)
 
-          debug(`Mesage from ${TOPIC_END}`, message)
-
           clearTimeout(timeout)
 
-          callback(null, `Client ${data.end ? 'ended session' : 'disconnected'}.`)
+          debug(`Mesage from ${TOPIC_END}`, message)
+          debug(
+            `Client ${data.disconnected ? 'disconnected' : 'ended session'}.`
+          )
 
           await end()
-          process.exit()
+
+          callback(null, { success: true })
         }
       })
     })

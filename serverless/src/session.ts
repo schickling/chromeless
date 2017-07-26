@@ -3,8 +3,6 @@ import * as cuid from 'cuid'
 import { createPresignedURL, debug } from './utils'
 
 export default async (event, context, callback): Promise<void> => {
-  debug('function invoked with event data: ', event)
-
   const url = createPresignedURL()
   const channelId = cuid()
 

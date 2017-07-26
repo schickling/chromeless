@@ -8,6 +8,26 @@ interface RemoteResult {
   error?: string
 }
 
+function getEndpoint(remoteOptions: RemoteOptions | boolean): RemoteOptions {
+  if (typeof remoteOptions === 'object' && remoteOptions.endpointUrl) {
+    return remoteOptions
+  }
+
+  if (
+    process.env['CHROMELESS_ENDPOINT_URL'] &&
+    process.env['CHROMELESS_ENDPOINT_API_KEY']
+  ) {
+    return {
+      endpointUrl: process.env['CHROMELESS_ENDPOINT_URL'],
+      apiKey: process.env['CHROMELESS_ENDPOINT_API_KEY'],
+    }
+  }
+
+  throw new Error(
+    'No Chromeless remote endpoint & API key provided. Either set as "remote" option in constructor or set as "CHROMELESS_ENDPOINT_URL" and "CHROMELESS_ENDPOINT_API_KEY" env variables.'
+  )
+}
+
 export default class RemoteChrome implements Chrome {
   private options: ChromelessOptions
   private channelId: string
@@ -92,6 +112,19 @@ export default class RemoteChrome implements Chrome {
               { qos: 1 }
             )
           })
+
+          channel.subscribe(this.TOPIC_END, () => {
+            channel.on('message', async (topic, buffer) => {
+              if (this.TOPIC_END === topic) {
+                const message = buffer.toString()
+                const data = JSON.parse(message) as RemoteResult
+
+                console.log('Chromeless Proxy disconnected (most likely due to inactivity).')
+
+                await this.close()
+              }
+            })
+          })
         })
       } catch (error) {
         console.error(error)
@@ -138,36 +171,9 @@ export default class RemoteChrome implements Chrome {
   async close(): Promise<void> {
     this.channel.publish(
       this.TOPIC_END,
-      JSON.stringify({ channelId: this.channelId, end: true })
+      JSON.stringify({ channelId: this.channelId, client: true })
     )
+
     this.channel.end()
-
-    const timeout = setTimeout(() => {
-      throw new Error(
-        'End timed out after 30 seconds without response from Lambda'
-      )
-    }, 30000)
-
-    clearTimeout(timeout)
   }
-}
-
-function getEndpoint(remoteOptions: RemoteOptions | boolean): RemoteOptions {
-  if (typeof remoteOptions === 'object' && remoteOptions.endpointUrl) {
-    return remoteOptions
-  }
-
-  if (
-    process.env['CHROMELESS_ENDPOINT_URL'] &&
-    process.env['CHROMELESS_ENDPOINT_API_KEY']
-  ) {
-    return {
-      endpointUrl: process.env['CHROMELESS_ENDPOINT_URL'],
-      apiKey: process.env['CHROMELESS_ENDPOINT_API_KEY'],
-    }
-  }
-
-  throw new Error(
-    'No Chromeless remote endpoint & API key provided. Either set as "remote" option in constructor or set as "CHROMELESS_ENDPOINT_URL" and "CHROMELESS_ENDPOINT_API_KEY" env variables.'
-  )
 }

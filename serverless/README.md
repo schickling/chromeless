@@ -1,4 +1,4 @@
-# RemoteChrome Chromeless Serverless service
+# Chromeless Proxy service
 
 A [Serverless](https://serverless.com/) AWS Lambda service for running and interacting with Chrome remotely with Chromeless.
 
@@ -50,8 +50,8 @@ api keys:
   dev-chromeless-session-key: X-your-api-key-here-X
 endpoints:
   GET - https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/version
-  OPTIONS - https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session
-  GET - https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session
+  OPTIONS - https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/
+  GET - https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/
 functions:
   run: chromeless-serverless-dev-run
   version: chromeless-serverless-dev-version
@@ -65,7 +65,7 @@ functions:
 Interacting with an instance of RemoteChrome can be done by using the `remote` option parameter on the Chromeless constructor. You must provide the endpoint provided during deployment either as an argument or set it in the `CHROMELESS_ENDPOINT_URL` environment variable. Note that this endpoint is _different_ from the AWS IoT Custom Endpoint.
 
 ```bash
-export CHROMELESS_ENDPOINT_URL=https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session
+export CHROMELESS_ENDPOINT_URL=https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev
 export CHROMELESS_ENDPOINT_API_KEY=your-api-key-here
 ```
 
@@ -74,7 +74,7 @@ Or
 ```js
 const chromeless = new Chromeless({
   remote: {
-    endpointUrl: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session'
+    endpointUrl: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev'
     apiKey: 'your-api-key-here'
   },
 })
@@ -89,7 +89,7 @@ const Chromeless = require('chromeless').default
 async function run() {
   const chromeless = new Chromeless({
     remote: {
-      endpointUrl: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev/session'
+      endpointUrl: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev'
       apiKey: 'your-api-key-here'
     },
   })
