@@ -1,10 +1,10 @@
 # Chromeless [![npm version](https://badge.fury.io/js/chromeless.svg)](https://badge.fury.io/js/chromeless)
 
-Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[Demo](https://chromeless.netlify.com/)**)
+Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[See Demo](https://chromeless.netlify.com/)**.)
 
 ## Chromeless can be used to...
 
-* Run 1000s of **integration tests in parallel** ⚡️
+* Run 1000s of **browser integration tests in parallel** ⚡️
 * Crawl the web & automated screenshots
 * Write bots that require a real browser
 * *Do pretty much everything you've used __PhantomJS, NightmareJS or Selenium__ before*
