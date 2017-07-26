@@ -39,7 +39,7 @@ Once configured, deploying the service can be done with:
 npm deploy
 ```
 
-Once completed, some service information will be logged. Make note of the `session` GET endpoint and the value of the `dev-chromeless-session-key` API key. You'll need them when using RemoteChrome.
+Once completed, some service information will be logged. Make note of the `session` GET endpoint and the value of the `dev-chromeless-session-key` API key. You'll need them when using Chromeless through the Proxy.
 
 ```log
 Service Information

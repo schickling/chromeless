@@ -62,11 +62,14 @@ npm install chromeless
 
 The project contains a [Serverless](https://serverless.com/) service for running and driving Chrome remotely on AWS Lambda.
 
-1. Deploy The Proxy service to AWS Lambda. More details [here](https://github.com/graphcool/chromeless/tree/master/serverless#setup)
-2. Follow the setup instructions [here](https://github.com/graphcool/chromeless/tree/master/serverless#remotechrome).
+1. Deploy The Proxy service to AWS Lambda. More details [here](serverless#setup)
+2. Follow the usage instructions [here](serverless#using-the-proxy).
 
 
 ## Usage
+
+Using Chromeless is similar to other browser automation tools. For example:
+
 ```js
 const { Chromeless } = require('chromeless')
 
@@ -88,7 +91,11 @@ async function run() {
 run().catch(console.error.bind(console))
 ```
 
-### Local chrome usage
+### Local Chrome Usage
+
+To run Chromeless locally, you need a recent version of Chrome or Chrome Canary installed and running.
+
+For example, on MacOS:
 
 ```sh
 alias canary="/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary"
@@ -98,6 +105,10 @@ canary --remote-debugging-port=9222 --disable-gpu http://localhost:9222 --headle
 
 ### Proxy Usage
 
+Follow the setup instructions [here](serverless#installation).
+
+Then using Chromeless with the Proxy service is the same as running it locally with the exception of the `remote` option.
+Alternatively you can configure the Proxy service's endpoint with environment variables. [Here's how](serverless#using-the-proxy).
 ```js
 const chromeless = new Chromeless({
   remote: {
