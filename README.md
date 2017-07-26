@@ -99,8 +99,13 @@ For example, on MacOS:
 
 ```sh
 alias canary="/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary"
-canary --remote-debugging-port=9222 --disable-gpu http://localhost:9222
-canary --remote-debugging-port=9222 --disable-gpu http://localhost:9222 --headless
+canary --remote-debugging-port=9222
+```
+
+Or run Chrome Canary headless-ly:
+
+```sh
+canary --remote-debugging-port=9222 --disable-gpu --headless
 ```
 
 ### Proxy Usage
