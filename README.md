@@ -37,6 +37,8 @@ For local development purposes where a fast feedback loop is necessary, the easi
 
 ### 2. Remote Proxy Setup
 
+You can also run Chrome in [headless-mode](https://developers.google.com/web/updates/2017/04/headless-chrome) on AWS Lambda. This way you can run multiple tests (or other code) at the same time.
+
 ## Installation
 ```sh
 npm install chromeless
@@ -95,6 +97,10 @@ canary --remote-debugging-port=9222 --disable-gpu http://localhost:9222 --headle
 ## FAQ
 
 ### How is this different from [NightmareJS](https://github.com/segmentio/nightmare), PhantomJS or Selenium?
+
+### I'm new to AWS Lambda, is this still for me?
+
+### How much does it cost to run Chromeless in production?
 
 ### Are there any limitations?
 
