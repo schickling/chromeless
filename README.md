@@ -20,6 +20,16 @@ You can try out Chromeless and explore the API in the browser-based **[demo play
 
 [![](http://i.imgur.com/i1gtCzy.png)](https://chromeless.netlify.com/)
 
+## Contents
+1. [How it works](#how-it-works)
+1. [Installation](#installation)
+1. [Usage](#usage)
+1. [API Documentation](#api-documentation)
+1. [FAQ](#faq)
+1. [Contributors](#contributors)
+1. [Credits](#credits)
+1. [Help & Community](#help-and-community)
+
 ## How it works
 
 With Chromeless you can control Chrome (open website, click elements, fill out forms...) using an [elegant API](#api). This is useful for integration tests or any other scenario where you'd need to script a real browser.
@@ -92,7 +102,7 @@ canary --remote-debugging-port=9222 --disable-gpu http://localhost:9222
 canary --remote-debugging-port=9222 --disable-gpu http://localhost:9222 --headless
 ```
 
-### API
+## API Documentation
 
 **Chromeless methods**
 - [`end()`](#api-end)
@@ -648,6 +658,8 @@ A big thank you to all contributors and supporters of this repository 💚
 * [serverless-chrome](https://github.com/adieuadieu/serverless-chrome): Compiled Chrome binary that runs on AWS Lambda (Azure and GCP soon, too.)
 * [NightmareJS](https://github.com/segmentio/nightmare): We draw a lot of inspiration for the API from this great tool
 
+
+<a name="help-and-community" />
 
 ## Help & Community [![Slack Status](https://slack.graph.cool/badge.svg)](https://slack.graph.cool)
 
