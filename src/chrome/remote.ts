@@ -121,7 +121,7 @@ export default class RemoteChrome implements Chrome {
 
                 if (data.outOfTime) {
                   console.log(
-                    `Chromeless Proxy reached it's execution time limit (5 minutes).`
+                    `Chromeless Proxy disconnected because it reached it's execution time limit (5 minutes).`
                   )
                 } else if (data.inactivity) {
                   console.log(
