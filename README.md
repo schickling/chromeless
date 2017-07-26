@@ -11,6 +11,8 @@ Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[See D
 
 ### Examples
 
+* [JSON of Google Results](/examples/google.js): Google for `chromeless` and get a list of JSON results
+* [Screenshot of Google Results](/examples/google.js): Google for `chromeless` and take a screenshot of the results
 * [prep](https://github.com/graphcool/prep): Compile-time prerendering for SPA/PWA (like React, Vue...) instead of server-side rendering (SSR)
 * See the full [examples list](/examples) for more
 
