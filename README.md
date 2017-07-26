@@ -37,7 +37,9 @@ For local development purposes where a fast feedback loop is necessary, the easi
 
 ### 2. Remote Proxy Setup
 
-You can also run Chrome in [headless-mode](https://developers.google.com/web/updates/2017/04/headless-chrome) on AWS Lambda. This way you can run multiple tests (or other code) at the same time.
+You can also run Chrome in [headless-mode](https://developers.google.com/web/updates/2017/04/headless-chrome) on AWS Lambda. This way you can speed up your tests by running them in parallel. (In [Graphcool](https://www.graph.cool/)'s case this decreased test durations from ~20min to a few seconds.)
+
+Chromeless comes out of the box with a remote proxy built-in - the usage stays completely the same. This way you can write and run your tests locally by they will actually be executed remotely on AWS Lambda. The proxy connects to Lambda through a Websocket connection to forward commands and return the evaluation results.
 
 ## Installation
 ```sh
