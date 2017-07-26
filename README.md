@@ -113,35 +113,35 @@ const chromeless = new Chromeless({
 - [`end()`](#api-end)
 
 **Chrome methods**
-- [`goto(url: string)`](#api-goto)
-- [`click(selector: string)`](#api-click)
-- [`wait(timeout: number)`](#api-wait-timeout)
-- [`wait(selector: string)`](#api-wait-selector)
-- [`wait(fn: (...args: any[]) => boolean, ...args: any[])`](#api-wait-fn)
-- [`focus(selector: string)`](#api-focus)
-- [`press(keyCode: number, count?: number, modifiers?: any)`](#api-press)
-- [`type(input: string, selector?: string)`](#api-type)
-- [`back()`](#api-back) - Not implemented yet
-- [`forward()`](#api-forward) - Not implemented yet
-- [`refresh()`](#api-refresh) - Not implemented yet
-- [`mousedown()`](#api-mousedown) - Not implemented yet
-- [`mouseup()`](#api-mouseup) - Not implemented yet
-- [`scrollTo(x: number, y: number)`](#api-scrollto)
-- [`viewport(width: number, height: number)`](#api-viewport)
-- [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](#api-evaluate)
-- [`inputValue(selector: string)`](#api-inputvalue)
-- [`exists(selector: string)`](#api-exists)
-- [`screenshot()`](#api-screenshot)
-- [`pdf()`](#api-pdf) - Not implemented yet
-- [`cookiesGet()`](#api-cookiesget)
-- [`cookiesGet(name: string)`](#api-cookiesget-name)
-- [`cookiesGet(query: CookieQuery)`](#api-cookiesget-query) - Not implemented yet
-- [`cookiesGetAll()`](#api-cookiesgetall)
-- [`cookiesSet(name: string, value: string)`](#api-cookiesset)
-- [`cookiesSet(cookie: Cookie)`](#api-cookiesset-one)
-- [`cookiesSet(cookies: Cookie[])`](#api-cookiesset-many)
-- [`cookiesClear(name: string)`](#api-cookiesclear)
-- [`cookiesClearAll()`](#api-cookiesclearall)
+- [`goto(url: string)`](blob/master/docs/api.md#api-goto)
+- [`click(selector: string)`](blob/master/docs/api.md#api-click)
+- [`wait(timeout: number)`](blob/master/docs/api.md#api-wait-timeout)
+- [`wait(selector: string)`](blob/master/docs/api.md#api-wait-selector)
+- [`wait(fn: (...args: any[]) => boolean, ...args: any[])`](blob/master/docs/api.md#api-wait-fn)
+- [`focus(selector: string)`](blob/master/docs/api.md#api-focus)
+- [`press(keyCode: number, count?: number, modifiers?: any)`](blob/master/docs/api.md#api-press)
+- [`type(input: string, selector?: string)`](blob/master/docs/api.md#api-type)
+- [`back()`](blob/master/docs/api.md#api-back) - Not implemented yet
+- [`forward()`](blob/master/docs/api.md#api-forward) - Not implemented yet
+- [`refresh()`](blob/master/docs/api.md#api-refresh) - Not implemented yet
+- [`mousedown()`](blob/master/docs/api.md#api-mousedown) - Not implemented yet
+- [`mouseup()`](blob/master/docs/api.md#api-mouseup) - Not implemented yet
+- [`scrollTo(x: number, y: number)`](blob/master/docs/api.md#api-scrollto)
+- [`viewport(width: number, height: number)`](blob/master/docs/api.md#api-viewport)
+- [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](blob/master/docs/api.md#api-evaluate)
+- [`inputValue(selector: string)`](blob/master/docs/api.md#api-inputvalue)
+- [`exists(selector: string)`](blob/master/docs/api.md#api-exists)
+- [`screenshot()`](blob/master/docs/api.md#api-screenshot)
+- [`pdf()`](blob/master/docs/api.md#api-pdf) - Not implemented yet
+- [`cookiesGet()`](blob/master/docs/api.md#api-cookiesget)
+- [`cookiesGet(name: string)`](blob/master/docs/api.md#api-cookiesget-name)
+- [`cookiesGet(query: CookieQuery)`](blob/master/docs/api.md#api-cookiesget-query) - Not implemented yet
+- [`cookiesGetAll()`](blob/master/docs/api.md#api-cookiesgetall)
+- [`cookiesSet(name: string, value: string)`](blob/master/docs/api.md#api-cookiesset)
+- [`cookiesSet(cookie: Cookie)`](blob/master/docs/api.md#api-cookiesset-one)
+- [`cookiesSet(cookies: Cookie[])`](blob/master/docs/api.md#api-cookiesset-many)
+- [`cookiesClear(name: string)`](blob/master/docs/api.md#api-cookiesclear)
+- [`cookiesClearAll()`](blob/master/docs/api.md#api-cookiesclearall)
 
 ## FAQ
 
