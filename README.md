@@ -114,34 +114,34 @@ const chromeless = new Chromeless({
 
 **Chrome methods**
 - [`goto(url: string)`](docs/api.md#api-goto)
-- [`click(selector: string)`](blob/master/docs/api.md#api-click)
-- [`wait(timeout: number)`](blob/master/docs/api.md#api-wait-timeout)
-- [`wait(selector: string)`](blob/master/docs/api.md#api-wait-selector)
-- [`wait(fn: (...args: any[]) => boolean, ...args: any[])`](blob/master/docs/api.md#api-wait-fn)
-- [`focus(selector: string)`](blob/master/docs/api.md#api-focus)
-- [`press(keyCode: number, count?: number, modifiers?: any)`](blob/master/docs/api.md#api-press)
-- [`type(input: string, selector?: string)`](blob/master/docs/api.md#api-type)
-- [`back()`](blob/master/docs/api.md#api-back) - Not implemented yet
-- [`forward()`](blob/master/docs/api.md#api-forward) - Not implemented yet
-- [`refresh()`](blob/master/docs/api.md#api-refresh) - Not implemented yet
-- [`mousedown()`](blob/master/docs/api.md#api-mousedown) - Not implemented yet
-- [`mouseup()`](blob/master/docs/api.md#api-mouseup) - Not implemented yet
-- [`scrollTo(x: number, y: number)`](blob/master/docs/api.md#api-scrollto)
-- [`viewport(width: number, height: number)`](blob/master/docs/api.md#api-viewport)
-- [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](blob/master/docs/api.md#api-evaluate)
-- [`inputValue(selector: string)`](blob/master/docs/api.md#api-inputvalue)
-- [`exists(selector: string)`](blob/master/docs/api.md#api-exists)
-- [`screenshot()`](blob/master/docs/api.md#api-screenshot)
-- [`pdf()`](blob/master/docs/api.md#api-pdf) - Not implemented yet
-- [`cookiesGet()`](blob/master/docs/api.md#api-cookiesget)
-- [`cookiesGet(name: string)`](blob/master/docs/api.md#api-cookiesget-name)
-- [`cookiesGet(query: CookieQuery)`](blob/master/docs/api.md#api-cookiesget-query) - Not implemented yet
-- [`cookiesGetAll()`](blob/master/docs/api.md#api-cookiesgetall)
-- [`cookiesSet(name: string, value: string)`](blob/master/docs/api.md#api-cookiesset)
-- [`cookiesSet(cookie: Cookie)`](blob/master/docs/api.md#api-cookiesset-one)
-- [`cookiesSet(cookies: Cookie[])`](blob/master/docs/api.md#api-cookiesset-many)
-- [`cookiesClear(name: string)`](blob/master/docs/api.md#api-cookiesclear)
-- [`cookiesClearAll()`](blob/master/docs/api.md#api-cookiesclearall)
+- [`click(selector: string)`](docs/api.md#api-click)
+- [`wait(timeout: number)`](docs/api.md#api-wait-timeout)
+- [`wait(selector: string)`](docs/api.md#api-wait-selector)
+- [`wait(fn: (...args: any[]) => boolean, ...args: any[])`](docs/api.md#api-wait-fn)
+- [`focus(selector: string)`](docs/api.md#api-focus)
+- [`press(keyCode: number, count?: number, modifiers?: any)`](docs/api.md#api-press)
+- [`type(input: string, selector?: string)`](docs/api.md#api-type)
+- [`back()`](docs/api.md#api-back) - Not implemented yet
+- [`forward()`](docs/api.md#api-forward) - Not implemented yet
+- [`refresh()`](docs/api.md#api-refresh) - Not implemented yet
+- [`mousedown()`](docs/api.md#api-mousedown) - Not implemented yet
+- [`mouseup()`](docs/api.md#api-mouseup) - Not implemented yet
+- [`scrollTo(x: number, y: number)`](docs/api.md#api-scrollto)
+- [`viewport(width: number, height: number)`](docs/api.md#api-viewport)
+- [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](docs/api.md#api-evaluate)
+- [`inputValue(selector: string)`](docs/api.md#api-inputvalue)
+- [`exists(selector: string)`](docs/api.md#api-exists)
+- [`screenshot()`](docs/api.md#api-screenshot)
+- [`pdf()`](docs/api.md#api-pdf) - Not implemented yet
+- [`cookiesGet()`](docs/api.md#api-cookiesget)
+- [`cookiesGet(name: string)`](docs/api.md#api-cookiesget-name)
+- [`cookiesGet(query: CookieQuery)`](docs/api.md#api-cookiesget-query) - Not implemented yet
+- [`cookiesGetAll()`](docs/api.md#api-cookiesgetall)
+- [`cookiesSet(name: string, value: string)`](docs/api.md#api-cookiesset)
+- [`cookiesSet(cookie: Cookie)`](docs/api.md#api-cookiesset-one)
+- [`cookiesSet(cookies: Cookie[])`](docs/api.md#api-cookiesset-many)
+- [`cookiesClear(name: string)`](docs/api.md#api-cookiesclear)
+- [`cookiesClearAll()`](docs/api.md#api-cookiesclearall)
 
 ## FAQ
 
