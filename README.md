@@ -9,14 +9,18 @@ Chrome automation made simple. Runs locally or headless on AWS Lambda.
 ## Chromeless can be used for...
 
 * Running 1000s of **integration tests in parallel** ⚡️
-* Crawling the web
-* Automated screenshots
+* Crawling the web & automated screenshots
 * Bots that require a real browser
-* *Pretty much everything you've used PhantomJS, NightmareJS or Selenium before*
+* *Pretty much everything you've used __PhantomJS, NightmareJS or Selenium__ before*
 
-See [examples](/examples) for some inspiration 💡
+See [examples](/examples) to see what can be done.
 
 ## How it works
+
+There are two ways to use Chromeless:
+
+1. Locally
+2. Via Proxy
 
 *TODO*
 
@@ -79,7 +83,11 @@ canary --remote-debugging-port=9222 --disable-gpu http://localhost:9222 --headle
 
 ## FAQ
 
-### How is this different from [NightmareJS](https://github.com/segmentio/nightmare), Selenium or similar?
+### How is this different from [NightmareJS](https://github.com/segmentio/nightmare), PhantomJS or Selenium?
+
+### Are there any limitations?
+
+If you're running Chromeless on AWS Lambda, the execution cannot take longer than 5 minutes which is the current limit of Lambda. Besides that, every feature that's supported in Chrome is also working with Chromeless.
 
 ## Contributors
 
