@@ -1,10 +1,20 @@
-# chromeless [![npm version](https://badge.fury.io/js/chromeless.svg)](https://badge.fury.io/js/chromeless)
+# Chromeless [![npm version](https://badge.fury.io/js/chromeless.svg)](https://badge.fury.io/js/chromeless)
 
 Chrome automation made simple. Runs locally or headless on AWS Lambda.
 
 ## ▶️ Try it out ([Demo](https://chromeless.netlify.com/))
 
 [![](http://i.imgur.com/i1gtCzy.png)](https://chromeless.netlify.com/)
+
+## Chromeless can be used for...
+
+* Integration testing
+* Crawling the web
+* Automated screenshots
+* Bots that require a real browser
+* *Pretty much everything you've used PhantomJS, NightmareJS or Selenium before*
+
+> See [examples](/examples) for some inspiration 💡
 
 ## How it works
 
@@ -55,6 +65,14 @@ async function run() {
 run().catch(console.error.bind(console))
 ```
 
+### Local chrome usage
+
+```sh
+alias canary="/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary"
+canary --remote-debugging-port=9222 --disable-gpu http://localhost:9222
+canary --remote-debugging-port=9222 --disable-gpu http://localhost:9222 --headless
+```
+
 ### API
 
 *TODO*
@@ -79,6 +97,13 @@ A big thank you to all contributors and supporters of this repository 💚
 <a href="https://github.com/matthewmueller/" target="_blank">
   <img src="https://github.com/matthewmueller.png?size=64" width="64" height="64" alt="matthewmueller">
 </a>
+
+
+## Credits
+
+* [chrome-remote-interface](https://github.com/cyrus-and/chrome-remote-interface): Chromeless uses this package as an interface to Chrome
+* [serverless-chrome](https://github.com/adieuadieu/serverless-chrome): Compiled Chrome binary that runs on AWS Lambda
+* [NightmareJS](https://github.com/segmentio/nightmare): We draw a lot of inspiration for the API from this great tool
 
 
 ## Help & Community [![Slack Status](https://slack.graph.cool/badge.svg)](https://slack.graph.cool)
