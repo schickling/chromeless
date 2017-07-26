@@ -5,7 +5,7 @@ A [Serverless](https://serverless.com/) AWS Lambda service for running and inter
 
 ## Contents
 1. [Setup](#setup)
-1. [RemoteChrome](#remotechrome)
+1. [Using the Proxy](#using-the-proxy)
 
 ## Installation
 
@@ -60,9 +60,9 @@ functions:
 ```
 
 
-## RemoteChrome
+## Using the Proxy
 
-Interacting with an instance of RemoteChrome can be done by using the `remote` option parameter on the Chromeless constructor. You must provide the endpoint provided during deployment either as an argument or set it in the `CHROMELESS_ENDPOINT_URL` environment variable. Note that this endpoint is _different_ from the AWS IoT Custom Endpoint.
+Connect to the proxy service with the `remote` option parameter on the Chromeless constructor. You must provide the endpoint URL provided during deployment either as an argument or set it in the `CHROMELESS_ENDPOINT_URL` environment variable. Note that this endpoint is _different_ from the AWS IoT Custom Endpoint.
 
 ```bash
 export CHROMELESS_ENDPOINT_URL=https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev
@@ -102,7 +102,6 @@ async function run() {
     .screenshot()
 
   console.log(screenshot) // prints local file path or S3 url
-
 
   await chromeless.end()
 }
