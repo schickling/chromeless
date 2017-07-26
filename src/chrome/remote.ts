@@ -28,9 +28,9 @@ export default class RemoteChrome implements Chrome {
     await new Promise(async (resolve, reject) => {
       const timeout = setTimeout(() => {
         if (this.channel) {
-            this.channel.end()
+          this.channel.end()
         }
-        
+
         reject(
           new Error(
             "Timed out after 30sec. Connection couldn't be established."
@@ -136,7 +136,10 @@ export default class RemoteChrome implements Chrome {
   }
 
   async close(): Promise<void> {
-    this.channel.publish(this.TOPIC_END, JSON.stringify({ channelId: this.channelId, end: true }))
+    this.channel.publish(
+      this.TOPIC_END,
+      JSON.stringify({ channelId: this.channelId, end: true })
+    )
     this.channel.end()
 
     const timeout = setTimeout(() => {

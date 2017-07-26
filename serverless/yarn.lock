@@ -400,9 +400,9 @@ chrome-remote-interface@^0.24.2:
     commander "2.1.x"
     ws "2.0.x"
 
-chromeless@^0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/chromeless/-/chromeless-0.3.3.tgz#946de0022dc7bc42cfc8115ffd7db596f950fdf2"
+chromeless@0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/chromeless/-/chromeless-0.3.4.tgz#86316c922bfd9dad162331083af82e1db0b08777"
   dependencies:
     aws-sdk "^2.90.0"
     bluebird "^3.5.0"
