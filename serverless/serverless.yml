@@ -7,7 +7,6 @@ custom:
   chrome:
     functions:
       - run
-      - version
 
 provider:
   name: aws
