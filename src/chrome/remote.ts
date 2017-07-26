@@ -8,6 +8,26 @@ interface RemoteResult {
   error?: string
 }
 
+function getEndpoint(remoteOptions: RemoteOptions | boolean): RemoteOptions {
+  if (typeof remoteOptions === 'object' && remoteOptions.endpointUrl) {
+    return remoteOptions
+  }
+
+  if (
+    process.env['CHROMELESS_ENDPOINT_URL'] &&
+    process.env['CHROMELESS_ENDPOINT_API_KEY']
+  ) {
+    return {
+      endpointUrl: process.env['CHROMELESS_ENDPOINT_URL'],
+      apiKey: process.env['CHROMELESS_ENDPOINT_API_KEY'],
+    }
+  }
+
+  throw new Error(
+    'No Chromeless remote endpoint & API key provided. Either set as "remote" option in constructor or set as "CHROMELESS_ENDPOINT_URL" and "CHROMELESS_ENDPOINT_API_KEY" env variables.'
+  )
+}
+
 export default class RemoteChrome implements Chrome {
   private options: ChromelessOptions
   private channelId: string
@@ -150,24 +170,4 @@ export default class RemoteChrome implements Chrome {
 
     clearTimeout(timeout)
   }
-}
-
-function getEndpoint(remoteOptions: RemoteOptions | boolean): RemoteOptions {
-  if (typeof remoteOptions === 'object' && remoteOptions.endpointUrl) {
-    return remoteOptions
-  }
-
-  if (
-    process.env['CHROMELESS_ENDPOINT_URL'] &&
-    process.env['CHROMELESS_ENDPOINT_API_KEY']
-  ) {
-    return {
-      endpointUrl: process.env['CHROMELESS_ENDPOINT_URL'],
-      apiKey: process.env['CHROMELESS_ENDPOINT_API_KEY'],
-    }
-  }
-
-  throw new Error(
-    'No Chromeless remote endpoint & API key provided. Either set as "remote" option in constructor or set as "CHROMELESS_ENDPOINT_URL" and "CHROMELESS_ENDPOINT_API_KEY" env variables.'
-  )
 }
