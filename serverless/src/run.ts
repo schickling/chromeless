@@ -1,3 +1,4 @@
+import 'source-map-support/register'
 import { LocalChrome, Queue, ChromelessOptions } from 'chromeless'
 import { connect as mqtt, MqttClient } from 'mqtt'
 import { createPresignedURL, debug } from './utils'
@@ -10,6 +11,8 @@ export default async (
 ): Promise<void> => {
   // used to block requests from being processed while we're exiting
   let endingInvocation = false
+  let timeout
+  let executionCheckInterval
 
   debug('Invoked with data: ', channelId, options)
 
@@ -41,16 +44,20 @@ export default async (
   const end = (topic_end_data = {}) => {
     if (!endingInvocation) {
       endingInvocation = true
+      clearInterval(executionCheckInterval)
+      clearTimeout(timeout)
 
-      channel.unsubscribe(TOPIC_END, async () => {
+      channel.unsubscribe(TOPIC_END, () => {
         channel.publish(TOPIC_END, JSON.stringify({ channelId, chrome: true, ...topic_end_data }), {
-          qos: 1,
+          qos: 0,
+        }, async () => {
+          channel.end()
+
+          await chrome.close()
+          await chromeInstance.kill()
+
+          callback()
         })
-
-        channel.end()
-
-        await chrome.close()
-        await chromeInstance.kill()
       })
     }
   }
@@ -59,12 +66,21 @@ export default async (
     setTimeout(async () => {
       debug('Timing out. No requests received for 30 seconds.')
       await end({ inactivity: true })
-      callback()
     }, 30000)
 
-  channel.on('connect', () => {
-    let timeout
+  /*
+    When we're almost out of time, we clean up.
+    Importantly this makes sure that Chrome isn't running on the next invocation
+    and publishes a message to the client letting it know we're disconnecting.
+  */
+  executionCheckInterval = setInterval(async () => {
+    if (context.getRemainingTimeInMillis() < 5000) {
+      debug('Ran out of execution time.')
+      await end({ outOfTime: true })
+    }
+  }, 1000)
 
+  channel.on('connect', () => {
     debug('Connected to AWS IoT broker')
 
     /*
@@ -128,8 +144,6 @@ export default async (
           const message = buffer.toString()
           const data = JSON.parse(message)
 
-          clearTimeout(timeout)
-
           debug(`Mesage from ${TOPIC_END}`, message)
           debug(
             `Client ${data.disconnected ? 'disconnected' : 'ended session'}.`
@@ -138,23 +152,8 @@ export default async (
           await end()
 
           debug('Ended successfully.')
-
-          callback()
         }
       })
     })
-
-    /*
-      When we're almost out of time, we clean up.
-      Importantly this makes sure that Chrome isn't running on the next invocation
-      and publishes a message to the client letting it know we're disconnecting.
-    */
-    setInterval(async () => {
-      if (context.getRemainingTimeInMillis() < 5000) {
-        debug('Ran out of execution time.')
-        await end({ outOfTime: true })
-        callback()
-      }
-    }, 1000)
   })
 }

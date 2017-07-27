@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - LICENSE file (MIT) @adieuadieu
 
 ### Changed
-- Many README improvements. @schickling @sorenbs @emeth- @timsuchanek
+- Many README improvements. @schickling @sorenbs @emeth- @timsuchanek @adieuadieu
 
 ## [1.0.0] - 2017-07-26
 ### Added
