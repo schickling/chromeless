@@ -117,8 +117,7 @@ export type Command =
     }
   | {
       type: 'refresh',
-      ignoreCache?: boolean,
-      scriptToEvaluateOnLoad?: string
+      ignoreCache?: boolean
     }
 
 export interface Cookie {
