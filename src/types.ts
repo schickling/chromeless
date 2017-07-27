@@ -106,6 +106,20 @@ export type Command =
       type: 'cookiesGet'
       nameOrQuery?: string | CookieQuery
     }
+  | {
+      type: 'history'
+    }
+  | {
+      type: 'back'
+    }
+  | {
+      type: 'forward'
+    }
+  | {
+      type: 'refresh',
+      ignoreCache?: boolean,
+      scriptToEvaluateOnLoad?: string
+    }
 
 export interface Cookie {
   url?: string
@@ -128,4 +142,17 @@ export interface CookieQuery {
   httpOnly?: boolean
   secure?: boolean
   session?: boolean
+}
+
+export interface NavigationHistory {
+  currentIndex: number
+  entries: NavigationEntry[]
+}
+
+export interface NavigationEntry {
+  id: string
+  title: string
+  url: string
+  userTypedURL?: string
+  transitionType?: string
 }

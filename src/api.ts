@@ -1,7 +1,7 @@
 import ChromeLocal from './chrome/local'
 import ChromeRemote from './chrome/remote'
 import Queue from './queue'
-import { ChromelessOptions, Cookie, CookieQuery } from './types'
+import { ChromelessOptions, Cookie, CookieQuery, NavigationHistory, NavigationEntry } from './types'
 import { getDebugOption } from './util'
 
 export default class Chromeless<T extends any> implements Promise<T> {
@@ -111,16 +111,28 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
+  history(): Chromeless<NavigationHistory> {
+    this.lastReturnPromise = this.queue.process<NavigationHistory>({type: 'history'})
+
+    return new Chromeless<NavigationHistory>({}, this)
+  }
+
   back(): Chromeless<T> {
-    throw new Error('Not implemented yet')
+    this.queue.enqueue({type: 'back'})
+
+    return this
   }
 
   forward(): Chromeless<T> {
-    throw new Error('Not implemented yet')
+    this.queue.enqueue({type: 'forward'})
+
+    return this
   }
 
-  refresh(): Chromeless<T> {
-    throw new Error('Not implemented yet')
+  refresh(ignoreCache = false): Chromeless<T> {
+    this.queue.enqueue({type: 'refresh', ignoreCache})
+
+    return this
   }
 
   mousedown(): Chromeless<T> {
