@@ -41,9 +41,10 @@ Chromeless provides TypeScrip typings.
 
 <a name="api-end" />
 
-### end(): Promise<void>
+### end(): Promise<T>
 
 End the Chromeless session. Locally this will disconnect from Chrome. Over the Proxy, this will end the session, terminating the Lambda function.
+It returns the last value that has been evaluated.
 
 ```js
 await chromeless.end()

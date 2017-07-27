@@ -126,7 +126,7 @@ const chromeless = new Chromeless({
 ## API Documentation
 
 **Chromeless methods**
-- [`end()`](#api-end)
+- [`end()`](docs/api.md#api-end)
 
 **Chrome methods**
 - [`goto(url: string)`](docs/api.md#api-goto)
