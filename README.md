@@ -210,4 +210,4 @@ A big thank you to all contributors and supporters of this repository 💚
 
 Join our [Slack community](http://slack.graph.cool/) if you run into issues or have questions. We love talking to you!
 
-![](http://i.imgur.com/5RHR6Ku.png)
+[![](http://i.imgur.com/5RHR6Ku.png)](https://www.graph.cool/)
