@@ -34,7 +34,7 @@ You can try out Chromeless and explore the API in the browser-based **[demo play
 
 ## How it works
 
-With Chromeless you can control Chrome (open website, click elements, fill out forms...) using an [elegant API](#api-documentation). This is useful for integration tests or any other scenario where you'd need to script a real browser.
+With Chromeless you can control Chrome (open website, click elements, fill out forms...) using an [elegant API](docs/api.md). This is useful for integration tests or any other scenario where you'd need to script a real browser.
 
 ### There are 2 ways to use Chromeless
 
