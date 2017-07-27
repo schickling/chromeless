@@ -183,7 +183,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
    * @param query
    */
   cookiesGet(query: CookieQuery): Chromeless<Cookie[] | null>
-  async cookiesGet(nameOrQuery?: string | CookieQuery): Chromeless<Cookie | Cookie[] | null> {
+  cookiesGet(nameOrQuery?: string | CookieQuery): Chromeless<Cookie | Cookie[] | null> {
     if (typeof nameOrQuery !== 'undefined') {
       throw new Error('Querying cookies is not implemented yet')
     }
@@ -193,7 +193,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return new Chromeless<Cookie | Cookie[] | null>({}, this)
   }
 
-  async cookiesGetAll(): Chromeless<Cookie[]> {
+  cookiesGetAll(): Chromeless<Cookie[]> {
     this.lastReturnPromise = this.queue.process<Cookie[]>({type: 'cookiesGetAll'})
 
     return new Chromeless<Cookie[]>({}, this)
@@ -208,7 +208,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
-  async cookiesClear(name: string): Chromeless<T> {
+  cookiesClear(name: string): Chromeless<T> {
     throw new Error('Not implemented yet')
   }
 
@@ -218,7 +218,9 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
-  async end(): Promise<void> {
+  async end(): Promise<T> {
+    const result = await this.lastReturnPromise
     await this.queue.end()
+    return result
   }
 }
