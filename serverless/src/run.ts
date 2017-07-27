@@ -57,8 +57,9 @@ export default async (
 
   const newTimeout = () =>
     setTimeout(async () => {
+      debug('Timing out. No requests received for 30 seconds.')
       await end({ inactivity: true })
-      callback(new Error('Timeout. No requests received for 30 seconds.'))
+      callback()
     }, 30000)
 
   channel.on('connect', () => {
@@ -136,7 +137,9 @@ export default async (
 
           await end()
 
-          callback(null, { success: true })
+          debug('Ended successfully.')
+
+          callback()
         }
       })
     })
@@ -148,8 +151,9 @@ export default async (
     */
     setInterval(async () => {
       if (context.getRemainingTimeInMillis() < 5000) {
+        debug('Ran out of execution time.')
         await end({ outOfTime: true })
-        callback(new Error('Ran out of execution time.'))
+        callback()
       }
     }, 1000)
   })
