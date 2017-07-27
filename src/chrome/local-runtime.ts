@@ -42,7 +42,7 @@ export default class LocalRuntime {
         }
       }
       case 'click':
-        return this.click(command.selector, this.chromlessOptions.viewport.scale)
+        return this.click(command.selector)
       case 'returnCode':
         return this.returnCode(command.fn, ...command.args)
       case 'returnExists':
@@ -90,12 +90,18 @@ export default class LocalRuntime {
     this.log(`Waited for ${selector}`)
   }
 
-  private async click(selector: string, scale: number): Promise<void> {
+  private async click(selector: string): Promise<void> {
+    if (this.chromlessOptions.implicitWait) {
+      this.log(`click(): Waiting for ${selector}`)
+      await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+    }
+
     const exists = await nodeExists(this.client, selector)
     if (!exists) {
       throw new Error(`click(): node for selector ${selector} doesn't exist`)
     }
 
+    const {scale} = this.chromlessOptions.viewport
     await click(this.client, selector, scale)
     this.log(`Clicked on ${selector}`)
   }
@@ -110,6 +116,11 @@ export default class LocalRuntime {
 
   async type(text: string, selector?: string): Promise<void> {
     if (selector) {
+      if (this.chromlessOptions.implicitWait) {
+        this.log(`type(): Waiting for ${selector}`)
+        await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+      }
+
       const exists = await nodeExists(this.client, selector)
       if (!exists) {
         throw new Error(`type(): Node not found for selector: ${selector}`)

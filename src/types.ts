@@ -25,6 +25,7 @@ export interface CDPOptions {
 export interface ChromelessOptions {
   debug?: boolean // false
   waitTimeout?: number // 10000ms
+  implicitWait?: boolean // false
   viewport?: {
     width?: number // 1440 if headless
     height?: number // 900 if headless

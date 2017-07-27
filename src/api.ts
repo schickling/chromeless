@@ -20,6 +20,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
       debug: getDebugOption(),
       waitTimeout: 10000,
       remote: false,
+      implicitWait: false,
 
       ...options,
 
