@@ -7,13 +7,14 @@ A [Serverless](https://serverless.com/) AWS Lambda service for running and inter
 1. [Setup](#setup)
 1. [Using the Proxy](#using-the-proxy)
 
-## Installation
+## Setup
 
 Clone this repository and enter the `serverless` directory:
 
 ```bash
 git clone https://github.com/graphcool/chromeless.git
 cd chromeless/serverless
+npm install
 ```
 
 Next, modify the `custom` section in `serverless.yml`.
@@ -29,6 +30,21 @@ custom:
   stage: dev
   debug: "*" # false if you don't want noise in CloudWatch
   awsIotHost: ${env:AWS_IOT_HOST}
+
+...
+```
+
+You may also need to change the region in the `provider` section in `serverless.yml`:
+
+
+```yaml
+...
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: ${self:custom.stage}
+  region: YOUR_REGION_HERE
 
 ...
 ```
@@ -89,7 +105,7 @@ const Chromeless = require('chromeless').default
 async function run() {
   const chromeless = new Chromeless({
     remote: {
-      endpointUrl: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev'
+      endpointUrl: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev',
       apiKey: 'your-api-key-here'
     },
   })
