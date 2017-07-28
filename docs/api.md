@@ -1,6 +1,6 @@
 # API Documentation
 
-Chromeless provides TypeScrip typings.
+Chromeless provides TypeScript typings.
 
 **Chromeless methods**
 - [`end()`](#api-end)
