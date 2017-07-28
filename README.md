@@ -27,6 +27,7 @@ You can try out Chromeless and explore the API in the browser-based **[demo play
 1. [Installation](#installation)
 1. [Usage](#usage)
 1. [API Documentation](#api-documentation)
+1. [Configuring Development Environment](#configuring-development-environment)
 1. [FAQ](#faq)
 1. [Contributors](#contributors)
 1. [Credits](#credits)
@@ -95,6 +96,10 @@ run().catch(console.error.bind(console))
 
 To run Chromeless locally, you need a recent version of Chrome or Chrome Canary installed and running.
 
+**Windows** - Version 60 and greater is required for Chrome headless
+
+**Mac/Linux** - Version 59 and greater is required for Chrome headless
+
 For example, on MacOS:
 
 ```sh
@@ -106,6 +111,13 @@ Or run Chrome Canary headless-ly:
 
 ```sh
 canary --remote-debugging-port=9222 --disable-gpu --headless
+```
+
+Or run Chrome headless-ly on Windows:
+
+```sh
+cd "C:\Program Files (x86)\Google\Chrome\Application"
+chrome --remote-debugging-port=9222 --disable-gpu --headless
 ```
 
 ### Proxy Usage
@@ -158,6 +170,24 @@ const chromeless = new Chromeless({
 - [`cookiesSet(cookies: Cookie[])`](docs/api.md#api-cookiesset-many)
 - [`cookiesClear(name: string)`](docs/api.md#api-cookiesclear)
 - [`cookiesClearAll()`](docs/api.md#api-cookiesclearall)
+
+## Configuring Development Environment
+
+**Requirements:**
+- NodeJS version 8.2 and greater
+
+1) Clone this repository
+2) Run "npm install"
+3) To build: "npm run build"
+
+#### Linking this NPM repository
+
+1) Go to this repository locally
+2) Run "npm link"
+3) Go to the folder housing your chromeless scripts
+4) Run "npm link chromeless"
+
+Now your local chromeless scripts will use your local development of chromeless.
 
 ## FAQ
 
