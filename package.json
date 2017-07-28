@@ -6,6 +6,9 @@
     "type": "git",
     "url": "https://github.com/graphcool/chromeless.git"
   },
+  "bug": {
+    "url": "https://github.com/graphcool/chromeless/issues"
+  }, 
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "files": [
