@@ -18,7 +18,7 @@ Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[See D
 
 ## ▶️ Try it out
 
-You can try out Chromeless and explore the API in the browser-based **[demo playground](https://chromeless.netlify.com/)**.
+You can try out Chromeless and explore the API in the browser-based **[demo playground](https://chromeless.netlify.com/)** ([source](https://github.com/graphcool/chromeless-playground)).
 
 [![](http://i.imgur.com/i1gtCzy.png)](https://chromeless.netlify.com/)
 
