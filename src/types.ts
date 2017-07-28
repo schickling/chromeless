@@ -82,6 +82,9 @@ export type Command =
       type: 'returnHtml'
     }
   | {
+      type: 'returnPDF'
+    }
+  | {
       type: 'scrollTo'
       x: number
       y: number

@@ -332,6 +332,14 @@ export async function getHtml(client: Client): Promise<string> {
   return outerHTML
 }
 
+export async function pdf(client: Client): Promise<string> {
+  const {Page} = client
+
+  const pdf = await Page.printToPDF()
+
+  return pdf.data
+}
+
 export function getDebugOption(): boolean {
   if (process && process.env && process.env['DEBUG'] && process.env['DEBUG'].includes('chromeless')) {
     return true

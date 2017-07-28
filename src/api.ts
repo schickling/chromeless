@@ -186,6 +186,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return new Chromeless<string>({}, this)
   }
 
+  pdf(): Chromeless<string> {
+    this.lastReturnPromise = this.queue.process<string>({type: 'returnPDF'})
+
+    return new Chromeless<string>({}, this)
+  }
+
   /**
    * Get the cookies for the current url
    */
