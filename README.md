@@ -27,7 +27,7 @@ You can try out Chromeless and explore the API in the browser-based **[demo play
 1. [Installation](#installation)
 1. [Usage](#usage)
 1. [API Documentation](#api-documentation)
-1. [Configuring Development Environment] (#configuring-development-environment)
+1. [Configuring Development Environment](#configuring-development-environment)
 1. [FAQ](#faq)
 1. [Contributors](#contributors)
 1. [Credits](#credits)
