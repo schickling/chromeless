@@ -2,6 +2,10 @@
   "name": "chromeless",
   "version": "1.0.1",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphcool/chromeless.git"
+  },
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "files": [
