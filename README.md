@@ -56,6 +56,7 @@ Chromeless comes out of the box with a remote proxy built-in - the usage stays c
 ## Installation
 ```sh
 npm install chromeless
+node "name-of-script.js"
 ```
 
 ### Proxy Setup
@@ -95,6 +96,10 @@ run().catch(console.error.bind(console))
 
 To run Chromeless locally, you need a recent version of Chrome or Chrome Canary installed and running.
 
+**Windows** - Version 60 and greater is required for Chrome headless
+
+**Mac/Linux** - Version 59 and greater is required for Chrome headless
+
 For example, on MacOS:
 
 ```sh
@@ -107,6 +112,31 @@ Or run Chrome Canary headless-ly:
 ```sh
 canary --remote-debugging-port=9222 --disable-gpu --headless
 ```
+
+Or run Chrome headless-ly on Windows:
+
+```sh
+cd "C:\Program Files (x86)\Google\Chrome\Application"
+chrome --remote-debugging-port=9222 --disable-gpu --headless
+```
+
+### Configuring Development Environment
+
+**Requirements:**
+- NodeJS version 8.2 and greater
+
+1) Clone this repository
+2) Run "npm install"
+3) To build: "npm run build"
+
+#### Linking this NPM repository
+
+1) Go to this repository locally
+2) Run "npm link"
+3) Go to the folder housing your chromeless scripts
+4) Run "npm link chromeless"
+
+Now your local chromeless scripts will use your local development of chromeless.
 
 ### Proxy Usage
 
