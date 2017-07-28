@@ -26,7 +26,7 @@ Chromeless provides TypeScript typings.
 - [`inputValue(selector: string)`](#api-inputvalue)
 - [`exists(selector: string)`](#api-exists)
 - [`screenshot()`](#api-screenshot)
-- [`pdf()`](#api-pdf) - Not implemented yet
+- [`pdf()`](#api-pdf)
 - [`getHtml()`](#api-gethtml)
 - [`cookiesGet()`](#api-cookiesget)
 - [`cookiesGet(name: string)`](#api-cookiesget-name)
@@ -390,9 +390,21 @@ console.log(screenshot) // prints local file path or S3 URL
 
 <a name="api-pdf" />
 
-### pdf() - Not implemented yet
+### pdf() - Chromeless<string>
 
-Not implemented yet
+Print to a PDF of the document as framed by the viewport.
+When running Chromeless locally this returns the local file path to the PDF.
+When run over the Chromeless Proxy service, a URL to the PDF on S3 is returned.
+
+__Example__
+
+```js
+const screenshot = await chromeless
+  .goto('https://google.com/')
+  .pdf()
+
+console.log(pdf) // prints local file path or S3 URL
+```
 
 ---------------------------------------
 
