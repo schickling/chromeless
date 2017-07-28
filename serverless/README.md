@@ -80,12 +80,20 @@ functions:
 
 Connect to the proxy service with the `remote` option parameter on the Chromeless constructor. You must provide the endpoint URL provided during deployment either as an argument or set it in the `CHROMELESS_ENDPOINT_URL` environment variable. Note that this endpoint is _different_ from the AWS IoT Custom Endpoint.
 
+### Option 1: Environment Variables
+
 ```bash
 export CHROMELESS_ENDPOINT_URL=https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev
 export CHROMELESS_ENDPOINT_API_KEY=your-api-key-here
 ```
+and
+```js
+const chromeless = new Chromeless({
+  remote: true,
+})
+```
 
-Or
+### Option 2: Constructor options
 
 ```js
 const chromeless = new Chromeless({
