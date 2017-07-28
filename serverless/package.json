@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "deploy": "sls deploy"
+    "deploy": "serverless deploy"
   },
   "dependencies": {
     "aws4": "^1.6.0",
