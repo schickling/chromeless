@@ -229,7 +229,7 @@ In case the deployment of the serverless function returns an error like this:
 
   Resource ServerlessDeploymentBucket does not exist for stack chromeless-serverless-dev
 ```
-Please check, that there is not stack with the name `chromeless-serverless-dev` existing yet, otherwise serverless can't correctly provision the bucket.
+Please check, that there is no stack with the name `chromeless-serverless-dev` existing yet, otherwise serverless can't correctly provision the bucket.
 
 ## Contributors
 
