@@ -27,6 +27,7 @@ You can try out Chromeless and explore the API in the browser-based **[demo play
 1. [Installation](#installation)
 1. [Usage](#usage)
 1. [API Documentation](#api-documentation)
+1. [Configuring Development Environment] (#configuring-development-environment)
 1. [FAQ](#faq)
 1. [Contributors](#contributors)
 1. [Credits](#credits)
@@ -56,7 +57,6 @@ Chromeless comes out of the box with a remote proxy built-in - the usage stays c
 ## Installation
 ```sh
 npm install chromeless
-node "name-of-script.js"
 ```
 
 ### Proxy Setup
@@ -120,24 +120,6 @@ cd "C:\Program Files (x86)\Google\Chrome\Application"
 chrome --remote-debugging-port=9222 --disable-gpu --headless
 ```
 
-### Configuring Development Environment
-
-**Requirements:**
-- NodeJS version 8.2 and greater
-
-1) Clone this repository
-2) Run "npm install"
-3) To build: "npm run build"
-
-#### Linking this NPM repository
-
-1) Go to this repository locally
-2) Run "npm link"
-3) Go to the folder housing your chromeless scripts
-4) Run "npm link chromeless"
-
-Now your local chromeless scripts will use your local development of chromeless.
-
 ### Proxy Usage
 
 Follow the setup instructions [here](serverless#installation).
@@ -188,6 +170,24 @@ const chromeless = new Chromeless({
 - [`cookiesSet(cookies: Cookie[])`](docs/api.md#api-cookiesset-many)
 - [`cookiesClear(name: string)`](docs/api.md#api-cookiesclear)
 - [`cookiesClearAll()`](docs/api.md#api-cookiesclearall)
+
+## Configuring Development Environment
+
+**Requirements:**
+- NodeJS version 8.2 and greater
+
+1) Clone this repository
+2) Run "npm install"
+3) To build: "npm run build"
+
+#### Linking this NPM repository
+
+1) Go to this repository locally
+2) Run "npm link"
+3) Go to the folder housing your chromeless scripts
+4) Run "npm link chromeless"
+
+Now your local chromeless scripts will use your local development of chromeless.
 
 ## FAQ
 
