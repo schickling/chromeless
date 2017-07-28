@@ -209,6 +209,28 @@ This means you can easily execute > 100.000 tests for free in the free tier.
 
 If you're running Chromeless on AWS Lambda, the execution cannot take longer than 5 minutes which is the current limit of Lambda. Besides that, every feature that's supported in Chrome is also working with Chromeless. The maximal number of concurrent function executions is 1000. [AWS API Limits](http://docs.aws.amazon.com/lambda/latest/dg/limits.html)
 
+## Troubleshooting
+### Error: Unable to get presigned websocket URL and connect to it.
+In case you get an error like this when running the Chromeless client:
+```
+{ HTTPError: Response code 403 (Forbidden)
+    at stream.catch.then.data (/code/chromeless/node_modules/got/index.js:182:13)
+    at process._tickDomainCallback (internal/process/next_tick.js:129:7)
+  name: 'HTTPError',
+...
+Error: Unable to get presigned websocket URL and connect to it.
+```
+Make sure that you're running at least version `1.8.0` of [`serverless`](https://github.com/serverless/serverless). It is a known [issue](https://github.com/serverless/serverless/issues/2450), that the API Keys are not working in older serverless versions. With running `npm run deploy` that shouldn't happen at all, as it uses the local installed version of `serverless`.
+
+### Resource ServerlessDeploymentBucket does not exist for stack chromeless-serverless-dev
+In case the deployment of the serverless function returns an error like this:
+```
+  Serverless Error ---------------------------------------
+
+  Resource ServerlessDeploymentBucket does not exist for stack chromeless-serverless-dev
+```
+Please check, that there is not stack with the name `chromeless-serverless-dev` existing yet, otherwise serverless can't correctly provision the bucket.
+
 ## Contributors
 
 A big thank you to all contributors and supporters of this repository 💚
