@@ -2,10 +2,12 @@ import * as AWS from 'aws-sdk'
 import { Client, Command, ChromelessOptions, Cookie, CookieQuery } from '../types'
 import * as cuid from 'cuid'
 import * as fs from 'fs'
+import TrafficLog from '../network'
 import {
   nodeExists,
   wait,
   waitForNode,
+  waitForRequest,
   click,
   evaluate,
   screenshot,
@@ -22,21 +24,25 @@ export default class LocalRuntime {
 
   private client: Client
   private chromlessOptions: ChromelessOptions
+  private trafficLog: TrafficLog
 
   constructor(client: Client, chromlessOptions: ChromelessOptions) {
     this.client = client
     this.chromlessOptions = chromlessOptions
+    this.trafficLog = new(TrafficLog)
   }
 
   async run(command: Command): Promise<any> {
     switch (command.type) {
       case 'goto':
-        return this.goto(command.url)
+        return this.goto(command.url, command.logRequests)
       case 'wait': {
         if (command.timeout) {
           return this.waitTimeout(command.timeout)
         } else if (command.selector) {
           return this.waitSelector(command.selector)
+        } else if (command.url) {
+          return this.waitRequest(command.url, command.fn)
         } else {
           throw new Error('waitFn not yet implemented')
         }
@@ -70,10 +76,14 @@ export default class LocalRuntime {
     }
   }
 
-  private async goto(url: string): Promise<void> {
+  private async goto(url: string, logRequests: boolean): Promise<void> {
     const {Network, Page} = this.client
     await Promise.all([Network.enable(), Page.enable()])
     await Network.setUserAgentOverride({userAgent: `Chromeless ${version}`})
+    if (logRequests) {
+      this.log(`Logging network requests`)
+      Network.requestWillBeSent(this.trafficLog.onRequest)
+    }
     await Page.navigate({url})
     await Page.loadEventFired()
     this.log(`Navigated to ${url}`)
@@ -88,6 +98,13 @@ export default class LocalRuntime {
     this.log(`Waiting for ${selector}`)
     await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
     this.log(`Waited for ${selector}`)
+  }
+
+  private async waitRequest(url: string, fn: Function): Promise<Request[]> {
+    this.log(`Waiting for request on url: ${url}`)
+    const result = await waitForRequest(this.trafficLog, url, fn, this.chromlessOptions.waitTimeout)
+    this.log(`Waited for request on url: ${url}`)
+    return result
   }
 
   private async click(selector: string): Promise<void> {

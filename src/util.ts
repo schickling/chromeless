@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { Client, Cookie } from './types'
+import TrafficLog from './network'
 
 export const version: string = ((): string => {
   if (fs.existsSync(path.join(__dirname, '../package.json'))) {
@@ -43,6 +44,31 @@ export async function waitForNode(client: Client, selector: string, waitTimeout:
     })
   } else {
     return
+  }
+}
+
+export async function waitForRequest(trafficLog: TrafficLog, url: string, fn: Function, waitTimeout: number): Promise<Request[]> {
+  const result = await trafficLog.getRequests(url, fn)
+
+  if (!result.finished) {
+    const start = new Date().getTime()
+    return new Promise<Request[]>((resolve, reject) => {
+      const interval = setInterval(async () => {
+        if (new Date().getTime() - start > waitTimeout) {
+          clearInterval(interval)
+          reject(new Error(`waitForRequest("${url}") timed out after ${waitTimeout}ms`))
+        }
+
+        const result = await trafficLog.getRequests(url, fn)
+
+        if (result.finished) {
+          clearInterval(interval)
+          resolve(result.requests)
+        }
+      }, 500)
+    })
+  } else {
+    return result.requests
   }
 }
 
@@ -311,4 +337,3 @@ export function getDebugOption(): boolean {
 
   return false
 }
-
