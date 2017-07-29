@@ -61,7 +61,7 @@ Navigate to a URL.
 
 __Arguments__
 - `url` - URL to navigate to
-- `logRequests` - log all requests for this session (only useful for (#api-waitForRequest))
+- `logRequests` - log all requests for this session. only useful for [`waitForRequest(url: string, fn: Function)`](#api-waitForRequest)
 
 __Example__
 
