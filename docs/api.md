@@ -6,11 +6,12 @@ Chromeless provides TypeScript typings.
 - [`end()`](#api-end)
 
 **Chrome methods**
-- [`goto(url: string)`](#api-goto)
+- [`goto(url: string, logRequests?: boolean)`](#api-goto)
 - [`click(selector: string)`](#api-click)
 - [`wait(timeout: number)`](#api-wait-timeout)
 - [`wait(selector: string)`](#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`](#api-wait-fn)
+- [`waitForRequest(url: string, fn: Function)`](#api-waitForRequest)
 - [`focus(selector: string)`](#api-focus)
 - [`press(keyCode: number, count?: number, modifiers?: any)`](#api-press)
 - [`type(input: string, selector?: string)`](#api-type)
@@ -54,12 +55,13 @@ await chromeless.end()
 
 <a name="api-goto" />
 
-### goto(url: string): Chromeless<T>
+### goto(url: string, logRequests?: boolean): Chromeless<T>
 
 Navigate to a URL.
 
 __Arguments__
 - `url` - URL to navigate to
+- `logRequests` - log all requests for this session (only useful for (#api-waitForRequest))
 
 __Example__
 
@@ -138,6 +140,30 @@ await chromeless.wait(() => { return console.log('@TODO: put a better example he
 
 ---------------------------------------
 
+<a name="api-waitForRequest" />
+
+### waitForRequest(url: string, fn: (requests) => requests): Chromeless<T>
+
+Wait until one or more requests have been sent to the specified URL
+
+__Arguments__
+- `url` - All requests that include this URL are collected and passed to `fn`
+- `fn`  - Function that receives an array of all available requests as first parameter.
+          Waits until this function returns true or the timeout is reached (default: 10s)
+
+__Example__
+
+```js
+const result = await chromeless
+    .goto('https://www.google.com', true) // required to get requests before the load event is fired
+    .waitForRequest('google.com', (requests) => {
+      return requests.length > 2;
+    })
+
+console.log(result)
+```
+
+---------------------------------------
 <a name="api-focus" />
 
 ### focus(selector: string): Chromeless<T>
