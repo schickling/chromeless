@@ -276,10 +276,10 @@ await chromeless.viewport(1024, 800)
 
 ### evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[]): Chromeless<U>
 
-Evaluate Javascript code within Chrome in the context of the DOM.
+Evaluate Javascript code within Chrome in the context of the DOM. Return the resulting value or a Promise.
 
 __Arguments__
-- `fn` - Function to evaluate within Chrome
+- `fn` - Function to evaluate within Chrome, can be async (Promise).
 - `[arguments]` - Arguments to pass to the function
 
 __Example__
