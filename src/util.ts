@@ -136,12 +136,14 @@ export async function evaluate<T>(client: Client, fn: string, ...args: any[]): P
   const argStr = jsonArgs.substr(1, jsonArgs.length - 2)
 
   const expression = `
-    const expressionResult = (${fn})(${argStr})
-    if (expressionResult && expressionResult.then) {
-      expressionResult.catch((error) => { throw new Error(error); });
-      return expressionResult;
-    }
-    return Promise.resolve(expressionResult);
+    (() => {
+      const expressionResult = (${fn})(${argStr});
+      if (expressionResult && expressionResult.then) {
+        expressionResult.catch((error) => { throw new Error(error); });
+        return expressionResult;
+      }
+      return Promise.resolve(expressionResult);
+    })();
   `
 
   const result = await Runtime.evaluate({
