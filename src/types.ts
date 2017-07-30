@@ -44,12 +44,14 @@ export type Command =
   | {
       type: 'goto'
       url: string
+      logRequests?: boolean
     }
   | {
       type: 'wait'
       timeout?: number
       selector?: string
-      fn?: string
+      fn?: Function
+      url?: string
       args?: any[]
     }
   | {
@@ -129,4 +131,53 @@ export interface CookieQuery {
   httpOnly?: boolean
   secure?: boolean
   session?: boolean
+}
+
+export interface Request {
+  url: string
+  method: string
+  headers: any
+  postData?: string
+  mixedContentType?: string
+  initialPriority: string
+  referrerPolicy: string
+  isLinkPreload?: boolean
+}
+
+export interface Response {
+  url: string
+  status: number
+  statusText: string
+  headers: any
+  headersText?: string
+  mimeType: string
+  requestHeaders?: any
+  requestHeadersText?: string
+  connectionReused: boolean
+  connectionId: number
+  fromDiskCache: boolean
+  fromServiceWorker: boolean
+  encodedDataLength: number
+  timing?: any
+  protocol?: string
+  securityState: string
+  securityDetails?: any
+}
+
+export interface RequestEvent {
+  requestId: string
+  loaderId: string
+  documentURL: string
+  request: Request
+  timestamp: number
+  initiator: any
+  redirectResponse?: Response
+}
+
+export interface ResponseEvent {
+  responseId: string,
+  loaderId: string
+  timestamp: number
+  type: string
+  response: Response
 }

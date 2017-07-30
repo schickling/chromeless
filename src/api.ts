@@ -60,14 +60,20 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this.lastReturnPromise.catch(onrejected) as Promise<U>
   }
 
-  goto(url: string): Chromeless<T> {
-    this.queue.enqueue({type: 'goto', url})
+  goto(url: string, logRequests?: boolean): Chromeless<T> {
+    this.queue.enqueue({type: 'goto', url, logRequests})
 
     return this
   }
 
   click(selector: string): Chromeless<T> {
     this.queue.enqueue({type: 'click', selector})
+
+    return this
+  }
+
+  waitForRequest(url: string, fn: Function): Chromeless<T> {
+    this.lastReturnPromise = this.queue.process<string>({type: 'wait', url: url, fn: fn})
 
     return this
   }
