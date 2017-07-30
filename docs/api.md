@@ -10,7 +10,7 @@ Chromeless provides TypeScript typings.
 - [`click(selector: string)`](#api-click)
 - [`wait(timeout: number)`](#api-wait-timeout)
 - [`wait(selector: string)`](#api-wait-selector)
-- [`wait(fn: (...args: any[]) => boolean, ...args: any[])`](#api-wait-fn)
+- [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
 - [`focus(selector: string)`](#api-focus)
 - [`press(keyCode: number, count?: number, modifiers?: any)`](#api-press)
 - [`type(input: string, selector?: string)`](#api-type)
