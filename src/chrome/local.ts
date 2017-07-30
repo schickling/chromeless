@@ -19,7 +19,7 @@ export default class LocalChrome implements Chrome {
   }
 
   private async initRuntimeClient(): Promise<RuntimeClient> {
-    const target = await CDP.New()
+    const target = await CDP.New(this.options.cdp)
     const client = await CDP({ target })
 
     await this.setViewport(client)
