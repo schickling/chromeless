@@ -124,6 +124,8 @@ await chromeless.wait('div#loaded')
 
 ### wait(fn: (...args: any[]) => boolean, ...args: any[]): Chromeless<T>
 
+Not implemented yet
+
 Wait until a function returns.
 
 __Arguments__
