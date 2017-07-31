@@ -165,7 +165,7 @@ export default class LocalRuntime {
 
   async press(keyCode: number, count?: number, modifiers?: any): Promise<void> {
     this.log(`Sending keyCode ${keyCode} (modifiers: ${modifiers})`)
-    await press(this.client, keyCode, count, this.chromlessOptions.viewport.scale, modifiers)
+    await press(this.client, keyCode, count, modifiers)
   }
 
   async returnExists(selector: string): Promise<boolean> {

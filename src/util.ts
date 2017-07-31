@@ -161,13 +161,7 @@ export async function type(client: Client, text: string, selector?: string): Pro
   }
 }
 
-export async function press(client: Client, keyCode: number, scale: number, count?: number, modifiers?: any): Promise<void> {
-
-  // special handling for backspace
-  if (keyCode === 8) {
-    await backspace(client, scale, count || 1)
-    return
-  }
+export async function press(client: Client, keyCode: number, count?: number, modifiers?: any): Promise<void> {
 
   const {Input} = client
 
@@ -194,38 +188,6 @@ export async function press(client: Client, keyCode: number, scale: number, coun
       type: 'keyUp',
     })
   }
-}
-
-export async function backspace(client: Client, n: number, scale: number, selector?: string): Promise<void> {
-  if (selector) {
-    await click(client, selector, scale)
-    await wait(500)
-  }
-
-  const {Input} = client
-
-  for (let i = 0; i < n; i++) {
-    const options = {
-      modifiers: 8,
-      key: 'Backspace',
-      code: 'Backspace',
-      nativeVirtualKeyCode: 8,
-      windowsVirtualKeyCode: 8,
-    }
-    await Input.dispatchKeyEvent({
-      ...options,
-      type: 'rawKeyDown',
-    })
-    await Input.dispatchKeyEvent({
-      ...options,
-      type: 'keyUp',
-    })
-  }
-  const options = {
-    type: 'rawKeyDown',
-    nativeVirtualKeyCode: 46,
-  }
-  await Input.dispatchKeyEvent(options)
 }
 
 export async function getValue(client: Client, selector: string): Promise<string> {
