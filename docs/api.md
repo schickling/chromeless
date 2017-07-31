@@ -7,6 +7,7 @@ Chromeless provides TypeScript typings.
 
 **Chrome methods**
 - [`goto(url: string)`](#api-goto)
+- [`viewport(options: DeviceMetrics)`](#api-viewport)
 - [`click(selector: string)`](#api-click)
 - [`wait(timeout: number)`](#api-wait-timeout)
 - [`wait(selector: string)`](#api-wait-selector)
@@ -65,6 +66,23 @@ __Example__
 
 ```js
 await chromeless.goto('https://google.com/')
+```
+
+---------------------------------------
+
+<a name="api-viewport" />
+
+### viewport(options: DeviceMetrics): Chromeless<T>
+
+Adjust the viewport metrics of the browser.
+
+__Arguments__
+- `options` - an object with some required fields (width, height)
+
+__Example__
+
+```js
+await chromeless.viewport({ width: 1024, height: 600 })
 ```
 
 ---------------------------------------
