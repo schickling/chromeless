@@ -231,6 +231,9 @@ In case the deployment of the serverless function returns an error like this:
 ```
 Please check, that there is no stack with the name `chromeless-serverless-dev` existing yet, otherwise serverless can't correctly provision the bucket.
 
+### No command gets executed
+In order for the commands to be processed, make sure, that you call one of the commands `screenshot`, `evaluate`, `cookiesGetAll` or `end` at the end of your execution chain.
+
 ## Contributors
 
 A big thank you to all contributors and supporters of this repository 💚
