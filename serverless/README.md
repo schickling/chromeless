@@ -21,7 +21,7 @@ npm install
 
 Next, modify the `custom` section in `serverless.yml`.
 
-You must set `awsIotHost` to the your AWS IoT Custom Endpoint for your AWS region. You can find this with the AWS CLI with `aws iot describe-endpoint` or by navigating to the AWS IoT Console and going to Settings.
+You must set `awsIotHost` to the your AWS IoT Custom Endpoint for your AWS region. You can find this with the AWS CLI with `aws iot describe-endpoint --output text` or by navigating to the AWS IoT Console and going to Settings.
 
 For example:
 
