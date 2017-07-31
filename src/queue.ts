@@ -7,6 +7,7 @@ export default class Queue {
     [flushCount: number]: Command[]
   }
   private chrome: Chrome
+  private lastWaitAll: Promise<void>
 
   constructor(chrome: Chrome) {
     this.chrome = chrome
@@ -17,7 +18,9 @@ export default class Queue {
   }
 
   async end(): Promise<void> {
-    await this.waitAll()
+    this.lastWaitAll = this.waitAll()
+    await this.lastWaitAll
+
     await this.chrome.close()
   }
 
@@ -26,7 +29,19 @@ export default class Queue {
   }
 
   async process<T extends any>(command: Command): Promise<T> {
-    await this.waitAll()
+    // with lastWaitAll we build a promise chain
+    // already change the pointer to lastWaitAll for the next .process() call
+    // after the pointer is set, wait for the previous tasks
+    // then wait for the own pointer (the new .lastWaitAll)
+    if (this.lastWaitAll) {
+      const lastWaitAllTmp = this.lastWaitAll
+      this.lastWaitAll = this.waitAll()
+      await lastWaitAllTmp
+    } else {
+      this.lastWaitAll = this.waitAll()
+    }
+
+    await this.lastWaitAll
 
     return this.chrome.process<T>(command)
   }
