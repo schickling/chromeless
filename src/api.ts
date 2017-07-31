@@ -142,8 +142,8 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
-  setDocumentContent(html: string): Chromeless<T> {
-    this.queue.enqueue({type: 'setDocumentContent', html})
+  setHtml(html: string): Chromeless<T> {
+    this.queue.enqueue({type: 'setHtml', html})
 
     return this
   }

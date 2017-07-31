@@ -82,7 +82,7 @@ export type Command =
       y: number
     }
   | {
-      type: 'setDocumentContent',
+      type: 'setHtml',
       html: string
     }
   | {

@@ -238,7 +238,7 @@ export async function scrollTo(client: Client, x: number, y: number): Promise<vo
   })
 }
 
-export async function setDocumentContent(client: Client, html: string): Promise<void> {
+export async function setHtml(client: Client, html: string): Promise<void> {
   const {Page} = client
 
   const {frameTree: {frame: {id: frameId}}} = await Page.getResourceTree()
