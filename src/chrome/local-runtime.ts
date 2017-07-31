@@ -15,7 +15,7 @@ import {
   press,
   clearCookies,
   getCookies,
-  setCookies, getAllCookies, version,
+  setCookies, getAllCookies, version, mousedown, mouseup
 } from '../util'
 
 export default class LocalRuntime {
@@ -65,6 +65,10 @@ export default class LocalRuntime {
         return this.cookiesGetAll()
       case 'cookiesSet':
         return this.cookiesSet(command.nameOrCookies, command.value)
+      case 'mousedown':
+        return this.mousedown(command.selector)
+      case 'mouseup':
+        return this.mousup(command.selector)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -112,6 +116,38 @@ export default class LocalRuntime {
 
   private async scrollTo<T>(x: number, y: number): Promise<void> {
     return scrollTo(this.client, x, y)
+  }
+
+  private async mousedown(selector: string): Promise<void> {
+      if (this.chromlessOptions.implicitWait) {
+          this.log(`mousedown(): Waiting for ${selector}`)
+          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+      }
+
+      const exists = await nodeExists(this.client, selector)
+      if (!exists) {
+          throw new Error(`mousedown(): node for selector ${selector} doesn't exist`)
+      }
+
+      const {scale} = this.chromlessOptions.viewport
+      await mousedown(this.client, selector, scale)
+      this.log(`Mousedown on ${selector}`)
+  }
+
+  private async mousup(selector: string): Promise<void> {
+      if (this.chromlessOptions.implicitWait) {
+          this.log(`mouseup(): Waiting for ${selector}`)
+          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+      }
+
+      const exists = await nodeExists(this.client, selector)
+      if (!exists) {
+          throw new Error(`mouseup(): node for selector ${selector} doesn't exist`)
+      }
+
+      const {scale} = this.chromlessOptions.viewport
+      await mouseup(this.client, selector, scale)
+      this.log(`Mouseup on ${selector}`)
   }
 
   async type(text: string, selector?: string): Promise<void> {

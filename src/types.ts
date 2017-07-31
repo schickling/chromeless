@@ -107,6 +107,14 @@ export type Command =
       type: 'cookiesGet'
       nameOrQuery?: string | CookieQuery
     }
+  | {
+      type: 'mousedown',
+      selector: string
+    }
+  | {
+      type: 'mouseup',
+      selector: string
+    }
 
 export interface Cookie {
   url?: string

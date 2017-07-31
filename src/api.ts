@@ -124,12 +124,14 @@ export default class Chromeless<T extends any> implements Promise<T> {
     throw new Error('Not implemented yet')
   }
 
-  mousedown(): Chromeless<T> {
-    throw new Error('Not implemented yet')
+  mousedown(selector: string): Chromeless<T> {
+      this.queue.enqueue({type: 'mousedown', selector})
+      return this
   }
 
-  mouseup(): Chromeless<T> {
-    throw new Error('Not implemented yet')
+  mouseup(selector: string): Chromeless<T> {
+      this.queue.enqueue({type: 'mouseup', selector})
+      return this
   }
 
   mouseover(): Chromeless<T> {
