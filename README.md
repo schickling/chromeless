@@ -96,9 +96,7 @@ run().catch(console.error.bind(console))
 
 To run Chromeless locally, you need a recent version of Chrome or Chrome Canary installed and running.
 
-**Windows** - Version 60 and greater is required for Chrome headless
-
-**Mac/Linux** - Version 59 and greater is required for Chrome headless
+Chromeless requires Chrome version 60 or greater.
 
 For example, on MacOS:
 
