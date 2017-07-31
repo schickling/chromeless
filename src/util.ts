@@ -297,6 +297,14 @@ export async function screenshot(client: Client): Promise<string> {
   return screenshot.data
 }
 
+export async function html(client: Client): Promise<string> {
+  const {DOM} = client
+
+  const {root: {nodeId}} = await DOM.getDocument()
+  const {outerHTML} = await DOM.getOuterHTML({nodeId})
+  return outerHTML
+}
+
 export function getDebugOption(): boolean {
   if (process && process.env && process.env['DEBUG'] && process.env['DEBUG'].includes('chromeless')) {
     return true

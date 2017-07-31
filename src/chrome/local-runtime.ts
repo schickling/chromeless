@@ -9,6 +9,7 @@ import {
   click,
   evaluate,
   screenshot,
+  html,
   type,
   getValue,
   scrollTo,
@@ -50,6 +51,8 @@ export default class LocalRuntime {
         return this.returnExists(command.selector)
       case 'returnScreenshot':
         return this.returnScreenshot()
+      case 'returnHtml':
+        return this.returnHtml()
       case 'returnInputValue':
         return this.returnInputValue(command.selector)
       case 'type':
@@ -213,6 +216,10 @@ export default class LocalRuntime {
 
       return filePath
     }
+  }
+
+  async returnHtml(): Promise<string> {
+    return await html(this.client)
   }
 
   private log(msg: string): void {

@@ -1,6 +1,7 @@
 export interface Client {
   Network: any
   Page: any
+  DOM: any
   Input: any
   Runtime: any
   Emulation: any
@@ -75,6 +76,9 @@ export type Command =
     }
   | {
       type: 'returnScreenshot'
+    }
+  | {
+      type: 'returnHtml'
     }
   | {
       type: 'scrollTo'
