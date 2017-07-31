@@ -1,5 +1,5 @@
 import * as AWS from 'aws-sdk'
-import { Client, Command, ChromelessOptions, Cookie, CookieQuery } from '../types'
+import { Client, Command, ChromelessOptions, Cookie, CookieQuery, NavigationEntry, NavigationHistory } from '../types'
 import * as cuid from 'cuid'
 import * as fs from 'fs'
 import {
@@ -65,6 +65,14 @@ export default class LocalRuntime {
         return this.cookiesGetAll()
       case 'cookiesSet':
         return this.cookiesSet(command.nameOrCookies, command.value)
+      case 'history':
+        return this.history()
+      case 'back':
+        return this.back()
+      case 'forward':
+        return this.forward()
+      case 'refresh':
+        return this.refresh(command.ignoreCache)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -206,6 +214,36 @@ export default class LocalRuntime {
 
       return filePath
     }
+  }
+
+  private async history(): Promise<NavigationHistory> {
+    const {Page} = this.client
+    await Promise.all([Page.enable()])
+    return await Page.getNavigationHistory()
+  }
+
+  private async back(): Promise<void> {
+    const history = await this.history()
+    if (history && history.currentIndex > 0) {
+      const {Page} = this.client
+      await Page.navigateToHistoryEntry({entryId: history.entries[history.currentIndex - 1].id})
+      await Page.loadEventFired()
+    }
+  }
+
+  private async forward(): Promise<void> {
+    const history = await this.history()
+    if (history && history.currentIndex < history.entries.length - 1) {
+      const {Page} = this.client
+      await Page.navigateToHistoryEntry({entryId: history.entries[history.currentIndex + 1].id})
+      await Page.loadEventFired()
+    }
+  }
+
+  private async refresh(ignoreCache = false): Promise<void> {
+    const {Page} = this.client
+    await Page.reload({ignoreCache})
+    await Page.loadEventFired()
   }
 
   private log(msg: string): void {
