@@ -9,7 +9,7 @@ import {
   click,
   evaluate,
   screenshot,
-  html,
+  getHtml,
   type,
   getValue,
   scrollTo,
@@ -219,7 +219,7 @@ export default class LocalRuntime {
   }
 
   async returnHtml(): Promise<string> {
-    return await html(this.client)
+    return await getHtml(this.client)
   }
 
   private log(msg: string): void {

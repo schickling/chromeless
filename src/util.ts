@@ -297,7 +297,7 @@ export async function screenshot(client: Client): Promise<string> {
   return screenshot.data
 }
 
-export async function html(client: Client): Promise<string> {
+export async function getHtml(client: Client): Promise<string> {
   const {DOM} = client
 
   const {root: {nodeId}} = await DOM.getDocument()
