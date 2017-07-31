@@ -156,14 +156,14 @@ export async function evaluate<T>(client: Client, fn: string, ...args: any[]): P
     throw new Error(
       result.exceptionDetails.exception.value ||
       result.exceptionDetails.exception.description
-    );
+    )
   }
 
   if (result && result.result) {
     return result.result.value
   }
 
-  return null;
+  return null
 }
 
 export async function type(client: Client, text: string, selector?: string): Promise<void> {

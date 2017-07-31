@@ -20,7 +20,7 @@
   "scripts": {
     "watch": "tsc -w",
     "build": "rimraf dist; tsc -d",
-    "prepublishOnly": "npm run build; npm test",
+    "prepublishOnly": "npm test; npm run build",
     "test": "npm run tslint",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
