@@ -238,6 +238,13 @@ export async function scrollTo(client: Client, x: number, y: number): Promise<vo
   })
 }
 
+export async function setDocumentContent(client: Client, html: string): Promise<void> {
+  const {Page} = client
+
+  const {frameTree: {frame: {id: frameId}}} = await Page.getResourceTree()
+  await Page.setDocumentContent({frameId, html})
+}
+
 export async function getCookies(client: Client, nameOrQuery?: string | Cookie): Promise<any> {
   if (nameOrQuery) {
     throw new Error('Not yet implemented')

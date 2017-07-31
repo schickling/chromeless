@@ -82,6 +82,10 @@ export type Command =
       y: number
     }
   | {
+      type: 'setDocumentContent',
+      html: string
+    }
+  | {
       type: 'press'
       keyCode: number
       count?: number

@@ -12,6 +12,7 @@ import {
   type,
   getValue,
   scrollTo,
+  setDocumentContent,
   press,
   clearCookies,
   getCookies,
@@ -57,6 +58,8 @@ export default class LocalRuntime {
         return this.press(command.keyCode, command.count, command.modifiers)
       case 'scrollTo':
         return this.scrollTo(command.x, command.y)
+      case 'setDocumentContent':
+        return this.setDocumentContent(command.html)
       case 'cookiesClearAll':
         return this.cookiesClearAll()
       case 'cookiesGet':
@@ -112,6 +115,10 @@ export default class LocalRuntime {
 
   private async scrollTo<T>(x: number, y: number): Promise<void> {
     return scrollTo(this.client, x, y)
+  }
+
+  private async setDocumentContent(html: string): Promise<void> {
+    await setDocumentContent(this.client, html)
   }
 
   async type(text: string, selector?: string): Promise<void> {

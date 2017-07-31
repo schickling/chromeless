@@ -142,6 +142,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
+  setDocumentContent(html: string): Chromeless<T> {
+    this.queue.enqueue({type: 'setDocumentContent', html})
+
+    return this
+  }
+
   viewport(width: number, height: number): Chromeless<T> {
     throw new Error('Not implemented yet')
   }

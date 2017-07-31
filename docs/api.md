@@ -20,6 +20,7 @@ Chromeless provides TypeScript typings.
 - [`mousedown()`](#api-mousedown) - Not implemented yet
 - [`mouseup()`](#api-mouseup) - Not implemented yet
 - [`scrollTo(x: number, y: number)`](#api-scrollto)
+- [`setDocumentContent(html: string)`](#api-setdocumentcontent)
 - [`viewport(width: number, height: number)`](#api-viewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](#api-evaluate)
 - [`inputValue(selector: string)`](#api-inputvalue)
@@ -250,6 +251,23 @@ __Example__
 
 ```js
 await chromeless.scrollTo(500, 0)
+```
+
+---------------------------------------
+
+<a name="api-setdocumentcontent" />
+
+### setDocumentContent(html: string): Chromeless<T>
+
+Sets given markup as the document's HTML.
+
+__Arguments__
+- `html` - HTML to set as the document's markup.
+
+__Example__
+
+```js
+await chromeless.setDocumentContent('<h1>Hello world!</h1>')
 ```
 
 ---------------------------------------
