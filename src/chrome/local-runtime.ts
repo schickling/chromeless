@@ -236,7 +236,6 @@ export default class LocalRuntime {
   }
 
   private log(msg: string): void {
-    console.log('>', this.chromlessOptions.debug)
     if (this.chromlessOptions.debug) {
       console.log(msg)
     }
