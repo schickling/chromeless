@@ -177,15 +177,15 @@ const chromeless = new Chromeless({
 - NodeJS version 8.2 and greater
 
 1) Clone this repository
-2) Run "npm install"
-3) To build: "npm run build"
+2) Run `npm install`
+3) To build: `npm run build`
 
 #### Linking this NPM repository
 
 1) Go to this repository locally
-2) Run "npm link"
+2) Run `npm link`
 3) Go to the folder housing your chromeless scripts
-4) Run "npm link chromeless"
+4) Run `npm link chromeless`
 
 Now your local chromeless scripts will use your local development of chromeless.
 
