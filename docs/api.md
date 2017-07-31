@@ -399,7 +399,7 @@ When run over the Chromeless Proxy service, a URL to the PDF on S3 is returned.
 __Example__
 
 ```js
-const screenshot = await chromeless
+const pdf = await chromeless
   .goto('https://google.com/')
   .pdf()
 
