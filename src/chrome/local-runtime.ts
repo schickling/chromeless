@@ -13,9 +13,12 @@ import {
   getValue,
   scrollTo,
   press,
+  setViewport,
   clearCookies,
   getCookies,
-  setCookies, getAllCookies, version,
+  setCookies,
+  getAllCookies,
+  version,
 } from '../util'
 
 export default class LocalRuntime {
@@ -32,6 +35,8 @@ export default class LocalRuntime {
     switch (command.type) {
       case 'goto':
         return this.goto(command.url)
+        case 'viewport':
+          return setViewport(this.client, command.options)
       case 'wait': {
         if (command.timeout) {
           return this.waitTimeout(command.timeout)
@@ -68,6 +73,28 @@ export default class LocalRuntime {
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
+  }
+
+  private async viewport(width: number, height: number): Promise<void> {
+      // TODO what to configure
+      const config: any = {
+          deviceScaleFactor: 1,
+          mobile: false,
+          scale: 1,
+          fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
+      }
+
+      if (height > 0 && width > 0) {
+          config.height = height
+          config.width = width
+      }
+
+      await this.client.Emulation.setDeviceMetricsOverride(config)
+      await this.client.Emulation.setVisibleSize({
+          width: config.width,
+          height: config.height,
+      })
+      this.log(`Adjusted viewport to ${width}x${height}`)
   }
 
   private async goto(url: string): Promise<void> {
@@ -209,6 +236,7 @@ export default class LocalRuntime {
   }
 
   private log(msg: string): void {
+    console.log('>', this.chromlessOptions.debug)
     if (this.chromlessOptions.debug) {
       console.log(msg)
     }

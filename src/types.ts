@@ -10,6 +10,20 @@ export interface Client {
   }
 }
 
+export interface DeviceMetrics {
+  width: number
+  height: number
+  deviceScaleFactor?: number
+  mobile?: boolean
+  scale?: number
+  screenOrientation?: ScreenOrientation
+}
+
+export interface ScreenOrientation {
+  type: string
+  angle: number
+}
+
 export interface RemoteOptions {
   endpointUrl: string
   apiKey?: string
@@ -45,6 +59,10 @@ export type Command =
       type: 'goto'
       url: string
     }
+  | {
+      type: 'viewport'
+      options: DeviceMetrics
+  }
   | {
       type: 'wait'
       timeout?: number
