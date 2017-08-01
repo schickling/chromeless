@@ -142,7 +142,7 @@ const chromeless = new Chromeless({
 
 **Chrome methods**
 - [`goto(url: string)`](docs/api.md#api-goto)
-- [`useragent(useragent: string)`](docs/api.md#api-useragent)
+- [`useragentSet(useragent: string)`](docs/api.md#api-useragentSet)
 - [`click(selector: string)`](docs/api.md#api-click)
 - [`wait(timeout: number)`](docs/api.md#api-wait-timeout)
 - [`wait(selector: string)`](docs/api.md#api-wait-selector)

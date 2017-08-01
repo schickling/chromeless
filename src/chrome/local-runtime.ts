@@ -42,8 +42,8 @@ export default class LocalRuntime {
           throw new Error('waitFn not yet implemented')
         }
       }
-      case 'useragent':
-        return this.useragent(command.useragent)
+      case 'useragentSet':
+        return this.useragentSet(command.useragent)
       case 'click':
         return this.click(command.selector)
       case 'returnCode':
@@ -73,11 +73,6 @@ export default class LocalRuntime {
     }
   }
 
-  private async useragent(useragent: string): Promise<void> {
-    this.userAgentValue = useragent
-    await this.log(`Set useragent to ${this.userAgentValue}`)
-  }
-
   private async goto(url: string): Promise<void> {
     const {Network, Page} = this.client
     await Promise.all([Network.enable(), Page.enable()])
@@ -86,6 +81,11 @@ export default class LocalRuntime {
     await Page.navigate({url})
     await Page.loadEventFired()
     this.log(`Navigated to ${url}`)
+  }
+
+  private async useragentSet(useragent: string): Promise<void> {
+    this.userAgentValue = useragent
+    await this.log(`Set useragent to ${this.userAgentValue}`)
   }
 
   private async waitTimeout(timeout: number): Promise<void> {
