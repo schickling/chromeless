@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - CHANGELOG.md @adieuadieu
 - LICENSE file (MIT) @adieuadieu
 - `implicitWait`: By default wait for `.press` and `.click` for a cleaner workflow
-- `.setUseragent()` is added to customize the userAgent you want to sent with your browser request 
+- `.setUserAgent()` is added to customize the userAgent you want to sent with your browser request @joeyvandijk
 
 ### Changed
 - `.end()`: now returns the last value
