@@ -199,7 +199,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
    */
   cookiesGet(query: CookieQuery): Chromeless<Cookie[] | null>
   cookiesGet(nameOrQuery?: string | CookieQuery): Chromeless<Cookie | Cookie[] | null> {
-    if (typeof nameOrQuery !== 'undefined') {
+    if (typeof nameOrQuery !== 'undefined' && typeof nameOrQuery !== 'string') {
       throw new Error('Querying cookies is not implemented yet')
     }
 
