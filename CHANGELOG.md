@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - CODE_OF_CONDUCT.md, CONTRIBUTING.md
+- `getHtml()` and `setHtml()` APIs. [#112](https://github.com/graphcool/chromeless/pull/112), [#74](https://github.com/graphcool/chromeless/issues/74)
 - When using chromeless locally, chromeless will now boot chrome automatically [#120](https://github.com/graphcool/chromeless/pull/120) @joelgriffith
 
 ### Changed

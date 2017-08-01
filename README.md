@@ -151,12 +151,14 @@ const chromeless = new Chromeless({
 - [`mousedown()`](docs/api.md#api-mousedown) - Not implemented yet
 - [`mouseup()`](docs/api.md#api-mouseup) - Not implemented yet
 - [`scrollTo(x: number, y: number)`](docs/api.md#api-scrollto)
+- [`setHtml(html: string)`](docs/api.md#api-sethtml)
 - [`viewport(width: number, height: number)`](docs/api.md#api-viewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](docs/api.md#api-evaluate)
 - [`inputValue(selector: string)`](docs/api.md#api-inputvalue)
 - [`exists(selector: string)`](docs/api.md#api-exists)
 - [`screenshot()`](docs/api.md#api-screenshot)
 - [`pdf()`](docs/api.md#api-pdf) - Not implemented yet
+- [`getHtml()`](docs/api.md#api-gethtml)
 - [`cookiesGet()`](docs/api.md#api-cookiesget)
 - [`cookiesGet(name: string)`](docs/api.md#api-cookiesget-name)
 - [`cookiesGet(query: CookieQuery)`](docs/api.md#api-cookiesget-query) - Not implemented yet
