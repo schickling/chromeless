@@ -124,6 +124,10 @@ export type Command =
       type: 'mouseup',
       selector: string
     }
+  | {
+      type: 'focus',
+      selector: string
+    }
 
 export interface Cookie {
   url?: string
