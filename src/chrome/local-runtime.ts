@@ -55,7 +55,7 @@ export default class LocalRuntime {
       case 'returnHtml':
         return this.returnHtml()
       case 'returnPDF':
-        return this.returnPDF()
+        return this.returnPDF(command.options)
       case 'returnInputValue':
         return this.returnInputValue(command.selector)
       case 'type':
@@ -279,8 +279,8 @@ export default class LocalRuntime {
   }
 
   // Returns the S3 url or local file path
-  async returnPDF(): Promise<string> {
-    const data = await pdf(this.client)
+  async returnPDF(options: object): Promise<string> {
+    const data = await pdf(this.client, options)
 
     // check if S3 configured
     if (process.env['CHROMELESS_S3_BUCKET_NAME'] && process.env['CHROMELESS_S3_BUCKET_URL']) {

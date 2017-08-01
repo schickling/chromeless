@@ -186,8 +186,8 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return new Chromeless<string>({}, this)
   }
 
-  pdf(): Chromeless<string> {
-    this.lastReturnPromise = this.queue.process<string>({type: 'returnPDF'})
+  pdf(options = {}): Chromeless<string> {
+    this.lastReturnPromise = this.queue.process<string>({type: 'returnPDF', options})
 
     return new Chromeless<string>({}, this)
   }

@@ -82,7 +82,8 @@ export type Command =
       type: 'returnHtml'
     }
   | {
-      type: 'returnPDF'
+      type: 'returnPDF',
+      options: object
     }
   | {
       type: 'scrollTo'

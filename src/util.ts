@@ -332,10 +332,10 @@ export async function getHtml(client: Client): Promise<string> {
   return outerHTML
 }
 
-export async function pdf(client: Client): Promise<string> {
+export async function pdf(client: Client, options: object): Promise<string> {
   const {Page} = client
 
-  const pdf = await Page.printToPDF()
+  const pdf = await Page.printToPDF(options)
 
   return pdf.data
 }
