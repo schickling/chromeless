@@ -62,7 +62,7 @@ export type Command =
       url: string
     }
   | {
-      type: 'viewport'
+      type: 'setViewport'
       options: DeviceMetrics
   }
   | {

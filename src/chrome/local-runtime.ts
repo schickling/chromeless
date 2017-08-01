@@ -21,7 +21,7 @@ import {
   setCookies,
   getAllCookies,
   version,
-  mousedown, 
+  mousedown,
   mouseup
 } from '../util'
 
@@ -39,7 +39,7 @@ export default class LocalRuntime {
     switch (command.type) {
       case 'goto':
         return this.goto(command.url)
-        case 'viewport':
+        case 'setViewport':
           return setViewport(this.client, command.options)
       case 'wait': {
         if (command.timeout) {
@@ -87,28 +87,6 @@ export default class LocalRuntime {
     }
   }
 
-  private async viewport(width: number, height: number): Promise<void> {
-      // TODO what to configure
-      const config: any = {
-          deviceScaleFactor: 1,
-          mobile: false,
-          scale: 1,
-          fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
-      }
-
-      if (height > 0 && width > 0) {
-          config.height = height
-          config.width = width
-      }
-
-      await this.client.Emulation.setDeviceMetricsOverride(config)
-      await this.client.Emulation.setVisibleSize({
-          width: config.width,
-          height: config.height,
-      })
-      this.log(`Adjusted viewport to ${width}x${height}`)
-  }
-
   private async goto(url: string): Promise<void> {
     const {Network, Page} = this.client
     await Promise.all([Network.enable(), Page.enable()])
@@ -154,9 +132,9 @@ export default class LocalRuntime {
   }
 
   private async mousedown(selector: string): Promise<void> {
-      if (this.chromlessOptions.implicitWait) {
+      if (this.chromelessOptions.implicitWait) {
           this.log(`mousedown(): Waiting for ${selector}`)
-          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+          await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
@@ -164,15 +142,15 @@ export default class LocalRuntime {
           throw new Error(`mousedown(): node for selector ${selector} doesn't exist`)
       }
 
-      const {scale} = this.chromlessOptions.viewport
+      const {scale} = this.chromelessOptions.viewport
       await mousedown(this.client, selector, scale)
       this.log(`Mousedown on ${selector}`)
   }
 
   private async mousup(selector: string): Promise<void> {
-      if (this.chromlessOptions.implicitWait) {
+      if (this.chromelessOptions.implicitWait) {
           this.log(`mouseup(): Waiting for ${selector}`)
-          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+          await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
@@ -180,7 +158,7 @@ export default class LocalRuntime {
           throw new Error(`mouseup(): node for selector ${selector} doesn't exist`)
       }
 
-      const {scale} = this.chromlessOptions.viewport
+      const {scale} = this.chromelessOptions.viewport
       await mouseup(this.client, selector, scale)
       this.log(`Mouseup on ${selector}`)
   }

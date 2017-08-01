@@ -1,7 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { Client, Cookie } from './types'
-import { DeviceMetrics } from './types'
+import { Client, Cookie, DeviceMetrics } from './types'
 import * as CDP from 'chrome-remote-interface'
 
 export const version: string = ((): string => {
