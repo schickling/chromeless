@@ -14,6 +14,7 @@ import {
   scrollTo,
   press,
   clearCookies,
+  deleteCookie,
   getCookies,
   setCookies, getAllCookies, version,
 } from '../util'
@@ -57,8 +58,10 @@ export default class LocalRuntime {
         return this.press(command.keyCode, command.count, command.modifiers)
       case 'scrollTo':
         return this.scrollTo(command.x, command.y)
-      case 'cookiesClearAll':
-        return this.cookiesClearAll()
+      case 'cookiesDelete':
+        return this.cookiesDelete(command.name, command.url)
+      case 'cookiesClear':
+        return this.cookiesClear()
       case 'cookiesGet':
         return this.cookiesGet(command.nameOrQuery)
       case 'cookiesGetAll':
@@ -158,7 +161,18 @@ export default class LocalRuntime {
     throw new Error(`cookiesSet(): Invalid input ${nameOrCookies}, ${value}`)
   }
 
-  async cookiesClearAll(): Promise<void> {
+  async cookiesDelete(name: string, url: string): Promise<void> {
+    const { Network } = this.client
+    const canClearCookies = await Network.canClearBrowserCookies()
+    if (canClearCookies) {
+      await deleteCookie(this.client, name, url)
+      this.log(`Cookie ${name} cleared`)
+    } else {
+      this.log(`Cookie ${name} could not be cleared`)
+    }
+  }
+
+  async cookiesClear(): Promise<void> {
     const { Network } = this.client
     const canClearCookies = await Network.canClearBrowserCookies()
     if (canClearCookies) {
