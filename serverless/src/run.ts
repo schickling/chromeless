@@ -19,6 +19,7 @@ export default async (
   const chrome = new LocalChrome({
     ...options,
     remote: false,
+    launchChrome: false,
     cdp: { closeTab: true },
   })
 

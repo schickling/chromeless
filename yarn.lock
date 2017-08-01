@@ -48,9 +48,21 @@
   version "3.5.8"
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.8.tgz#242a83379f06c90f96acf6d1aeab3af6faebdb98"
 
+"@types/core-js@^0.9.41":
+  version "0.9.42"
+  resolved "https://npm.corp.appnexus.com/@types%2fcore-js/-/core-js-0.9.42.tgz#dd6da92cd7d5ab5ca0b4477524537c3e633b6bce"
+
 "@types/cuid@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@types/cuid/-/cuid-1.3.0.tgz#20b0e00ca555df564866bc52d2e251bf90c88db7"
+
+"@types/mkdirp@^0.3.29":
+  version "0.3.29"
+  resolved "https://npm.corp.appnexus.com/@types%2fmkdirp/-/mkdirp-0.3.29.tgz#7f2ad7ec55f914482fc9b1ec4bb1ae6028d46066"
+
+"@types/node@6.0.66":
+  version "6.0.66"
+  resolved "https://npm.corp.appnexus.com/@types%2fnode/-/node-6.0.66.tgz#5680b74a6135d33d4c00447e7c3dc691a4601625"
 
 "@types/node@^8.0.15":
   version "8.0.16"
@@ -774,6 +786,17 @@ chokidar@^1.4.2:
   optionalDependencies:
     fsevents "^1.0.0"
 
+chrome-launcher@^0.3.2:
+  version "0.3.2"
+  resolved "https://npm.corp.appnexus.com/chrome-launcher/-/chrome-launcher-0.3.2.tgz#c3a89e40ed2462899bac809417c4d7c451d5de05"
+  dependencies:
+    "@types/core-js" "^0.9.41"
+    "@types/mkdirp" "^0.3.29"
+    "@types/node" "6.0.66"
+    lighthouse-logger "^1.0.0"
+    mkdirp "0.5.1"
+    rimraf "^2.6.1"
+
 chrome-remote-interface@^0.24.2:
   version "0.24.2"
   resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.24.2.tgz#43a05440a1fa60b73769e72f3e7892ac11d66eba"
@@ -1005,7 +1028,7 @@ date-time@^2.1.0:
   dependencies:
     time-zone "^1.0.0"
 
-debug@^2.1.1, debug@^2.2.0:
+debug@^2.1.1, debug@^2.2.0, debug@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
@@ -1886,6 +1909,12 @@ leven@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/leven/-/leven-1.0.2.tgz#9144b6eebca5f1d0680169f1a6770dcea60b75c3"
 
+lighthouse-logger@^1.0.0:
+  version "1.0.0"
+  resolved "https://npm.corp.appnexus.com/lighthouse-logger/-/lighthouse-logger-1.0.0.tgz#c6abdfbbbf0b4a541ab33864802cbad8944bcc8c"
+  dependencies:
+    debug "^2.6.8"
+
 load-json-file@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-1.1.0.tgz#956905708d58b4bab4c2261b04f59f31c99374c0"
@@ -2069,7 +2098,7 @@ minimist@^1.1.0, minimist@^1.1.3, minimist@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
 
-"mkdirp@>=0.5 0", mkdirp@^0.5.1:
+mkdirp@0.5.1, "mkdirp@>=0.5 0", mkdirp@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:

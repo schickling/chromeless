@@ -94,13 +94,9 @@ run().catch(console.error.bind(console))
 
 ### Local Chrome Usage
 
-To run Chromeless locally, you need a recent version of Chrome or Chrome Canary installed and running.
+To run Chromeless locally, you need a recent version of Chrome or Chrome Canary installed (version 60 or greater). By default, chromeless will start Chrome automatically and will default to the most recent version found on your system if there's multiple. You can override this behavior by starting Chrome yourself, and passing a flag of `launchChrome: false` in the `Chromeless` constructor.
 
-**Windows** - Version 60 and greater is required for Chrome headless
-
-**Mac/Linux** - Version 59 and greater is required for Chrome headless
-
-For example, on MacOS:
+To launch Chrome yourself, and open the port for chromeless, follow this example:
 
 ```sh
 alias canary="/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary"
@@ -147,21 +143,23 @@ const chromeless = new Chromeless({
 - [`wait(timeout: number)`](docs/api.md#api-wait-timeout)
 - [`wait(selector: string)`](docs/api.md#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
-- [`focus(selector: string)`](docs/api.md#api-focus)
+- [`focus(selector: string)`](docs/api.md#api-focus) - Not implemented yet
 - [`press(keyCode: number, count?: number, modifiers?: any)`](docs/api.md#api-press)
 - [`type(input: string, selector?: string)`](docs/api.md#api-type)
 - [`back()`](docs/api.md#api-back) - Not implemented yet
 - [`forward()`](docs/api.md#api-forward) - Not implemented yet
 - [`refresh()`](docs/api.md#api-refresh) - Not implemented yet
-- [`mousedown()`](docs/api.md#api-mousedown) - Not implemented yet
-- [`mouseup()`](docs/api.md#api-mouseup) - Not implemented yet
+- [`mousedown(selector: string)`](docs/api.md#api-mousedown)
+- [`mouseup(selector: string)`](docs/api.md#api-mouseup)
 - [`scrollTo(x: number, y: number)`](docs/api.md#api-scrollto)
+- [`setHtml(html: string)`](docs/api.md#api-sethtml)
 - [`viewport(width: number, height: number)`](docs/api.md#api-viewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](docs/api.md#api-evaluate)
 - [`inputValue(selector: string)`](docs/api.md#api-inputvalue)
 - [`exists(selector: string)`](docs/api.md#api-exists)
 - [`screenshot()`](docs/api.md#api-screenshot)
 - [`pdf()`](docs/api.md#api-pdf) - Not implemented yet
+- [`getHtml()`](docs/api.md#api-gethtml)
 - [`cookiesGet()`](docs/api.md#api-cookiesget)
 - [`cookiesGet(name: string)`](docs/api.md#api-cookiesget-name)
 - [`cookiesGet(query: CookieQuery)`](docs/api.md#api-cookiesget-query) - Not implemented yet
