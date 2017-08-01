@@ -124,12 +124,14 @@ export default class Chromeless<T extends any> implements Promise<T> {
     throw new Error('Not implemented yet')
   }
 
-  mousedown(): Chromeless<T> {
-    throw new Error('Not implemented yet')
+  mousedown(selector: string): Chromeless<T> {
+      this.queue.enqueue({type: 'mousedown', selector})
+      return this
   }
 
-  mouseup(): Chromeless<T> {
-    throw new Error('Not implemented yet')
+  mouseup(selector: string): Chromeless<T> {
+      this.queue.enqueue({type: 'mouseup', selector})
+      return this
   }
 
   mouseover(): Chromeless<T> {
@@ -138,6 +140,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
 
   scrollTo(x: number, y: number): Chromeless<T> {
     this.queue.enqueue({type: 'scrollTo', x, y})
+
+    return this
+  }
+
+  setHtml(html: string): Chromeless<T> {
+    this.queue.enqueue({type: 'setHtml', html})
 
     return this
   }
@@ -166,6 +174,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
 
   screenshot(): Chromeless<string> {
     this.lastReturnPromise = this.queue.process<string>({type: 'returnScreenshot'})
+
+    return new Chromeless<string>({}, this)
+  }
+
+  getHtml(): Chromeless<string> {
+    this.lastReturnPromise = this.queue.process<string>({type: 'returnHtml'})
 
     return new Chromeless<string>({}, this)
   }

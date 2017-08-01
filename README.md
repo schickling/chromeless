@@ -96,9 +96,7 @@ run().catch(console.error.bind(console))
 
 To run Chromeless locally, you need a recent version of Chrome or Chrome Canary installed and running.
 
-**Windows** - Version 60 and greater is required for Chrome headless
-
-**Mac/Linux** - Version 59 and greater is required for Chrome headless
+Chromeless requires Chrome version 60 or greater.
 
 For example, on MacOS:
 
@@ -152,15 +150,17 @@ const chromeless = new Chromeless({
 - [`back()`](docs/api.md#api-back) - Not implemented yet
 - [`forward()`](docs/api.md#api-forward) - Not implemented yet
 - [`refresh()`](docs/api.md#api-refresh) - Not implemented yet
-- [`mousedown()`](docs/api.md#api-mousedown) - Not implemented yet
-- [`mouseup()`](docs/api.md#api-mouseup) - Not implemented yet
+- [`mousedown(selector: string)`](docs/api.md#api-mousedown)
+- [`mouseup(selector: string)`](docs/api.md#api-mouseup)
 - [`scrollTo(x: number, y: number)`](docs/api.md#api-scrollto)
+- [`setHtml(html: string)`](docs/api.md#api-sethtml)
 - [`viewport(width: number, height: number)`](docs/api.md#api-viewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](docs/api.md#api-evaluate)
 - [`inputValue(selector: string)`](docs/api.md#api-inputvalue)
 - [`exists(selector: string)`](docs/api.md#api-exists)
 - [`screenshot()`](docs/api.md#api-screenshot)
 - [`pdf()`](docs/api.md#api-pdf) - Not implemented yet
+- [`getHtml()`](docs/api.md#api-gethtml)
 - [`cookiesGet()`](docs/api.md#api-cookiesget)
 - [`cookiesGet(name: string)`](docs/api.md#api-cookiesget-name)
 - [`cookiesGet(query: CookieQuery)`](docs/api.md#api-cookiesget-query) - Not implemented yet
