@@ -124,7 +124,6 @@ export default class LocalRuntime {
     return scrollTo(this.client, x, y)
   }
 
-<<<<<<< HEAD
   private async mousedown(selector: string): Promise<void> {
       if (this.chromlessOptions.implicitWait) {
           this.log(`mousedown(): Waiting for ${selector}`)
@@ -155,10 +154,10 @@ export default class LocalRuntime {
       const {scale} = this.chromlessOptions.viewport
       await mouseup(this.client, selector, scale)
       this.log(`Mouseup on ${selector}`)
-=======
+  }
+
   private async setHtml(html: string): Promise<void> {
     await setHtml(this.client, html)
->>>>>>> master
   }
 
   async type(text: string, selector?: string): Promise<void> {
