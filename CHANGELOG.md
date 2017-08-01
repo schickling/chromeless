@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - CODE_OF_CONDUCT.md, CONTRIBUTING.md
+- `mousedown(selector: string): Chromeless<T>` event
+- `mouseup(selector: string): Chromeless<T>` event
 
 ### Changed
 - `.evaluate()` now returns the resulting value or a Promise [#110](https://github.com/graphcool/chromeless/pull/110) @joelgriffith
