@@ -21,11 +21,11 @@ import {
 export default class LocalRuntime {
 
   private client: Client
-  private chromlessOptions: ChromelessOptions
+  private chromelessOptions: ChromelessOptions
 
-  constructor(client: Client, chromlessOptions: ChromelessOptions) {
+  constructor(client: Client, chromelessOptions: ChromelessOptions) {
     this.client = client
-    this.chromlessOptions = chromlessOptions
+    this.chromelessOptions = chromelessOptions
   }
 
   async run(command: Command): Promise<any> {
@@ -86,14 +86,14 @@ export default class LocalRuntime {
 
   private async waitSelector(selector: string): Promise<void> {
     this.log(`Waiting for ${selector}`)
-    await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+    await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
     this.log(`Waited for ${selector}`)
   }
 
   private async click(selector: string): Promise<void> {
-    if (this.chromlessOptions.implicitWait) {
+    if (this.chromelessOptions.implicitWait) {
       this.log(`click(): Waiting for ${selector}`)
-      await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+      await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
     }
 
     const exists = await nodeExists(this.client, selector)
@@ -101,7 +101,7 @@ export default class LocalRuntime {
       throw new Error(`click(): node for selector ${selector} doesn't exist`)
     }
 
-    const {scale} = this.chromlessOptions.viewport
+    const {scale} = this.chromelessOptions.viewport
     await click(this.client, selector, scale)
     this.log(`Clicked on ${selector}`)
   }
@@ -116,9 +116,9 @@ export default class LocalRuntime {
 
   async type(text: string, selector?: string): Promise<void> {
     if (selector) {
-      if (this.chromlessOptions.implicitWait) {
+      if (this.chromelessOptions.implicitWait) {
         this.log(`type(): Waiting for ${selector}`)
-        await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+        await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
@@ -209,7 +209,7 @@ export default class LocalRuntime {
   }
 
   private log(msg: string): void {
-    if (this.chromlessOptions.debug) {
+    if (this.chromelessOptions.debug) {
       console.log(msg)
     }
   }
