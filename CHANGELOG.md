@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - CODE_OF_CONDUCT.md, CONTRIBUTING.md
+- When using chromeless locally, chromeless will now boot chrome automatically [#120](https://github.com/graphcool/chromeless/pull/120) @joelgriffith
 
 ### Changed
 - `.evaluate()` now returns the resulting value or a Promise [#110](https://github.com/graphcool/chromeless/pull/110) @joelgriffith
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Ensure latest version of Serverless is used during deployment. [#58](https://github.com/graphcool/chromeless/issues/58)
 - package repository url [#64](https://github.com/graphcool/chromeless/pull/64) @Hazealign
+- Spelling and minor bugfix when chromeless calls Version in CPD [#120](https://github.com/graphcool/chromeless/pull/120) @joelgriffith
 
 
 ## [1.0.1] - 2017-07-27
