@@ -146,6 +146,8 @@ await chromeless.wait(() => { return console.log('@TODO: put a better example he
 
 ### focus(selector: string): Chromeless<T>
 
+Not implemented yet
+
 Provide focus on a DOM element.
 
 __Arguments__
