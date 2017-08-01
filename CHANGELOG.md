@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - CODE_OF_CONDUCT.md, CONTRIBUTING.md
 - `getHtml()` and `setHtml()` APIs. [#112](https://github.com/graphcool/chromeless/pull/112), [#74](https://github.com/graphcool/chromeless/issues/74)
 - `mousedown(selector: string): Chromeless<T>` and `mouseup(selector: string): Chromeless<T>` APIs [#118](https://github.com/graphcool/chromeless/pull/118) @criticalbh
+- `focus(selector: string)` API [#132](https://github.com/graphcool/chromeless/pull/132) @criticalbh
 - When using chromeless locally, chromeless will now boot chrome automatically [#120](https://github.com/graphcool/chromeless/pull/120) @joelgriffith
+
 
 ### Changed
 - `.evaluate()` now returns the resulting value or a Promise [#110](https://github.com/graphcool/chromeless/pull/110) @joelgriffith
