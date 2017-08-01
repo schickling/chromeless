@@ -119,15 +119,10 @@ export async function click(client: Client, selector: string, scale: number) {
 }
 
 export async function focus(client: Client, selector: string): Promise<void> {
-  const {Runtime} = client
-  const focus = (selector) => {
-    return document.querySelector(selector).focus()
-  }
-  const expression = `(${focus})(\`${selector}\`)`
-
-  await Runtime.evaluate({
-    expression,
-  })
+  const {DOM} = client
+  const dom = await DOM.getDocument()
+  const node = await DOM.querySelector({nodeId: dom.root.nodeId, selector: selector})
+  await DOM.focus(node)
 }
 
 export async function evaluate<T>(client: Client, fn: string, ...args: any[]): Promise<T> {
