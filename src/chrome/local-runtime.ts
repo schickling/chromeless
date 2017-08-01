@@ -42,8 +42,8 @@ export default class LocalRuntime {
           throw new Error('waitFn not yet implemented')
         }
       }
-      case 'useragentSet':
-        return this.useragentSet(command.useragent)
+      case 'setUserAgent':
+        return this.setUserAgent(command.useragent)
       case 'click':
         return this.click(command.selector)
       case 'returnCode':
@@ -83,7 +83,7 @@ export default class LocalRuntime {
     this.log(`Navigated to ${url}`)
   }
 
-  private async useragentSet(useragent: string): Promise<void> {
+  private async setUserAgent(useragent: string): Promise<void> {
     this.userAgentValue = useragent
     await this.log(`Set useragent to ${this.userAgentValue}`)
   }

@@ -66,8 +66,8 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
-  useragentSet(useragent: string): Chromeless<T> {
-    this.queue.enqueue({type: 'useragentSet', useragent})
+  setUserAgent(useragent: string): Chromeless<T> {
+    this.queue.enqueue({type: 'setUserAgent', useragent})
 
     return this
   }

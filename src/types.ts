@@ -46,7 +46,7 @@ export type Command =
       url: string
     }
   | {
-      type: 'useragentSet'
+      type: 'setUserAgent'
       useragent: string
     }
   | {
