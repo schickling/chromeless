@@ -1,6 +1,7 @@
 export interface Client {
   Network: any
   Page: any
+  DOM: any
   Input: any
   Runtime: any
   Emulation: any
@@ -80,9 +81,16 @@ export type Command =
       type: 'returnScreenshot'
     }
   | {
+      type: 'returnHtml'
+    }
+  | {
       type: 'scrollTo'
       x: number
       y: number
+    }
+  | {
+      type: 'setHtml',
+      html: string
     }
   | {
       type: 'press'
@@ -109,6 +117,14 @@ export type Command =
   | {
       type: 'cookiesGet'
       nameOrQuery?: string | CookieQuery
+    }
+  | {
+      type: 'mousedown',
+      selector: string
+    }
+  | {
+      type: 'mouseup',
+      selector: string
     }
 
 export interface Cookie {

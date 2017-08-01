@@ -134,12 +134,36 @@ export async function evaluate<T>(client: Client, fn: string, ...args: any[]): P
   const {Runtime} = client
   const jsonArgs = JSON.stringify(args)
   const argStr = jsonArgs.substr(1, jsonArgs.length - 2)
-  const expression = `(${fn})(${argStr})`
+
+  const expression = `
+    (() => {
+      const expressionResult = (${fn})(${argStr});
+      if (expressionResult && expressionResult.then) {
+        expressionResult.catch((error) => { throw new Error(error); });
+        return expressionResult;
+      }
+      return Promise.resolve(expressionResult);
+    })();
+  `
 
   const result = await Runtime.evaluate({
     expression,
+    returnByValue: true,
+    awaitPromise: true,
   })
-  return result.result.value
+
+  if (result && result.exceptionDetails) {
+    throw new Error(
+      result.exceptionDetails.exception.value ||
+      result.exceptionDetails.exception.description
+    )
+  }
+
+  if (result && result.result) {
+    return result.result.value
+  }
+
+  return null
 }
 
 export async function type(client: Client, text: string, selector?: string): Promise<void> {
@@ -214,6 +238,13 @@ export async function scrollTo(client: Client, x: number, y: number): Promise<vo
   })
 }
 
+export async function setHtml(client: Client, html: string): Promise<void> {
+  const {Page} = client
+
+  const {frameTree: {frame: {id: frameId}}} = await Page.getResourceTree()
+  await Page.setDocumentContent({frameId, html})
+}
+
 export async function getCookies(client: Client, nameOrQuery?: string | Cookie): Promise<any> {
   if (nameOrQuery) {
     throw new Error('Not yet implemented')
@@ -247,6 +278,40 @@ export async function setCookies(client: Client, cookies: Cookie[]): Promise<voi
   }
 }
 
+export async function mousedown(client: Client, selector: string, scale: number) {
+    const clientRect = await getClientRect(client, selector)
+    const {Input} = client
+
+    const options = {
+        x: Math.round((clientRect.left + clientRect.width / 2) * scale),
+        y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+        button: 'left',
+        clickCount: 1,
+    }
+
+    await Input.dispatchMouseEvent({
+        ...options,
+        type: 'mousePressed'
+    })
+}
+
+export async function mouseup(client: Client, selector: string, scale: number) {
+    const clientRect = await getClientRect(client, selector)
+    const {Input} = client
+
+    const options = {
+        x: Math.round((clientRect.left + clientRect.width / 2) * scale),
+        y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+        button: 'left',
+        clickCount: 1,
+    }
+
+    await Input.dispatchMouseEvent({
+        ...options,
+        type: 'mouseReleased'
+    })
+}
+
 function getUrlFromCookie(cookie: Cookie) {
   const domain = cookie.domain.slice(1, cookie.domain.length)
   return `https://${domain}`
@@ -264,6 +329,14 @@ export async function screenshot(client: Client): Promise<string> {
   const screenshot = await Page.captureScreenshot({format: 'png'})
 
   return screenshot.data
+}
+
+export async function getHtml(client: Client): Promise<string> {
+  const {DOM} = client
+
+  const {root: {nodeId}} = await DOM.getDocument()
+  const {outerHTML} = await DOM.getOuterHTML({nodeId})
+  return outerHTML
 }
 
 export function getDebugOption(): boolean {

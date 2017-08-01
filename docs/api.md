@@ -18,15 +18,17 @@ Chromeless provides TypeScript typings.
 - [`back()`](#api-back) - Not implemented yet
 - [`forward()`](#api-forward) - Not implemented yet
 - [`refresh()`](#api-refresh) - Not implemented yet
-- [`mousedown()`](#api-mousedown) - Not implemented yet
-- [`mouseup()`](#api-mouseup) - Not implemented yet
+- [`mousedown(selector: string)`](#api-mousedown)
+- [`mouseup(selector: string)`](#api-mouseup)
 - [`scrollTo(x: number, y: number)`](#api-scrollto)
+- [`setHtml(html: string)`](#api-sethtml)
 - [`viewport(width: number, height: number)`](#api-viewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](#api-evaluate)
 - [`inputValue(selector: string)`](#api-inputvalue)
 - [`exists(selector: string)`](#api-exists)
 - [`screenshot()`](#api-screenshot)
 - [`pdf()`](#api-pdf) - Not implemented yet
+- [`getHtml()`](#api-gethtml)
 - [`cookiesGet()`](#api-cookiesget)
 - [`cookiesGet(name: string)`](#api-cookiesget-name)
 - [`cookiesGet(query: CookieQuery)`](#api-cookiesget-query) - Not implemented yet
@@ -159,6 +161,8 @@ await chromeless.cacheClear()
 
 ### focus(selector: string): Chromeless<T>
 
+Not implemented yet
+
 Provide focus on a DOM element.
 
 __Arguments__
@@ -237,17 +241,35 @@ Not implemented yet
 
 <a name="api-mousedown" />
 
-### mousedown() - Not implemented yet
+### mousedown(selector: string): Chromeless<T>
 
-Not implemented yet
+Send mousedown event on something in the DOM.
+
+__Arguments__
+- `selector` - DOM selector for element to send mousedown event
+
+__Example__
+
+```js
+await chromeless.mousedown('#item')
+```
 
 ---------------------------------------
 
 <a name="api-mouseup" />
 
-### mouseup() - Not implemented yet
+### mouseup(selector: string): Chromeless<T>
 
-Not implemented yet
+Send mouseup event on something in the DOM.
+
+__Arguments__
+- `selector` - DOM selector for element to send mouseup event
+
+__Example__
+
+```js
+await chromeless.mouseup('#placeholder')
+```
 
 ---------------------------------------
 
@@ -265,6 +287,23 @@ __Example__
 
 ```js
 await chromeless.scrollTo(500, 0)
+```
+
+---------------------------------------
+
+<a name="api-sethtml" />
+
+### setHtml(html: string): Chromeless<T>
+
+Sets given markup as the document's HTML.
+
+__Arguments__
+- `html` - HTML to set as the document's markup.
+
+__Example__
+
+```js
+await chromeless.setHtml('<h1>Hello world!</h1>')
 ```
 
 ---------------------------------------
@@ -291,10 +330,10 @@ await chromeless.viewport(1024, 800)
 
 ### evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[]): Chromeless<U>
 
-Evaluate Javascript code within Chrome in the context of the DOM.
+Evaluate Javascript code within Chrome in the context of the DOM. Returns the resulting value or a Promise.
 
 __Arguments__
-- `fn` - Function to evaluate within Chrome
+- `fn` - Function to evaluate within Chrome, can be async (Promise).
 - `[arguments]` - Arguments to pass to the function
 
 __Example__
@@ -371,6 +410,24 @@ console.log(screenshot) // prints local file path or S3 URL
 ### pdf() - Not implemented yet
 
 Not implemented yet
+
+---------------------------------------
+
+<a name="api-gethtml" />
+
+### getHtml(): Chromeless<string>
+
+Get full HTML of the loaded page.
+
+__Example__
+
+```js
+const html = await chromeless
+  .setHtml('<h1>Hello world!</h1>')
+  .getHtml()
+
+console.log(html) // <html><head></head><body><h1>Hello world!</h1></body></html>
+```
 
 ---------------------------------------
 
