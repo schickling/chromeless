@@ -96,6 +96,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
+  cacheClear(): Chromeless<T> {
+    this.queue.enqueue({type: 'cacheClear'})
+
+    return this
+  }
+
   focus(selector: string): Chromeless<T> {
     throw new Error('Not implemented yet')
   }

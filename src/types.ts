@@ -46,6 +46,9 @@ export type Command =
       url: string
     }
   | {
+      type: 'cacheClear'
+    }
+  | {
       type: 'wait'
       timeout?: number
       selector?: string
