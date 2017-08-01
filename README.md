@@ -94,11 +94,9 @@ run().catch(console.error.bind(console))
 
 ### Local Chrome Usage
 
-To run Chromeless locally, you need a recent version of Chrome or Chrome Canary installed and running.
+To run Chromeless locally, you need a recent version of Chrome or Chrome Canary installed (version 60 or greater). By default, chromeless will start Chrome automatically and will default to the most recent version found on your system if there's multiple. You can override this behavior by starting Chrome yourself, and passing a flag of `launchChrome: false` in the `Chromeless` constructor.
 
-Chromeless requires Chrome version 60 or greater.
-
-For example, on MacOS:
+To launch Chrome yourself, and open the port for chromeless, follow this example:
 
 ```sh
 alias canary="/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary"
@@ -144,7 +142,7 @@ const chromeless = new Chromeless({
 - [`wait(timeout: number)`](docs/api.md#api-wait-timeout)
 - [`wait(selector: string)`](docs/api.md#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
-- [`focus(selector: string)`](docs/api.md#api-focus)
+- [`focus(selector: string)`](docs/api.md#api-focus) - Not implemented yet
 - [`press(keyCode: number, count?: number, modifiers?: any)`](docs/api.md#api-press)
 - [`type(input: string, selector?: string)`](docs/api.md#api-type)
 - [`back()`](docs/api.md#api-back) - Not implemented yet
