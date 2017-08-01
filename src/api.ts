@@ -142,6 +142,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
+  setHtml(html: string): Chromeless<T> {
+    this.queue.enqueue({type: 'setHtml', html})
+
+    return this
+  }
+
   viewport(width: number, height: number): Chromeless<T> {
     throw new Error('Not implemented yet')
   }
@@ -166,6 +172,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
 
   screenshot(): Chromeless<string> {
     this.lastReturnPromise = this.queue.process<string>({type: 'returnScreenshot'})
+
+    return new Chromeless<string>({}, this)
+  }
+
+  getHtml(): Chromeless<string> {
+    this.lastReturnPromise = this.queue.process<string>({type: 'returnHtml'})
 
     return new Chromeless<string>({}, this)
   }
