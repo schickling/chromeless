@@ -276,6 +276,40 @@ export async function setCookies(client: Client, cookies: Cookie[]): Promise<voi
   }
 }
 
+export async function mousedown(client: Client, selector: string, scale: number) {
+    const clientRect = await getClientRect(client, selector)
+    const {Input} = client
+
+    const options = {
+        x: Math.round((clientRect.left + clientRect.width / 2) * scale),
+        y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+        button: 'left',
+        clickCount: 1,
+    }
+
+    await Input.dispatchMouseEvent({
+        ...options,
+        type: 'mousePressed'
+    })
+}
+
+export async function mouseup(client: Client, selector: string, scale: number) {
+    const clientRect = await getClientRect(client, selector)
+    const {Input} = client
+
+    const options = {
+        x: Math.round((clientRect.left + clientRect.width / 2) * scale),
+        y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+        button: 'left',
+        clickCount: 1,
+    }
+
+    await Input.dispatchMouseEvent({
+        ...options,
+        type: 'mouseReleased'
+    })
+}
+
 function getUrlFromCookie(cookie: Cookie) {
   const domain = cookie.domain.slice(1, cookie.domain.length)
   return `https://${domain}`

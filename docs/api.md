@@ -17,8 +17,8 @@ Chromeless provides TypeScript typings.
 - [`back()`](#api-back) - Not implemented yet
 - [`forward()`](#api-forward) - Not implemented yet
 - [`refresh()`](#api-refresh) - Not implemented yet
-- [`mousedown()`](#api-mousedown) - Not implemented yet
-- [`mouseup()`](#api-mouseup) - Not implemented yet
+- [`mousedown(selector: string)`](#api-mousedown)
+- [`mouseup(selector: string)`](#api-mouseup)
 - [`scrollTo(x: number, y: number)`](#api-scrollto)
 - [`setHtml(html: string)`](#api-sethtml)
 - [`viewport(width: number, height: number)`](#api-viewport)
@@ -224,17 +224,35 @@ Not implemented yet
 
 <a name="api-mousedown" />
 
-### mousedown() - Not implemented yet
+### mousedown(selector: string): Chromeless<T>
 
-Not implemented yet
+Send mousedown event on something in the DOM.
+
+__Arguments__
+- `selector` - DOM selector for element to send mousedown event
+
+__Example__
+
+```js
+await chromeless.mousedown('#item')
+```
 
 ---------------------------------------
 
 <a name="api-mouseup" />
 
-### mouseup() - Not implemented yet
+### mouseup(selector: string): Chromeless<T>
 
-Not implemented yet
+Send mouseup event on something in the DOM.
+
+__Arguments__
+- `selector` - DOM selector for element to send mouseup event
+
+__Example__
+
+```js
+await chromeless.mouseup('#placeholder')
+```
 
 ---------------------------------------
 
