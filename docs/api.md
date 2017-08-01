@@ -20,12 +20,14 @@ Chromeless provides TypeScript typings.
 - [`mousedown(selector: string)`](#api-mousedown)
 - [`mouseup(selector: string)`](#api-mouseup)
 - [`scrollTo(x: number, y: number)`](#api-scrollto)
+- [`setHtml(html: string)`](#api-sethtml)
 - [`viewport(width: number, height: number)`](#api-viewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](#api-evaluate)
 - [`inputValue(selector: string)`](#api-inputvalue)
 - [`exists(selector: string)`](#api-exists)
 - [`screenshot()`](#api-screenshot)
 - [`pdf()`](#api-pdf) - Not implemented yet
+- [`getHtml()`](#api-gethtml)
 - [`cookiesGet()`](#api-cookiesget)
 - [`cookiesGet(name: string)`](#api-cookiesget-name)
 - [`cookiesGet(query: CookieQuery)`](#api-cookiesget-query) - Not implemented yet
@@ -272,6 +274,23 @@ await chromeless.scrollTo(500, 0)
 
 ---------------------------------------
 
+<a name="api-sethtml" />
+
+### setHtml(html: string): Chromeless<T>
+
+Sets given markup as the document's HTML.
+
+__Arguments__
+- `html` - HTML to set as the document's markup.
+
+__Example__
+
+```js
+await chromeless.setHtml('<h1>Hello world!</h1>')
+```
+
+---------------------------------------
+
 <a name="api-viewport" />
 
 ### viewport(width: number, height: number)
@@ -374,6 +393,24 @@ console.log(screenshot) // prints local file path or S3 URL
 ### pdf() - Not implemented yet
 
 Not implemented yet
+
+---------------------------------------
+
+<a name="api-gethtml" />
+
+### getHtml(): Chromeless<string>
+
+Get full HTML of the loaded page.
+
+__Example__
+
+```js
+const html = await chromeless
+  .setHtml('<h1>Hello world!</h1>')
+  .getHtml()
+
+console.log(html) // <html><head></head><body><h1>Hello world!</h1></body></html>
+```
 
 ---------------------------------------
 

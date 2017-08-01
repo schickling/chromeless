@@ -9,9 +9,11 @@ import {
   click,
   evaluate,
   screenshot,
+  getHtml,
   type,
   getValue,
   scrollTo,
+  setHtml,
   press,
   clearCookies,
   getCookies,
@@ -49,6 +51,8 @@ export default class LocalRuntime {
         return this.returnExists(command.selector)
       case 'returnScreenshot':
         return this.returnScreenshot()
+      case 'returnHtml':
+        return this.returnHtml()
       case 'returnInputValue':
         return this.returnInputValue(command.selector)
       case 'type':
@@ -57,6 +61,8 @@ export default class LocalRuntime {
         return this.press(command.keyCode, command.count, command.modifiers)
       case 'scrollTo':
         return this.scrollTo(command.x, command.y)
+      case 'setHtml':
+        return this.setHtml(command.html)
       case 'cookiesClearAll':
         return this.cookiesClearAll()
       case 'cookiesGet':
@@ -118,6 +124,7 @@ export default class LocalRuntime {
     return scrollTo(this.client, x, y)
   }
 
+<<<<<<< HEAD
   private async mousedown(selector: string): Promise<void> {
       if (this.chromlessOptions.implicitWait) {
           this.log(`mousedown(): Waiting for ${selector}`)
@@ -148,6 +155,10 @@ export default class LocalRuntime {
       const {scale} = this.chromlessOptions.viewport
       await mouseup(this.client, selector, scale)
       this.log(`Mouseup on ${selector}`)
+=======
+  private async setHtml(html: string): Promise<void> {
+    await setHtml(this.client, html)
+>>>>>>> master
   }
 
   async type(text: string, selector?: string): Promise<void> {
@@ -242,6 +253,10 @@ export default class LocalRuntime {
 
       return filePath
     }
+  }
+
+  async returnHtml(): Promise<string> {
+    return await getHtml(this.client)
   }
 
   private log(msg: string): void {

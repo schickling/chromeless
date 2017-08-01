@@ -238,6 +238,13 @@ export async function scrollTo(client: Client, x: number, y: number): Promise<vo
   })
 }
 
+export async function setHtml(client: Client, html: string): Promise<void> {
+  const {Page} = client
+
+  const {frameTree: {frame: {id: frameId}}} = await Page.getResourceTree()
+  await Page.setDocumentContent({frameId, html})
+}
+
 export async function getCookies(client: Client, nameOrQuery?: string | Cookie): Promise<any> {
   if (nameOrQuery) {
     throw new Error('Not yet implemented')
@@ -322,6 +329,14 @@ export async function screenshot(client: Client): Promise<string> {
   const screenshot = await Page.captureScreenshot({format: 'png'})
 
   return screenshot.data
+}
+
+export async function getHtml(client: Client): Promise<string> {
+  const {DOM} = client
+
+  const {root: {nodeId}} = await DOM.getDocument()
+  const {outerHTML} = await DOM.getOuterHTML({nodeId})
+  return outerHTML
 }
 
 export function getDebugOption(): boolean {
