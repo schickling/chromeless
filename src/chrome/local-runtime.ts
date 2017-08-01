@@ -159,8 +159,14 @@ export default class LocalRuntime {
   }
 
   async cookiesClearAll(): Promise<void> {
-    await clearCookies(this.client)
-    this.log('Cookies cleared')
+    const { Network } = this.client
+    const canClearCookies = await Network.canClearBrowserCookies()
+    if (canClearCookies) {
+      await clearCookies(this.client)
+      this.log('Cookies cleared')
+    } else {
+      this.log('Cookies could not be cleared')
+    }
   }
 
   async press(keyCode: number, count?: number, modifiers?: any): Promise<void> {
