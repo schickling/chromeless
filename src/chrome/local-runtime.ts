@@ -9,9 +9,11 @@ import {
   click,
   evaluate,
   screenshot,
+  getHtml,
   type,
   getValue,
   scrollTo,
+  setHtml,
   press,
   setViewport,
   clearCookies,
@@ -19,6 +21,8 @@ import {
   setCookies,
   getAllCookies,
   version,
+  mousedown, 
+  mouseup
 } from '../util'
 
 export default class LocalRuntime {
@@ -54,6 +58,8 @@ export default class LocalRuntime {
         return this.returnExists(command.selector)
       case 'returnScreenshot':
         return this.returnScreenshot()
+      case 'returnHtml':
+        return this.returnHtml()
       case 'returnInputValue':
         return this.returnInputValue(command.selector)
       case 'type':
@@ -62,6 +68,8 @@ export default class LocalRuntime {
         return this.press(command.keyCode, command.count, command.modifiers)
       case 'scrollTo':
         return this.scrollTo(command.x, command.y)
+      case 'setHtml':
+        return this.setHtml(command.html)
       case 'cookiesClearAll':
         return this.cookiesClearAll()
       case 'cookiesGet':
@@ -70,6 +78,10 @@ export default class LocalRuntime {
         return this.cookiesGetAll()
       case 'cookiesSet':
         return this.cookiesSet(command.nameOrCookies, command.value)
+      case 'mousedown':
+        return this.mousedown(command.selector)
+      case 'mouseup':
+        return this.mousup(command.selector)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -139,6 +151,42 @@ export default class LocalRuntime {
 
   private async scrollTo<T>(x: number, y: number): Promise<void> {
     return scrollTo(this.client, x, y)
+  }
+
+  private async mousedown(selector: string): Promise<void> {
+      if (this.chromlessOptions.implicitWait) {
+          this.log(`mousedown(): Waiting for ${selector}`)
+          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+      }
+
+      const exists = await nodeExists(this.client, selector)
+      if (!exists) {
+          throw new Error(`mousedown(): node for selector ${selector} doesn't exist`)
+      }
+
+      const {scale} = this.chromlessOptions.viewport
+      await mousedown(this.client, selector, scale)
+      this.log(`Mousedown on ${selector}`)
+  }
+
+  private async mousup(selector: string): Promise<void> {
+      if (this.chromlessOptions.implicitWait) {
+          this.log(`mouseup(): Waiting for ${selector}`)
+          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+      }
+
+      const exists = await nodeExists(this.client, selector)
+      if (!exists) {
+          throw new Error(`mouseup(): node for selector ${selector} doesn't exist`)
+      }
+
+      const {scale} = this.chromlessOptions.viewport
+      await mouseup(this.client, selector, scale)
+      this.log(`Mouseup on ${selector}`)
+  }
+
+  private async setHtml(html: string): Promise<void> {
+    await setHtml(this.client, html)
   }
 
   async type(text: string, selector?: string): Promise<void> {
@@ -233,6 +281,10 @@ export default class LocalRuntime {
 
       return filePath
     }
+  }
+
+  async returnHtml(): Promise<string> {
+    return await getHtml(this.client)
   }
 
   private log(msg: string): void {
