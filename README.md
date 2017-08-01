@@ -142,7 +142,6 @@ const chromeless = new Chromeless({
 
 **Chrome methods**
 - [`goto(url: string)`](docs/api.md#api-goto)
-- [`viewport(options: DeviceMetrics)`](docs/api.md#api-viewport)
 - [`click(selector: string)`](docs/api.md#api-click)
 - [`wait(timeout: number)`](docs/api.md#api-wait-timeout)
 - [`wait(selector: string)`](docs/api.md#api-wait-selector)
@@ -156,7 +155,7 @@ const chromeless = new Chromeless({
 - [`mousedown()`](docs/api.md#api-mousedown) - Not implemented yet
 - [`mouseup()`](docs/api.md#api-mouseup) - Not implemented yet
 - [`scrollTo(x: number, y: number)`](docs/api.md#api-scrollto)
-- [`viewport(width: number, height: number)`](docs/api.md#api-viewport)
+- [`viewport(options: DeviceMetrics)`](docs/api.md#api-viewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](docs/api.md#api-evaluate)
 - [`inputValue(selector: string)`](docs/api.md#api-inputvalue)
 - [`exists(selector: string)`](docs/api.md#api-exists)
