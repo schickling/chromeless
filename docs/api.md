@@ -418,14 +418,14 @@ console.log(html) // <html><head></head><body><h1>Hello world!</h1></body></html
 
 <a name="api-cookiesget" />
 
-### cookiesGet(): Chromeless<Cookie[] | null>
+### get cookies(): Chromeless<Cookie[] | null>
 
 Returns all browser cookies for the current URL.
 
 __Example__
 
 ```js
-await chromeless.cookiesGet()
+await chromeless.cookies
 ```
 
 ---------------------------------------

@@ -187,25 +187,28 @@ export default class Chromeless<T extends any> implements Promise<T> {
   /**
    * Get the cookies for the current url
    */
-  cookiesGet(): Chromeless<Cookie[] | null>
+  get cookies(): Chromeless<Cookie[] | null> {
+    return this.cookiesGet(undefined)
+  }
+
   /**
    * Get a specific cookie for the current url
    * @param name
    */
-  cookiesGet(name: string): Chromeless<Cookie | null>
+  cookiesGet(name: string): Chromeless<Cookie[] | null>
   /**
    * Get a specific cookie by query. Not implemented yet
    * @param query
    */
   cookiesGet(query: CookieQuery): Chromeless<Cookie[] | null>
-  cookiesGet(nameOrQuery?: string | CookieQuery): Chromeless<Cookie | Cookie[] | null> {
+  cookiesGet(nameOrQuery?: string | CookieQuery): Chromeless<Cookie[] | null> {
     if (typeof nameOrQuery !== 'undefined' && typeof nameOrQuery !== 'string') {
       throw new Error('Querying cookies is not implemented yet')
     }
 
     this.lastReturnPromise = this.queue.process<Cookie[] | Cookie | null>({type: 'cookiesGet', nameOrQuery})
 
-    return new Chromeless<Cookie | Cookie[] | null>({}, this)
+    return new Chromeless<Cookie[] | null>({}, this)
   }
 
   cookiesGetAll(): Chromeless<Cookie[]> {

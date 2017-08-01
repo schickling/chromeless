@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - `.evaluate()` now returns the resulting value or a Promise [#110](https://github.com/graphcool/chromeless/pull/110) @joelgriffith
 - README improvements. @timsuchanek @adieuadieu @hax @Chrisgozd @githubixx @d2s @vladgolubev
+- `cookiesGet()` is now getter `cookies`
 
 ### Fixed
 - Ensure latest version of Serverless is used during deployment. [#58](https://github.com/graphcool/chromeless/issues/58)
