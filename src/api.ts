@@ -21,6 +21,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
       waitTimeout: 10000,
       remote: false,
       implicitWait: true,
+      launchChrome: true,
 
       ...options,
 
