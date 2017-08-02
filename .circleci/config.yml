@@ -12,5 +12,6 @@ jobs:
             set -x
             echo "Hello World"
             docker run -d --rm --name chrome --shm-size=1024m -p=127.0.0.1:9222:9222 --cap-add=SYS_ADMIN yukinying/chrome-headless-browser
-            yarn
-            yarn test
+            npm install
+            npm test
+            docker stop chrome
