@@ -23,7 +23,7 @@
     "watch": "tsc -w",
     "build": "rimraf dist; tsc -d",
     "prepublishOnly": "npm test; npm run build",
-    "test": "npm run tslint",
+    "test": "npm run build && npm run tslint && ava ./dist/tests/**/*.js",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "dependencies": {

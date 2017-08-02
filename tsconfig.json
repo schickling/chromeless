@@ -20,6 +20,7 @@
 	],
 	"include": [
 		"./src/**/*.ts",
+		"./tests/**/*.ts",
 		"./examples/**/*.ts"
 	]
 }

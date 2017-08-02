@@ -1,0 +1,8 @@
+version: 2
+jobs:
+   build:
+     docker:
+       - image: yukinying/chrome-headless-browser
+     steps:
+       - checkout
+       - run: docker run --init -it --rm --name chrome --shm-size=1024m -p=127.0.0.1:9222:9222 --cap-add=SYS_ADMIN yukinying/chrome-headless-browser
