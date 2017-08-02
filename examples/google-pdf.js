@@ -1,4 +1,4 @@
-const { Chromeless } = require('../')
+const { Chromeless } = require('chromeless')
 
 async function run() {
   const chromeless = new Chromeless()
