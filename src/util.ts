@@ -305,6 +305,44 @@ export async function mouseup(client: Client, selector: string, scale: number) {
     })
 }
 
+export async function clear(client: Client, selector: string): Promise<void> {
+    await wait(500)
+    await focus(client, selector)
+
+    const {Input} = client
+
+    const text = await getValue(client, selector)
+
+    const optionsDelete = {
+        nativeVirtualKeyCode: 46,
+        windowsVirtualKeyCode: 46,
+    }
+
+    const optionsBackspace = {
+        nativeVirtualKeyCode: 8,
+        windowsVirtualKeyCode: 8,
+    }
+
+    for (let i = 0; i < text.length; i++) {
+        await Input.dispatchKeyEvent({
+            ...optionsDelete,
+            type: 'rawKeyDown',
+        })
+        Input.dispatchKeyEvent({
+            ...optionsDelete,
+            type: 'keyUp',
+        })
+        await Input.dispatchKeyEvent({
+            ...optionsBackspace,
+            type: 'rawKeyDown',
+        })
+        Input.dispatchKeyEvent({
+            ...optionsBackspace,
+            type: 'keyUp',
+        })
+    }
+}
+
 function getUrlFromCookie(cookie: Cookie) {
   const domain = cookie.domain.slice(1, cookie.domain.length)
   return `https://${domain}`
