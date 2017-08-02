@@ -20,6 +20,18 @@ export default class LocalChrome implements Chrome {
     this.runtimeClientPromise = this.initRuntimeClient()
   }
 
+  private async initRuntimeClient(): Promise<RuntimeClient> {
+    const client = this.options.launchChrome ?
+      await this.startChrome() :
+      await this.connectToChrome()
+
+    await this.setViewport(client)
+
+    const runtime = new LocalRuntime(client, this.options)
+
+    return { client, runtime }
+  }
+
   private async startChrome(): Promise<Client> {
     this.chromeInstance = await launch({
       logLevel: this.options.debug ? 'info' : 'silent',
@@ -33,18 +45,6 @@ export default class LocalChrome implements Chrome {
     return await CDP({ target })
   }
 
-  private async initRuntimeClient(): Promise<RuntimeClient> {
-    const client = this.options.launchChrome ?
-      await this.startChrome() :
-      await this.connectToChrome()
-
-    await this.setViewport(client)
-
-    const runtime = new LocalRuntime(client, this.options)
-
-    return { client, runtime }
-  }
-
   private async setViewport(client: Client) {
     const { viewport = {} } = this.options
 
@@ -55,7 +55,8 @@ export default class LocalChrome implements Chrome {
       fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
     }
 
-    const versionResult = await CDP.Version({ port: this.chromeInstance.port })
+    const port = this.chromeInstance ? this.chromeInstance.port : 9222
+    const versionResult = await CDP.Version({ port })
     const isHeadless = versionResult['User-Agent'].includes('Headless')
 
     if (viewport.height && viewport.width) {
