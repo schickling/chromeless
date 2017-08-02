@@ -136,6 +136,10 @@ export type Command =
       type: 'focus'
       selector: string
     }
+  | {
+    type: 'clear',
+    selector: string
+  }
 
 export interface Cookie {
   url?: string

@@ -169,6 +169,7 @@ const chromeless = new Chromeless({
 - [`cookiesSet(cookies: Cookie[])`](docs/api.md#api-cookiesset-many)
 - [`cookiesClear(name: string)`](docs/api.md#api-cookiesclear)
 - [`cookiesClearAll()`](docs/api.md#api-cookiesclearall)
+- [`clear(selector: string)`](docs/api.md#api-clear)
 
 ## Configuring Development Environment
 

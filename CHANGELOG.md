@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - `placeholder()` API method [#000](https://github.com/graphcool/chromeless/pull/000) @contributor
+- `clear()` API method
 
 ### Changed
 

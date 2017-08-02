@@ -274,6 +274,11 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
+  clear(selector: string): Chromeless<T> {
+    this.queue.enqueue({type: 'clear', selector})
+    return this
+  }
+
   async end(): Promise<T> {
     const result = await this.lastReturnPromise
     await this.queue.end()
