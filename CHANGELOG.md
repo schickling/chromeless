@@ -9,12 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - CODE_OF_CONDUCT.md, CONTRIBUTING.md
-- `getHtml()` and `setHtml()` APIs. [#112](https://github.com/graphcool/chromeless/pull/112), [#74](https://github.com/graphcool/chromeless/issues/74)
+- `getHtml()` and `setHtml()` APIs. [#112](https://github.com/graphcool/chromeless/pull/112), [#74](https://github.com/graphcool/chromeless/issues/74) @seangransee
 - `mousedown(selector: string): Chromeless<T>` and `mouseup(selector: string): Chromeless<T>` APIs [#118](https://github.com/graphcool/chromeless/pull/118) @criticalbh
 - `focus(selector: string)` API [#132](https://github.com/graphcool/chromeless/pull/132) @criticalbh
 - When using chromeless locally, chromeless will now boot chrome automatically [#120](https://github.com/graphcool/chromeless/pull/120) @joelgriffith
-- `pdf()` API [#84](https://github.com/graphcool/chromeless/pull/84)
-
+- `pdf()` API method [#84](https://github.com/graphcool/chromeless/pull/84) @seangransee
+- `.setUserAgent()` API method to set the user-agent [#117] @joeyvandijk
 
 ### Changed
 - CDP options now get passed to `CDP.New()` [103](https://github.com/graphcool/chromeless/pull/103) @liady
@@ -24,7 +24,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Ensure latest version of Serverless is used during deployment. [#58](https://github.com/graphcool/chromeless/issues/58)
 - package repository url [#64](https://github.com/graphcool/chromeless/pull/64) @Hazealign
-- `.setUserAgent()` is added to customize the userAgent you want to sent with your browser request [#117] @joeyvandijk
 - Spelling and minor bugfix when chromeless calls Version in CPD [#120](https://github.com/graphcool/chromeless/pull/120) @joelgriffith
 
 ## [1.0.1] - 2017-07-27
