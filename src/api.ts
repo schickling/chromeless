@@ -175,6 +175,10 @@ export default class Chromeless<T extends any> implements Promise<T> {
   }
 
   screenshot(selector?: string, options?: ScreenshotOptions): Chromeless<string> {
+    if (typeof selector === 'object') {
+      options = selector
+      selector = undefined
+    }
     this.lastReturnPromise = this.queue.process<string>({type: 'returnScreenshot', selector, options})
 
     return new Chromeless<string>({}, this)

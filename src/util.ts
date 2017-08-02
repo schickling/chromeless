@@ -320,13 +320,13 @@ export async function getBoxModel(client: Client, selector: string): Promise<Box
   const {DOM} = client
   const {
     root: { nodeId: documentNodeId },
-  } = await DOM.getDocument();
+  } = await DOM.getDocument()
   const { nodeId } = await DOM.querySelector({
     selector: selector,
     nodeId: documentNodeId,
   })
 
-  return await DOM.getBoxModel({ nodeId });
+  return await DOM.getBoxModel({ nodeId })
 }
 
 export function boxModelToViewPort(model: BoxModel, scale: number): Viewport {
