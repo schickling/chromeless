@@ -1,6 +1,6 @@
 {
   "name": "chromeless",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "🖥 Chrome automation made simple. Runs locally or headless on AWS Lambda.",
   "homepage": "https://github.com/graphcool/chromeless",
   "license": "MIT",
@@ -48,6 +48,7 @@
     "lint-staged": "^4.0.2",
     "np": "^2.16.0",
     "prettier": "^1.5.3",
+    "rimraf": "^2.6.1",
     "tslint": "^5.5.0",
     "typescript": "^2.4.2"
   },
