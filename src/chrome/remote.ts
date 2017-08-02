@@ -177,7 +177,6 @@ export default class RemoteChrome implements Chrome {
       })
     })
 
-
     return promise
   }
 

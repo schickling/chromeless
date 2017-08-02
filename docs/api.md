@@ -28,7 +28,7 @@ Chromeless provides TypeScript typings.
 - [`exists(selector: string)`](#api-exists)
 - [`screenshot()`](#api-screenshot)
 - [`pdf(options?: PdfOptions)`](#api-pdf)
-- [`getHtml()`](#api-gethtml)
+- [`html()`](#api-html)
 - [`cookiesGet()`](#api-cookiesget)
 - [`cookiesGet(name: string)`](#api-cookiesget-name)
 - [`cookiesGet(query: CookieQuery)`](#api-cookiesget-query) - Not implemented yet
@@ -431,7 +431,7 @@ console.log(pdf) // prints local file path or S3 URL
 
 <a name="api-gethtml" />
 
-### getHtml(): Chromeless<string>
+### html(): Chromeless<string>
 
 Get full HTML of the loaded page.
 
@@ -440,7 +440,7 @@ __Example__
 ```js
 const html = await chromeless
   .setHtml('<h1>Hello world!</h1>')
-  .getHtml()
+  .html()
 
 console.log(html) // <html><head></head><body><h1>Hello world!</h1></body></html>
 ```

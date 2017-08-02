@@ -86,7 +86,7 @@ export type Command =
       type: 'returnHtml'
     }
   | {
-      type: 'returnPDF',
+      type: 'returnPdf',
       options?: PdfOptions
     }
   | {
