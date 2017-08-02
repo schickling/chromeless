@@ -53,7 +53,7 @@ export async function wait(timeout: number): Promise<void> {
 export async function nodeExists(client: Client, selector: string): Promise<boolean> {
   const {Runtime} = client
   const exists = (selector) => {
-    return document.querySelector(selector)
+    return !!document.querySelector(selector)
   }
 
   const expression = `(${exists})(\`${selector}\`)`
@@ -62,9 +62,7 @@ export async function nodeExists(client: Client, selector: string): Promise<bool
     expression,
   })
 
-  // counter intuitive: if it is a real object and not just null,
-  // the chrome debugger won't return a value but return a objectId
-  return typeof result.result.value === 'undefined'
+  return result.result.value
 }
 
 export async function getClientRect(client, selector): Promise<ClientRect> {
@@ -119,27 +117,46 @@ export async function click(client: Client, selector: string, scale: number) {
 }
 
 export async function focus(client: Client, selector: string): Promise<void> {
-  const {Runtime} = client
-  const focus = (selector) => {
-    return document.querySelector(selector).focus()
-  }
-  const expression = `(${focus})(\`${selector}\`)`
-
-  await Runtime.evaluate({
-    expression,
-  })
+  const {DOM} = client
+  const dom = await DOM.getDocument()
+  const node = await DOM.querySelector({nodeId: dom.root.nodeId, selector: selector})
+  await DOM.focus(node)
 }
 
 export async function evaluate<T>(client: Client, fn: string, ...args: any[]): Promise<T> {
   const {Runtime} = client
   const jsonArgs = JSON.stringify(args)
   const argStr = jsonArgs.substr(1, jsonArgs.length - 2)
-  const expression = `(${fn})(${argStr})`
+
+  const expression = `
+    (() => {
+      const expressionResult = (${fn})(${argStr});
+      if (expressionResult && expressionResult.then) {
+        expressionResult.catch((error) => { throw new Error(error); });
+        return expressionResult;
+      }
+      return Promise.resolve(expressionResult);
+    })();
+  `
 
   const result = await Runtime.evaluate({
     expression,
+    returnByValue: true,
+    awaitPromise: true,
   })
-  return result.result.value
+
+  if (result && result.exceptionDetails) {
+    throw new Error(
+      result.exceptionDetails.exception.value ||
+      result.exceptionDetails.exception.description
+    )
+  }
+
+  if (result && result.result) {
+    return result.result.value
+  }
+
+  return null
 }
 
 export async function type(client: Client, text: string, selector?: string): Promise<void> {
@@ -161,13 +178,7 @@ export async function type(client: Client, text: string, selector?: string): Pro
   }
 }
 
-export async function press(client: Client, keyCode: number, scale: number, count?: number, modifiers?: any): Promise<void> {
-
-  // special handling for backspace
-  if (keyCode === 8) {
-    await backspace(client, scale, count || 1)
-    return
-  }
+export async function press(client: Client, keyCode: number, count?: number, modifiers?: any): Promise<void> {
 
   const {Input} = client
 
@@ -196,38 +207,6 @@ export async function press(client: Client, keyCode: number, scale: number, coun
   }
 }
 
-export async function backspace(client: Client, n: number, scale: number, selector?: string): Promise<void> {
-  if (selector) {
-    await click(client, selector, scale)
-    await wait(500)
-  }
-
-  const {Input} = client
-
-  for (let i = 0; i < n; i++) {
-    const options = {
-      modifiers: 8,
-      key: 'Backspace',
-      code: 'Backspace',
-      nativeVirtualKeyCode: 8,
-      windowsVirtualKeyCode: 8,
-    }
-    await Input.dispatchKeyEvent({
-      ...options,
-      type: 'rawKeyDown',
-    })
-    await Input.dispatchKeyEvent({
-      ...options,
-      type: 'keyUp',
-    })
-  }
-  const options = {
-    type: 'rawKeyDown',
-    nativeVirtualKeyCode: 46,
-  }
-  await Input.dispatchKeyEvent(options)
-}
-
 export async function getValue(client: Client, selector: string): Promise<string> {
   const {Runtime} = client
   const browserCode = (selector) => {
@@ -250,6 +229,13 @@ export async function scrollTo(client: Client, x: number, y: number): Promise<vo
   await Runtime.evaluate({
     expression,
   })
+}
+
+export async function setHtml(client: Client, html: string): Promise<void> {
+  const {Page} = client
+
+  const {frameTree: {frame: {id: frameId}}} = await Page.getResourceTree()
+  await Page.setDocumentContent({frameId, html})
 }
 
 export async function getCookies(client: Client, nameOrQuery?: string | Cookie): Promise<any> {
@@ -285,6 +271,40 @@ export async function setCookies(client: Client, cookies: Cookie[]): Promise<voi
   }
 }
 
+export async function mousedown(client: Client, selector: string, scale: number) {
+    const clientRect = await getClientRect(client, selector)
+    const {Input} = client
+
+    const options = {
+        x: Math.round((clientRect.left + clientRect.width / 2) * scale),
+        y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+        button: 'left',
+        clickCount: 1,
+    }
+
+    await Input.dispatchMouseEvent({
+        ...options,
+        type: 'mousePressed'
+    })
+}
+
+export async function mouseup(client: Client, selector: string, scale: number) {
+    const clientRect = await getClientRect(client, selector)
+    const {Input} = client
+
+    const options = {
+        x: Math.round((clientRect.left + clientRect.width / 2) * scale),
+        y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+        button: 'left',
+        clickCount: 1,
+    }
+
+    await Input.dispatchMouseEvent({
+        ...options,
+        type: 'mouseReleased'
+    })
+}
+
 function getUrlFromCookie(cookie: Cookie) {
   const domain = cookie.domain.slice(1, cookie.domain.length)
   return `https://${domain}`
@@ -302,6 +322,14 @@ export async function screenshot(client: Client): Promise<string> {
   const screenshot = await Page.captureScreenshot({format: 'png'})
 
   return screenshot.data
+}
+
+export async function getHtml(client: Client): Promise<string> {
+  const {DOM} = client
+
+  const {root: {nodeId}} = await DOM.getDocument()
+  const {outerHTML} = await DOM.getOuterHTML({nodeId})
+  return outerHTML
 }
 
 export function getDebugOption(): boolean {

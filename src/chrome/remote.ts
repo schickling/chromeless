@@ -173,10 +173,10 @@ export default class RemoteChrome implements Chrome {
             }
           }
         })
+        this.channel.publish(this.TOPIC_REQUEST, JSON.stringify(command))
       })
     })
 
-    this.channel.publish(this.TOPIC_REQUEST, JSON.stringify(command))
 
     return promise
   }

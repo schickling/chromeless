@@ -19,6 +19,7 @@ export default async (
   const chrome = new LocalChrome({
     ...options,
     remote: false,
+    launchChrome: false,
     cdp: { closeTab: true },
   })
 
@@ -104,7 +105,7 @@ export default async (
 
           clearTimeout(timeout)
 
-          debug(`Mesage from ${TOPIC_REQUEST}`, message)
+          debug(`Message from ${TOPIC_REQUEST}`, message)
 
           const command = JSON.parse(message)
 
@@ -144,7 +145,7 @@ export default async (
           const message = buffer.toString()
           const data = JSON.parse(message)
 
-          debug(`Mesage from ${TOPIC_END}`, message)
+          debug(`Message from ${TOPIC_END}`, message)
           debug(
             `Client ${data.disconnected ? 'disconnected' : 'ended session'}.`
           )
