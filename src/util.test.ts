@@ -2,6 +2,7 @@ import Chromeless from '../src'
 
 import test from 'ava'
 
+// POC.
 test('google title', async t => {
   const chromeless = new Chromeless({ launchChrome: false })
   const title = await chromeless
