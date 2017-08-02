@@ -3,21 +3,21 @@ import { Client, Command, ChromelessOptions, Cookie, CookieQuery } from '../type
 import * as cuid from 'cuid'
 import * as fs from 'fs'
 import {
-  nodeExists,
-  wait,
-  waitForNode,
-  click,
-  evaluate,
-  screenshot,
-  getHtml,
-  type,
-  getValue,
-  scrollTo,
-  setHtml,
-  press,
-  clearCookies,
-  getCookies,
-  setCookies, getAllCookies, version, mousedown, mouseup, focus
+    nodeExists,
+    wait,
+    waitForNode,
+    click,
+    evaluate,
+    screenshot,
+    getHtml,
+    type,
+    getValue,
+    scrollTo,
+    setHtml,
+    press,
+    clearCookies,
+    getCookies,
+    setCookies, getAllCookies, version, mousedown, mouseup, focus, clear
 } from '../util'
 
 export default class LocalRuntime {
@@ -77,6 +77,8 @@ export default class LocalRuntime {
         return this.mousup(command.selector)
       case 'focus':
         return this.focus(command.selector)
+      case 'clear':
+        return this.clear(command.selector)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -127,9 +129,9 @@ export default class LocalRuntime {
   }
 
   private async mousedown(selector: string): Promise<void> {
-      if (this.chromlessOptions.implicitWait) {
+      if (this.chromelessOptions.implicitWait) {
           this.log(`mousedown(): Waiting for ${selector}`)
-          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+          await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
@@ -137,15 +139,15 @@ export default class LocalRuntime {
           throw new Error(`mousedown(): node for selector ${selector} doesn't exist`)
       }
 
-      const {scale} = this.chromlessOptions.viewport
+      const {scale} = this.chromelessOptions.viewport
       await mousedown(this.client, selector, scale)
       this.log(`Mousedown on ${selector}`)
   }
 
   private async mousup(selector: string): Promise<void> {
-      if (this.chromlessOptions.implicitWait) {
+      if (this.chromelessOptions.implicitWait) {
           this.log(`mouseup(): Waiting for ${selector}`)
-          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+          await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
@@ -153,7 +155,7 @@ export default class LocalRuntime {
           throw new Error(`mouseup(): node for selector ${selector} doesn't exist`)
       }
 
-      const {scale} = this.chromlessOptions.viewport
+      const {scale} = this.chromelessOptions.viewport
       await mouseup(this.client, selector, scale)
       this.log(`Mouseup on ${selector}`)
   }
@@ -163,9 +165,9 @@ export default class LocalRuntime {
   }
 
   private async focus(selector: string): Promise<void> {
-      if (this.chromlessOptions.implicitWait) {
+      if (this.chromelessOptions.implicitWait) {
           this.log(`focus(): Waiting for ${selector}`)
-          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+          await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
@@ -175,6 +177,22 @@ export default class LocalRuntime {
 
       await focus(this.client, selector)
       this.log(`Focus on ${selector}`)
+  }
+
+  async clear(selector: string): Promise<void> {
+      if (selector) {
+          if (this.chromelessOptions.implicitWait) {
+              this.log(`clear(): Waiting for ${selector}`)
+              await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
+          }
+
+          const exists = await nodeExists(this.client, selector)
+          if (!exists) {
+              throw new Error(`clear(): Node not found for selector: ${selector}`)
+          }
+      }
+      await clear(this.client, selector)
+      this.log(`${selector} cleared`)
   }
 
   async type(text: string, selector?: string): Promise<void> {
