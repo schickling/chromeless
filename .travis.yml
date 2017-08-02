@@ -1,9 +1,0 @@
-language: node
-
-services:
-  - docker
-
-before_install:
-  - docker -v
-  - docker pull yukinying/chrome-headless-browser
-  - docker run --init -it --rm --name chrome --shm-size=1024m -p=127.0.0.1:9222:9222 --cap-add=SYS_ADMIN yukinying/chrome-headless-browser
