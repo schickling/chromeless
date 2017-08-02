@@ -161,8 +161,6 @@ await chromeless.cacheClear()
 
 ### focus(selector: string): Chromeless<T>
 
-Not implemented yet
-
 Provide focus on a DOM element.
 
 __Arguments__

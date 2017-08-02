@@ -21,6 +21,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
       waitTimeout: 10000,
       remote: false,
       implicitWait: true,
+      launchChrome: true,
 
       ...options,
 
@@ -103,7 +104,8 @@ export default class Chromeless<T extends any> implements Promise<T> {
   }
 
   focus(selector: string): Chromeless<T> {
-    throw new Error('Not implemented yet')
+      this.queue.enqueue({type: 'focus', selector})
+      return this
   }
 
   press(keyCode: number, count?: number, modifiers?: any): Chromeless<T> {

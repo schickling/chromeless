@@ -53,7 +53,7 @@ export async function wait(timeout: number): Promise<void> {
 export async function nodeExists(client: Client, selector: string): Promise<boolean> {
   const {Runtime} = client
   const exists = (selector) => {
-    return document.querySelector(selector)
+    return !!document.querySelector(selector)
   }
 
   const expression = `(${exists})(\`${selector}\`)`
@@ -62,9 +62,7 @@ export async function nodeExists(client: Client, selector: string): Promise<bool
     expression,
   })
 
-  // counter intuitive: if it is a real object and not just null,
-  // the chrome debugger won't return a value but return a objectId
-  return typeof result.result.value === 'undefined'
+  return result.result.value
 }
 
 export async function getClientRect(client, selector): Promise<ClientRect> {
@@ -119,15 +117,10 @@ export async function click(client: Client, selector: string, scale: number) {
 }
 
 export async function focus(client: Client, selector: string): Promise<void> {
-  const {Runtime} = client
-  const focus = (selector) => {
-    return document.querySelector(selector).focus()
-  }
-  const expression = `(${focus})(\`${selector}\`)`
-
-  await Runtime.evaluate({
-    expression,
-  })
+  const {DOM} = client
+  const dom = await DOM.getDocument()
+  const node = await DOM.querySelector({nodeId: dom.root.nodeId, selector: selector})
+  await DOM.focus(node)
 }
 
 export async function evaluate<T>(client: Client, fn: string, ...args: any[]): Promise<T> {

@@ -32,6 +32,7 @@ export interface ChromelessOptions {
     height?: number // 900 if headless
     scale?: number // 1
   }
+  launchChrome?: boolean // auto-launch chrome (local) `true`
   cdp?: CDPOptions
   remote?: RemoteOptions | boolean
 }
@@ -124,6 +125,10 @@ export type Command =
     }
   | {
       type: 'mouseup',
+      selector: string
+    }
+  | {
+      type: 'focus',
       selector: string
     }
 
