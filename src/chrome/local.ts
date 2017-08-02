@@ -25,20 +25,22 @@ export default class LocalChrome implements Chrome {
   private async startChrome(): Promise<Client> {
     this.chromeInstance = await launch({
       logLevel: this.options.debug ? 'info' : 'silent',
-      port: this.options.cdp.port
+      port: this.options.cdp.port,
     })
-    return await CDP({ port: this.chromeInstance.port })
+    const { host, secure } = this.options.cdp
+    return await CDP({ port: this.chromeInstance.port, host, secure })
   }
 
   private async connectToChrome(): Promise<Client> {
-    const target = await CDP.New()
+    const { port, host, secure } = this.options.cdp
+    const target = await CDP.New({ port, host, secure })
     return await CDP({ target })
   }
 
   private async initRuntimeClient(): Promise<RuntimeClient> {
-    const client = this.options.launchChrome ?
-      await this.startChrome() :
-      await this.connectToChrome()
+    const client = this.options.launchChrome
+      ? await this.startChrome()
+      : await this.connectToChrome()
 
     const { viewport = {} as DeviceMetrics} = this.options
     await setViewport(client, viewport as DeviceMetrics)
@@ -71,11 +73,11 @@ export default class LocalChrome implements Chrome {
     } else {
       config.height = await evaluate(
         client,
-        (() => window.innerHeight).toString()
+        (() => window.innerHeight).toString(),
       )
       config.width = await evaluate(
         client,
-        (() => window.innerWidth).toString()
+        (() => window.innerWidth).toString(),
       )
     }
 

@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { Client, Cookie, DeviceMetrics } from './types'
+import { Client, Cookie, DeviceMetrics, PdfOptions } from './types'
 import * as CDP from 'chrome-remote-interface'
 
 export const version: string = ((): string => {
@@ -50,9 +50,13 @@ export async function setViewport(client: Client, viewport: DeviceMetrics = { wi
   return
 }
 
-export async function waitForNode(client: Client, selector: string, waitTimeout: number): Promise<void> {
-  const {Runtime} = client
-  const getNode = (selector) => {
+export async function waitForNode(
+  client: Client,
+  selector: string,
+  waitTimeout: number,
+): Promise<void> {
+  const { Runtime } = client
+  const getNode = selector => {
     return document.querySelector(selector)
   }
 
@@ -66,7 +70,9 @@ export async function waitForNode(client: Client, selector: string, waitTimeout:
       const interval = setInterval(async () => {
         if (new Date().getTime() - start > waitTimeout) {
           clearInterval(interval)
-          reject(new Error(`wait("${selector}") timed out after ${waitTimeout}ms`))
+          reject(
+            new Error(`wait("${selector}") timed out after ${waitTimeout}ms`),
+          )
         }
 
         const result = await Runtime.evaluate({
@@ -88,9 +94,12 @@ export async function wait(timeout: number): Promise<void> {
   return new Promise<void>((resolve, reject) => setTimeout(resolve, timeout))
 }
 
-export async function nodeExists(client: Client, selector: string): Promise<boolean> {
-  const {Runtime} = client
-  const exists = (selector) => {
+export async function nodeExists(
+  client: Client,
+  selector: string,
+): Promise<boolean> {
+  const { Runtime } = client
+  const exists = selector => {
     return !!document.querySelector(selector)
   }
 
@@ -104,9 +113,9 @@ export async function nodeExists(client: Client, selector: string): Promise<bool
 }
 
 export async function getClientRect(client, selector): Promise<ClientRect> {
-  const {Runtime} = client
+  const { Runtime } = client
 
-  const code = (selector) => {
+  const code = selector => {
     const element = document.querySelector(selector)
     if (!element) {
       return undefined
@@ -124,7 +133,7 @@ export async function getClientRect(client, selector): Promise<ClientRect> {
   }
 
   const expression = `(${code})(\`${selector}\`)`
-  const result = await Runtime.evaluate({expression})
+  const result = await Runtime.evaluate({ expression })
 
   if (!result.result.value) {
     throw new Error(`No element found for selector: ${selector}`)
@@ -135,7 +144,7 @@ export async function getClientRect(client, selector): Promise<ClientRect> {
 
 export async function click(client: Client, selector: string, scale: number) {
   const clientRect = await getClientRect(client, selector)
-  const {Input} = client
+  const { Input } = client
 
   const options = {
     x: Math.round((clientRect.left + clientRect.width / 2) * scale),
@@ -146,23 +155,30 @@ export async function click(client: Client, selector: string, scale: number) {
 
   await Input.dispatchMouseEvent({
     ...options,
-    type: 'mousePressed'
+    type: 'mousePressed',
   })
   await Input.dispatchMouseEvent({
     ...options,
-    type: 'mouseReleased'
+    type: 'mouseReleased',
   })
 }
 
 export async function focus(client: Client, selector: string): Promise<void> {
-  const {DOM} = client
+  const { DOM } = client
   const dom = await DOM.getDocument()
-  const node = await DOM.querySelector({nodeId: dom.root.nodeId, selector: selector})
+  const node = await DOM.querySelector({
+    nodeId: dom.root.nodeId,
+    selector: selector,
+  })
   await DOM.focus(node)
 }
 
-export async function evaluate<T>(client: Client, fn: string, ...args: any[]): Promise<T> {
-  const {Runtime} = client
+export async function evaluate<T>(
+  client: Client,
+  fn: string,
+  ...args: any[]
+): Promise<T> {
+  const { Runtime } = client
   const jsonArgs = JSON.stringify(args)
   const argStr = jsonArgs.substr(1, jsonArgs.length - 2)
 
@@ -186,7 +202,7 @@ export async function evaluate<T>(client: Client, fn: string, ...args: any[]): P
   if (result && result.exceptionDetails) {
     throw new Error(
       result.exceptionDetails.exception.value ||
-      result.exceptionDetails.exception.description
+        result.exceptionDetails.exception.description,
     )
   }
 
@@ -197,13 +213,17 @@ export async function evaluate<T>(client: Client, fn: string, ...args: any[]): P
   return null
 }
 
-export async function type(client: Client, text: string, selector?: string): Promise<void> {
+export async function type(
+  client: Client,
+  text: string,
+  selector?: string,
+): Promise<void> {
   if (selector) {
     await focus(client, selector)
     await wait(500)
   }
 
-  const {Input} = client
+  const { Input } = client
 
   for (let i = 0; i < text.length; i++) {
     const char = text[i]
@@ -216,9 +236,13 @@ export async function type(client: Client, text: string, selector?: string): Pro
   }
 }
 
-export async function press(client: Client, keyCode: number, count?: number, modifiers?: any): Promise<void> {
-
-  const {Input} = client
+export async function press(
+  client: Client,
+  keyCode: number,
+  count?: number,
+  modifiers?: any,
+): Promise<void> {
+  const { Input } = client
 
   if (count === undefined) {
     count = 1
@@ -245,9 +269,12 @@ export async function press(client: Client, keyCode: number, count?: number, mod
   }
 }
 
-export async function getValue(client: Client, selector: string): Promise<string> {
-  const {Runtime} = client
-  const browserCode = (selector) => {
+export async function getValue(
+  client: Client,
+  selector: string,
+): Promise<string> {
+  const { Runtime } = client
+  const browserCode = selector => {
     return document.querySelector(selector).value
   }
   const expression = `(${browserCode})(\`${selector}\`)`
@@ -258,8 +285,12 @@ export async function getValue(client: Client, selector: string): Promise<string
   return result.result.value
 }
 
-export async function scrollTo(client: Client, x: number, y: number): Promise<void> {
-  const {Runtime} = client
+export async function scrollTo(
+  client: Client,
+  x: number,
+  y: number,
+): Promise<void> {
+  const { Runtime } = client
   const browserCode = (x, y) => {
     return window.scrollTo(x, y)
   }
@@ -270,77 +301,87 @@ export async function scrollTo(client: Client, x: number, y: number): Promise<vo
 }
 
 export async function setHtml(client: Client, html: string): Promise<void> {
-  const {Page} = client
+  const { Page } = client
 
-  const {frameTree: {frame: {id: frameId}}} = await Page.getResourceTree()
-  await Page.setDocumentContent({frameId, html})
+  const { frameTree: { frame: { id: frameId } } } = await Page.getResourceTree()
+  await Page.setDocumentContent({ frameId, html })
 }
 
-export async function getCookies(client: Client, nameOrQuery?: string | Cookie): Promise<any> {
+export async function getCookies(
+  client: Client,
+  nameOrQuery?: string | Cookie,
+): Promise<any> {
   if (nameOrQuery) {
     throw new Error('Not yet implemented')
   }
 
-  const {Network} = client
+  const { Network } = client
 
   const fn = () => location.href
 
-  const url = await evaluate(client, `${fn}`) as string
+  const url = (await evaluate(client, `${fn}`)) as string
 
   const result = await Network.getCookies([url])
   return result.cookies
 }
 
 export async function getAllCookies(client: Client): Promise<any> {
-  const {Network} = client
+  const { Network } = client
 
   const result = await Network.getAllCookies()
   return result.cookies
 }
 
-export async function setCookies(client: Client, cookies: Cookie[]): Promise<void> {
-  const {Network} = client
+export async function setCookies(
+  client: Client,
+  cookies: Cookie[],
+): Promise<void> {
+  const { Network } = client
 
   for (const cookie of cookies) {
     await Network.setCookie({
       ...cookie,
-      url: getUrlFromCookie(cookie)
+      url: getUrlFromCookie(cookie),
     })
   }
 }
 
-export async function mousedown(client: Client, selector: string, scale: number) {
-    const clientRect = await getClientRect(client, selector)
-    const {Input} = client
+export async function mousedown(
+  client: Client,
+  selector: string,
+  scale: number,
+) {
+  const clientRect = await getClientRect(client, selector)
+  const { Input } = client
 
-    const options = {
-        x: Math.round((clientRect.left + clientRect.width / 2) * scale),
-        y: Math.round((clientRect.top + clientRect.height / 2) * scale),
-        button: 'left',
-        clickCount: 1,
-    }
+  const options = {
+    x: Math.round((clientRect.left + clientRect.width / 2) * scale),
+    y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+    button: 'left',
+    clickCount: 1,
+  }
 
-    await Input.dispatchMouseEvent({
-        ...options,
-        type: 'mousePressed'
-    })
+  await Input.dispatchMouseEvent({
+    ...options,
+    type: 'mousePressed',
+  })
 }
 
 export async function mouseup(client: Client, selector: string, scale: number) {
-    const clientRect = await getClientRect(client, selector)
-    const {Input} = client
+  const clientRect = await getClientRect(client, selector)
+  const { Input } = client
 
-    const options = {
-        x: Math.round((clientRect.left + clientRect.width / 2) * scale),
-        y: Math.round((clientRect.top + clientRect.height / 2) * scale),
-        button: 'left',
-        clickCount: 1,
-    }
+  const options = {
+    x: Math.round((clientRect.left + clientRect.width / 2) * scale),
+    y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+    button: 'left',
+    clickCount: 1,
+  }
 
-    await Input.dispatchMouseEvent({
-        ...options,
-        type: 'mouseReleased'
-    })
+  await Input.dispatchMouseEvent({
+    ...options,
+    type: 'mouseReleased',
+  })
 }
 
 function getUrlFromCookie(cookie: Cookie) {
@@ -349,32 +390,47 @@ function getUrlFromCookie(cookie: Cookie) {
 }
 
 export async function clearCookies(client: Client): Promise<void> {
-  const {Network} = client
+  const { Network } = client
 
   await Network.clearBrowserCookies()
 }
 
 export async function screenshot(client: Client): Promise<string> {
-  const {Page} = client
+  const { Page } = client
 
-  const screenshot = await Page.captureScreenshot({format: 'png'})
+  const screenshot = await Page.captureScreenshot({ format: 'png' })
 
   return screenshot.data
 }
 
-export async function getHtml(client: Client): Promise<string> {
-  const {DOM} = client
+export async function html(client: Client): Promise<string> {
+  const { DOM } = client
 
-  const {root: {nodeId}} = await DOM.getDocument()
-  const {outerHTML} = await DOM.getOuterHTML({nodeId})
+  const { root: { nodeId } } = await DOM.getDocument()
+  const { outerHTML } = await DOM.getOuterHTML({ nodeId })
   return outerHTML
 }
 
+export async function pdf(
+  client: Client,
+  options?: PdfOptions,
+): Promise<string> {
+  const { Page } = client
+
+  const pdf = await Page.printToPDF(options)
+
+  return pdf.data
+}
+
 export function getDebugOption(): boolean {
-  if (process && process.env && process.env['DEBUG'] && process.env['DEBUG'].includes('chromeless')) {
+  if (
+    process &&
+    process.env &&
+    process.env['DEBUG'] &&
+    process.env['DEBUG'].includes('chromeless')
+  ) {
     return true
   }
 
   return false
 }
-
