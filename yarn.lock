@@ -786,9 +786,9 @@ chokidar@^1.4.2:
   optionalDependencies:
     fsevents "^1.0.0"
 
-chrome-launcher@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/chrome-launcher/-/chrome-launcher-0.3.2.tgz#c3a89e40ed2462899bac809417c4d7c451d5de05"
+chrome-launcher@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/chrome-launcher/-/chrome-launcher-0.4.0.tgz#805e4a90d3d16c93655216aeba1fe880922ecc1f"
   dependencies:
     "@types/core-js" "^0.9.41"
     "@types/mkdirp" "^0.3.29"

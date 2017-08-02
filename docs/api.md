@@ -429,7 +429,7 @@ console.log(pdf) // prints local file path or S3 URL
 
 ---------------------------------------
 
-<a name="api-gethtml" />
+<a name="api-html" />
 
 ### html(): Chromeless<string>
 
