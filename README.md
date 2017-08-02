@@ -138,6 +138,7 @@ const chromeless = new Chromeless({
 
 **Chrome methods**
 - [`goto(url: string)`](docs/api.md#api-goto)
+- [`setUserAgent(useragent: string)`](docs/api.md#api-setUserAgent)
 - [`click(selector: string)`](docs/api.md#api-click)
 - [`wait(timeout: number)`](docs/api.md#api-wait-timeout)
 - [`wait(selector: string)`](docs/api.md#api-wait-selector)
@@ -158,8 +159,8 @@ const chromeless = new Chromeless({
 - [`inputValue(selector: string)`](docs/api.md#api-inputvalue)
 - [`exists(selector: string)`](docs/api.md#api-exists)
 - [`screenshot()`](docs/api.md#api-screenshot)
-- [`pdf()`](docs/api.md#api-pdf) - Not implemented yet
-- [`getHtml()`](docs/api.md#api-gethtml)
+- [`pdf(options?: PdfOptions)`](docs/api.md#api-pdf)
+- [`html()`](docs/api.md#api-html)
 - [`cookiesGet()`](docs/api.md#api-cookiesget)
 - [`cookiesGet(name: string)`](docs/api.md#api-cookiesget-name)
 - [`cookiesGet(query: CookieQuery)`](docs/api.md#api-cookiesget-query) - Not implemented yet

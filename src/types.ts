@@ -49,6 +49,10 @@ export type Command =
     }
   | {
       type: 'cacheClear'
+  }
+  | {
+      type: 'setUserAgent'
+      useragent: string
     }
   | {
       type: 'wait'
@@ -85,12 +89,16 @@ export type Command =
       type: 'returnHtml'
     }
   | {
+      type: 'returnPdf'
+      options?: PdfOptions
+    }
+  | {
       type: 'scrollTo'
       x: number
       y: number
     }
   | {
-      type: 'setHtml',
+      type: 'setHtml'
       html: string
     }
   | {
@@ -120,15 +128,15 @@ export type Command =
       nameOrQuery?: string | CookieQuery
     }
   | {
-      type: 'mousedown',
+      type: 'mousedown'
       selector: string
     }
   | {
-      type: 'mouseup',
+      type: 'mouseup'
       selector: string
     }
   | {
-      type: 'focus',
+      type: 'focus'
       selector: string
     }
 
@@ -153,4 +161,20 @@ export interface CookieQuery {
   httpOnly?: boolean
   secure?: boolean
   session?: boolean
+}
+
+// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
+export interface PdfOptions {
+  landscape?: boolean
+  displayHeaderFooter?: boolean
+  printBackground?: boolean
+  scale?: number
+  paperWidth?: number
+  paperHeight?: number
+  marginTop?: number
+  marginBottom?: number
+  marginLeft?: number
+  marginRight?: number
+  pageRanges?: string
+  ignoreInvalidPageRanges?: boolean
 }
