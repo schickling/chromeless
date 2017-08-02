@@ -159,7 +159,7 @@ const chromeless = new Chromeless({
 - [`exists(selector: string)`](docs/api.md#api-exists)
 - [`screenshot()`](docs/api.md#api-screenshot)
 - [`pdf(options?: PdfOptions)`](docs/api.md#api-pdf)
-- [`getHtml()`](docs/api.md#api-gethtml)
+- [`html()`](docs/api.md#api-html)
 - [`cookiesGet()`](docs/api.md#api-cookiesget)
 - [`cookiesGet(name: string)`](docs/api.md#api-cookiesget-name)
 - [`cookiesGet(query: CookieQuery)`](docs/api.md#api-cookiesget-query) - Not implemented yet

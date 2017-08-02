@@ -86,7 +86,7 @@ export type Command =
       type: 'returnHtml'
     }
   | {
-      type: 'returnPDF',
+      type: 'returnPdf'
       options?: PdfOptions
     }
   | {
@@ -95,7 +95,7 @@ export type Command =
       y: number
     }
   | {
-      type: 'setHtml',
+      type: 'setHtml'
       html: string
     }
   | {
@@ -125,15 +125,15 @@ export type Command =
       nameOrQuery?: string | CookieQuery
     }
   | {
-      type: 'mousedown',
+      type: 'mousedown'
       selector: string
     }
   | {
-      type: 'mouseup',
+      type: 'mouseup'
       selector: string
     }
   | {
-      type: 'focus',
+      type: 'focus'
       selector: string
     }
 
@@ -162,16 +162,16 @@ export interface CookieQuery {
 
 // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
 export interface PdfOptions {
-  landscape?: boolean,
-  displayHeaderFooter?: boolean,
-  printBackground?: boolean,
-  scale?: number,
-  paperWidth?: number,
-  paperHeight?: number,
-  marginTop?: number,
-  marginBottom?: number,
-  marginLeft?: number,
-  marginRight?: number,
-  pageRanges?: string,
+  landscape?: boolean
+  displayHeaderFooter?: boolean
+  printBackground?: boolean
+  scale?: number
+  paperWidth?: number
+  paperHeight?: number
+  marginTop?: number
+  marginBottom?: number
+  marginLeft?: number
+  marginRight?: number
+  pageRanges?: string
   ignoreInvalidPageRanges?: boolean
 }

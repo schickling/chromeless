@@ -14,6 +14,7 @@ export function createPresignedURL(
     accessKeyId = process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY,
     sessionToken = process.env.AWS_SESSION_TOKEN,
+    // expires = 0, // @TODO: 300, check if this is working http://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html
   } = {}
 ): string {
   const signed = aws4.sign(
@@ -23,6 +24,9 @@ export function createPresignedURL(
       service,
       region,
       signQuery: true,
+      // headers: {
+      //   'X-Amz-Expires': expires,
+      // },
     },
     {
       accessKeyId,
