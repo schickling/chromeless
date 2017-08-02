@@ -26,7 +26,7 @@ Chromeless provides TypeScript typings.
 - [`inputValue(selector: string)`](#api-inputvalue)
 - [`exists(selector: string)`](#api-exists)
 - [`screenshot()`](#api-screenshot)
-- [`pdf(options?: object)`](#api-pdf)
+- [`pdf(options?: PdfOptions)`](#api-pdf)
 - [`getHtml()`](#api-gethtml)
 - [`cookiesGet()`](#api-cookiesget)
 - [`cookiesGet(name: string)`](#api-cookiesget-name)
@@ -390,7 +390,7 @@ console.log(screenshot) // prints local file path or S3 URL
 
 <a name="api-pdf" />
 
-### pdf(options?: object) - Chromeless<string>
+### pdf(options?: PdfOptions) - Chromeless<string>
 
 Print to a PDF of the document as framed by the viewport.
 When running Chromeless locally this returns the local file path to the PDF.

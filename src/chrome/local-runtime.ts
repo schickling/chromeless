@@ -1,5 +1,5 @@
 import * as AWS from 'aws-sdk'
-import { Client, Command, ChromelessOptions, Cookie, CookieQuery } from '../types'
+import { Client, Command, ChromelessOptions, Cookie, CookieQuery, PdfOptions } from '../types'
 import * as cuid from 'cuid'
 import * as fs from 'fs'
 import {
@@ -279,7 +279,7 @@ export default class LocalRuntime {
   }
 
   // Returns the S3 url or local file path
-  async returnPDF(options: object): Promise<string> {
+  async returnPDF(options?: PdfOptions): Promise<string> {
     const data = await pdf(this.client, options)
 
     // check if S3 configured

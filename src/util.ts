@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { Client, Cookie } from './types'
+import { Client, Cookie, PdfOptions } from './types'
 
 export const version: string = ((): string => {
   if (fs.existsSync(path.join(__dirname, '../package.json'))) {
@@ -332,7 +332,7 @@ export async function getHtml(client: Client): Promise<string> {
   return outerHTML
 }
 
-export async function pdf(client: Client, options: object): Promise<string> {
+export async function pdf(client: Client, options?: PdfOptions): Promise<string> {
   const {Page} = client
 
   const pdf = await Page.printToPDF(options)
