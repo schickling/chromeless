@@ -6,7 +6,7 @@ import {
   Cookie,
   CookieQuery,
   PdfOptions,
-  ScreenshotOptions
+  ScreenshotOptions,
 } from '../types'
 import * as cuid from 'cuid'
 import * as fs from 'fs'
@@ -297,16 +297,25 @@ export default class LocalRuntime {
   }
 
   // Returns the S3 url or local file path
-  async returnScreenshot(selector?: string, options?: ScreenshotOptions): Promise<string> {
+  async returnScreenshot(
+    selector?: string,
+    options?: ScreenshotOptions,
+  ): Promise<string> {
     if (selector) {
       if (this.chromelessOptions.implicitWait) {
         this.log(`screenshot(): Waiting for ${selector}`)
-        await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
+        await waitForNode(
+          this.client,
+          selector,
+          this.chromelessOptions.waitTimeout,
+        )
       }
 
       const exists = await nodeExists(this.client, selector)
       if (!exists) {
-        throw new Error(`screenshot(): node for selector ${selector} doesn't exist`)
+        throw new Error(
+          `screenshot(): node for selector ${selector} doesn't exist`,
+        )
       }
     }
 
@@ -330,11 +339,10 @@ export default class LocalRuntime {
         .promise()
 
       return `https://${process.env['CHROMELESS_S3_BUCKET_URL']}/${s3Path}`
-    }
-
-    // write to file instead
-    else {
-      const filePath = (options && options.filePath) || path.join(os.tmpdir(), `${cuid()}.png`)
+    } else {
+      // write to file instead
+      const filePath =
+        (options && options.filePath) || path.join(os.tmpdir(), `${cuid()}.png`)
       fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
 
       return filePath

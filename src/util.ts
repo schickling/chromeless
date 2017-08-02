@@ -357,11 +357,12 @@ export async function clearCookies(client: Client): Promise<void> {
   await Network.clearBrowserCookies()
 }
 
-export async function getBoxModel(client: Client, selector: string): Promise<BoxModel> {
+export async function getBoxModel(
+  client: Client,
+  selector: string,
+): Promise<BoxModel> {
   const { DOM } = client
-  const {
-    root: { nodeId: documentNodeId },
-  } = await DOM.getDocument()
+  const { root: { nodeId: documentNodeId } } = await DOM.getDocument()
   const { nodeId } = await DOM.querySelector({
     selector: selector,
     nodeId: documentNodeId,
@@ -376,16 +377,19 @@ export function boxModelToViewPort(model: BoxModel, scale: number): Viewport {
     y: model.content[1],
     width: model.width,
     height: model.height,
-    scale
+    scale,
   }
 }
 
-export async function screenshot(client: Client, selector: string): Promise<string> {
+export async function screenshot(
+  client: Client,
+  selector: string,
+): Promise<string> {
   const { Page } = client
 
   const captureScreenshotOptions = {
-      format: 'png',
-      clip: undefined
+    format: 'png',
+    clip: undefined,
   }
 
   if (selector) {
@@ -394,7 +398,7 @@ export async function screenshot(client: Client, selector: string): Promise<stri
   }
 
   const screenshot = await Page.captureScreenshot({
-    format: 'png'
+    format: 'png',
   })
 
   return screenshot.data

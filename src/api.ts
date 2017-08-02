@@ -1,7 +1,13 @@
 import ChromeLocal from './chrome/local'
 import ChromeRemote from './chrome/remote'
 import Queue from './queue'
-import { ChromelessOptions, Cookie, CookieQuery, PdfOptions, ScreenshotOptions } from './types'
+import {
+  ChromelessOptions,
+  Cookie,
+  CookieQuery,
+  PdfOptions,
+  ScreenshotOptions,
+} from './types'
 import { getDebugOption } from './util'
 
 export default class Chromeless<T extends any> implements Promise<T> {
@@ -195,7 +201,10 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return new Chromeless<boolean>({}, this)
   }
 
-  screenshot(selector?: string, options?: ScreenshotOptions): Chromeless<string> {
+  screenshot(
+    selector?: string,
+    options?: ScreenshotOptions,
+  ): Chromeless<string> {
     if (typeof selector === 'object') {
       options = selector
       selector = undefined
@@ -203,7 +212,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
     this.lastReturnPromise = this.queue.process<string>({
       type: 'returnScreenshot',
       selector,
-      options
+      options,
     })
 
     return new Chromeless<string>({}, this)

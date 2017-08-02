@@ -417,6 +417,14 @@ const screenshot = await chromeless
 console.log(screenshot) // prints local file path or S3 URL
 ```
 
+```js
+const screenshot = await chromeless
+  .goto('https://google.com/')
+  .screenshot({ filePath: path.join(__dirname, 'google-search.png') })
+
+console.log(screenshot) // prints local file path or S3 URL
+```
+
 ---------------------------------------
 
 <a name="api-pdf" />
