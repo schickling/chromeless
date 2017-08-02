@@ -4,13 +4,6 @@ import LocalChrome from './chrome/local'
 import { version } from './util'
 import { Cookie, ChromelessOptions } from './types'
 
-export {
-  Queue,
-  LocalChrome,
-  Chromeless,
-  Cookie,
-  ChromelessOptions,
-  version,
-}
+export { Queue, LocalChrome, Chromeless, Cookie, ChromelessOptions, version }
 
 export default Chromeless
