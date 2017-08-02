@@ -5,6 +5,7 @@ jobs:
       - image: circleci/node
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Start headless Chrome in Docker and run tests
           command: |
