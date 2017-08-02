@@ -155,19 +155,13 @@ export default class Chromeless<T extends any> implements Promise<T> {
   }
 
   setViewport(options: DeviceMetrics): Chromeless<T> {
-    this.queue.enqueue({type: 'setViewport', options})
-    
+    this.queue.enqueue({ type: 'setViewport', options })
+
     return this
   }
 
   setHtml(html: string): Chromeless<T> {
     this.queue.enqueue({ type: 'setHtml', html })
-
-    return this
-  }
-
-  setHtml(html: string): Chromeless<T> {
-    this.queue.enqueue({type: 'setHtml', html})
 
     return this
   }

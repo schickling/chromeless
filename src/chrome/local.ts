@@ -2,8 +2,7 @@ import { Chrome, Command, ChromelessOptions, Client } from '../types'
 import * as CDP from 'chrome-remote-interface'
 import { LaunchedChrome, launch } from 'chrome-launcher'
 import LocalRuntime from './local-runtime'
-import { 
-} from '../util'
+import { evaluate, setViewport } from '../util'
 import { DeviceMetrics } from '../types'
 
 interface RuntimeClient {
