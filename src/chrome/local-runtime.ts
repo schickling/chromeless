@@ -22,7 +22,8 @@ import {
   getAllCookies,
   version,
   mousedown,
-  mouseup
+  mouseup,
+  focus
 } from '../util'
 
 export default class LocalRuntime {
@@ -82,6 +83,8 @@ export default class LocalRuntime {
         return this.mousedown(command.selector)
       case 'mouseup':
         return this.mousup(command.selector)
+      case 'focus':
+        return this.focus(command.selector)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -165,6 +168,21 @@ export default class LocalRuntime {
 
   private async setHtml(html: string): Promise<void> {
     await setHtml(this.client, html)
+  }
+
+  private async focus(selector: string): Promise<void> {
+      if (this.chromlessOptions.implicitWait) {
+          this.log(`focus(): Waiting for ${selector}`)
+          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+      }
+
+      const exists = await nodeExists(this.client, selector)
+      if (!exists) {
+          throw new Error(`focus(): node for selector ${selector} doesn't exist`)
+      }
+
+      await focus(this.client, selector)
+      this.log(`Focus on ${selector}`)
   }
 
   async type(text: string, selector?: string): Promise<void> {

@@ -142,7 +142,7 @@ const chromeless = new Chromeless({
 - [`wait(timeout: number)`](docs/api.md#api-wait-timeout)
 - [`wait(selector: string)`](docs/api.md#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
-- [`focus(selector: string)`](docs/api.md#api-focus) - Not implemented yet
+- [`focus(selector: string)`](docs/api.md#api-focus)
 - [`press(keyCode: number, count?: number, modifiers?: any)`](docs/api.md#api-press)
 - [`type(input: string, selector?: string)`](docs/api.md#api-type)
 - [`back()`](docs/api.md#api-back) - Not implemented yet
