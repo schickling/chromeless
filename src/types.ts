@@ -48,6 +48,10 @@ export type Command =
       url: string
     }
   | {
+      type: 'setUserAgent'
+      useragent: string
+    }
+  | {
       type: 'wait'
       timeout?: number
       selector?: string
@@ -84,12 +88,16 @@ export type Command =
       type: 'returnHtml'
     }
   | {
+      type: 'returnPdf'
+      options?: PdfOptions
+    }
+  | {
       type: 'scrollTo'
       x: number
       y: number
     }
   | {
-      type: 'setHtml',
+      type: 'setHtml'
       html: string
     }
   | {
@@ -119,15 +127,15 @@ export type Command =
       nameOrQuery?: string | CookieQuery
     }
   | {
-      type: 'mousedown',
+      type: 'mousedown'
       selector: string
     }
   | {
-      type: 'mouseup',
+      type: 'mouseup'
       selector: string
     }
   | {
-      type: 'focus',
+      type: 'focus'
       selector: string
     }
 
@@ -154,6 +162,22 @@ export interface CookieQuery {
   session?: boolean
 }
 
+// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
+export interface PdfOptions {
+  landscape?: boolean
+  displayHeaderFooter?: boolean
+  printBackground?: boolean
+  scale?: number
+  paperWidth?: number
+  paperHeight?: number
+  marginTop?: number
+  marginBottom?: number
+  marginLeft?: number
+  marginRight?: number
+  pageRanges?: string
+  ignoreInvalidPageRanges?: boolean
+}
+
 export interface ScreenshotOptions {
   filePath?: string
 }
@@ -161,25 +185,25 @@ export interface ScreenshotOptions {
 export type Quad = Array<number>
 
 export interface ShapeOutsideInfo {
-    bounds: Quad
-    shape: Array<any>
-    marginShape: Array<any>
+  bounds: Quad
+  shape: Array<any>
+  marginShape: Array<any>
 }
 
 export interface BoxModel {
-    content: Quad
-    padding: Quad
-    border: Quad
-    margin: Quad
-    width: number
-    height: number
-    shapeOutside: ShapeOutsideInfo
+  content: Quad
+  padding: Quad
+  border: Quad
+  margin: Quad
+  width: number
+  height: number
+  shapeOutside: ShapeOutsideInfo
 }
 
 export interface Viewport {
-    x: number
-    y: number
-    width: number
-    height: number
-    scale: number
+  x: number
+  y: number
+  width: number
+  height: number
+  scale: number
 }
