@@ -27,12 +27,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - CODE_OF_CONDUCT.md, CONTRIBUTING.md
 
 ### Changed
-- CDP options now get passed to `CDP.New()` [103](https://github.com/graphcool/chromeless/pull/103) @liady
+- CDP options now get passed to `CDP.New()` [#103](https://github.com/graphcool/chromeless/pull/103) @liady
 - `.evaluate()` now returns the resulting value or a Promise [#110](https://github.com/graphcool/chromeless/pull/110) @joelgriffith
 - README improvements. @timsuchanek @adieuadieu @hax @Chrisgozd @githubixx @d2s @vladgolubev
 
 ### Fixed
-- Ensure latest version of Serverless is used during deployment. [#58](https://github.com/graphcool/chromeless/issues/58)
+- Ensure latest version of Serverless is used during deployment. [#58](https://github.com/graphcool/chromeless/issues/58) @adieuadieu
 - package repository url [#64](https://github.com/graphcool/chromeless/pull/64) @Hazealign
 - Spelling and minor bugfix when chromeless calls Version in CPD [#120](https://github.com/graphcool/chromeless/pull/120) @joelgriffith
 
