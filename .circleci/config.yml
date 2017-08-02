@@ -6,6 +6,6 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker run -d --rm --name chrome --shm-size=1024m -p=127.0.0.1:9222:9222 --cap-add=SYS_ADMIN yukinying/chrome-headless-browser
+      - run: docker run -d --rm --name chrome --shm-size 1024m -p 9222:9222 --cap-add SYS_ADMIN yukinying/chrome-headless-browser
       - run: npm install
       - run: npm test
