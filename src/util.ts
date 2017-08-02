@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { Client, Cookie } from './types'
+import { Client, Cookie, BoxModel, Viewport } from './types'
 
 export const version: string = ((): string => {
   if (fs.existsSync(path.join(__dirname, '../package.json'))) {
@@ -316,8 +316,41 @@ export async function clearCookies(client: Client): Promise<void> {
   await Network.clearBrowserCookies()
 }
 
-export async function screenshot(client: Client): Promise<string> {
+export async function getBoxModel(client: Client, selector: string): Promise<BoxModel> {
+  const {DOM} = client
+  const {
+    root: { nodeId: documentNodeId },
+  } = await DOM.getDocument();
+  const { nodeId } = await DOM.querySelector({
+    selector: selector,
+    nodeId: documentNodeId,
+  })
+
+  return await DOM.getBoxModel({ nodeId });
+}
+
+export function boxModelToViewPort(model: BoxModel, scale: number): Viewport {
+  return {
+    x: model.content[0],
+    y: model.content[1],
+    width: model.width,
+    height: model.height,
+    scale
+  }
+}
+
+export async function screenshot(client: Client, selector: string): Promise<string> {
   const {Page} = client
+
+  const captureScreenshotOptions = {
+      format: 'png',
+      clip: undefined
+  }
+
+  if (selector) {
+    const model = await getBoxModel(client, selector)
+    captureScreenshotOptions.clip = boxModelToViewPort(model, 1)
+  }
 
   const screenshot = await Page.captureScreenshot({format: 'png'})
 

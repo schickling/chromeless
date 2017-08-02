@@ -77,6 +77,8 @@ export type Command =
     }
   | {
       type: 'returnScreenshot'
+      selector?: string
+      options?: ScreenshotOptions
     }
   | {
       type: 'returnHtml'
@@ -150,4 +152,34 @@ export interface CookieQuery {
   httpOnly?: boolean
   secure?: boolean
   session?: boolean
+}
+
+export interface ScreenshotOptions {
+  filePath?: string
+}
+
+export type Quad = Array<number>
+
+export interface ShapeOutsideInfo {
+    bounds: Quad
+    shape: Array<any>
+    marginShape: Array<any>
+}
+
+export interface BoxModel {
+    content: Quad
+    padding: Quad
+    border: Quad
+    margin: Quad
+    width: number
+    height: number
+    shapeOutside: ShapeOutsideInfo
+}
+
+export interface Viewport {
+    x: number
+    y: number
+    width: number
+    height: number
+    scale: number
 }

@@ -156,7 +156,7 @@ const chromeless = new Chromeless({
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](docs/api.md#api-evaluate)
 - [`inputValue(selector: string)`](docs/api.md#api-inputvalue)
 - [`exists(selector: string)`](docs/api.md#api-exists)
-- [`screenshot()`](docs/api.md#api-screenshot)
+- [`screenshot(selector: string, options: ScreenshotOptions)`](docs/api.md#api-screenshot)
 - [`pdf()`](docs/api.md#api-pdf) - Not implemented yet
 - [`getHtml()`](docs/api.md#api-gethtml)
 - [`cookiesGet()`](docs/api.md#api-cookiesget)

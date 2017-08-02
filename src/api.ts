@@ -1,7 +1,7 @@
 import ChromeLocal from './chrome/local'
 import ChromeRemote from './chrome/remote'
 import Queue from './queue'
-import { ChromelessOptions, Cookie, CookieQuery } from './types'
+import { ChromelessOptions, Cookie, CookieQuery, ScreenshotOptions } from './types'
 import { getDebugOption } from './util'
 
 export default class Chromeless<T extends any> implements Promise<T> {
@@ -174,8 +174,8 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return new Chromeless<boolean>({}, this)
   }
 
-  screenshot(): Chromeless<string> {
-    this.lastReturnPromise = this.queue.process<string>({type: 'returnScreenshot'})
+  screenshot(selector?: string, options?: ScreenshotOptions): Chromeless<string> {
+    this.lastReturnPromise = this.queue.process<string>({type: 'returnScreenshot', selector, options})
 
     return new Chromeless<string>({}, this)
   }

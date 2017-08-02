@@ -1,7 +1,9 @@
 import * as AWS from 'aws-sdk'
-import { Client, Command, ChromelessOptions, Cookie, CookieQuery } from '../types'
+import { Client, Command, ChromelessOptions, Cookie, CookieQuery, ScreenshotOptions } from '../types'
 import * as cuid from 'cuid'
 import * as fs from 'fs'
+import * as os from 'os'
+import * as path from 'path'
 import {
   nodeExists,
   wait,
@@ -50,7 +52,7 @@ export default class LocalRuntime {
       case 'returnExists':
         return this.returnExists(command.selector)
       case 'returnScreenshot':
-        return this.returnScreenshot()
+        return this.returnScreenshot(command.selector, command.options)
       case 'returnHtml':
         return this.returnHtml()
       case 'returnInputValue':
@@ -127,9 +129,9 @@ export default class LocalRuntime {
   }
 
   private async mousedown(selector: string): Promise<void> {
-      if (this.chromlessOptions.implicitWait) {
+      if (this.chromelessOptions.implicitWait) {
           this.log(`mousedown(): Waiting for ${selector}`)
-          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+          await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
@@ -137,15 +139,15 @@ export default class LocalRuntime {
           throw new Error(`mousedown(): node for selector ${selector} doesn't exist`)
       }
 
-      const {scale} = this.chromlessOptions.viewport
+      const {scale} = this.chromelessOptions.viewport
       await mousedown(this.client, selector, scale)
       this.log(`Mousedown on ${selector}`)
   }
 
   private async mousup(selector: string): Promise<void> {
-      if (this.chromlessOptions.implicitWait) {
+      if (this.chromelessOptions.implicitWait) {
           this.log(`mouseup(): Waiting for ${selector}`)
-          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+          await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
@@ -153,7 +155,7 @@ export default class LocalRuntime {
           throw new Error(`mouseup(): node for selector ${selector} doesn't exist`)
       }
 
-      const {scale} = this.chromlessOptions.viewport
+      const {scale} = this.chromelessOptions.viewport
       await mouseup(this.client, selector, scale)
       this.log(`Mouseup on ${selector}`)
   }
@@ -163,9 +165,9 @@ export default class LocalRuntime {
   }
 
   private async focus(selector: string): Promise<void> {
-      if (this.chromlessOptions.implicitWait) {
+      if (this.chromelessOptions.implicitWait) {
           this.log(`focus(): Waiting for ${selector}`)
-          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+          await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
@@ -244,8 +246,8 @@ export default class LocalRuntime {
   }
 
   // Returns the S3 url or local file path
-  async returnScreenshot(): Promise<string> {
-    const data = await screenshot(this.client)
+  async returnScreenshot(selector?: string, options?: ScreenshotOptions): Promise<string> {
+    const data = await screenshot(this.client, selector)
 
     // check if S3 configured
     if (process.env['CHROMELESS_S3_BUCKET_NAME'] && process.env['CHROMELESS_S3_BUCKET_URL']) {
@@ -262,9 +264,9 @@ export default class LocalRuntime {
       return `https://${process.env['CHROMELESS_S3_BUCKET_URL']}/${s3Path}`
     }
 
-    // write to `/tmp` instead
+    // write to file instead
     else {
-      const filePath = `/tmp/${cuid()}.png`
+      const filePath = (options && options.filePath) || path.join(os.tmpdir(), `${cuid()}.png`)
       fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
 
       return filePath
