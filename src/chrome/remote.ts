@@ -24,7 +24,7 @@ function getEndpoint(remoteOptions: RemoteOptions | boolean): RemoteOptions {
   }
 
   throw new Error(
-    'No Chromeless remote endpoint & API key provided. Either set as "remote" option in constructor or set as "CHROMELESS_ENDPOINT_URL" and "CHROMELESS_ENDPOINT_API_KEY" env variables.'
+    'No Chromeless remote endpoint & API key provided. Either set as "remote" option in constructor or set as "CHROMELESS_ENDPOINT_URL" and "CHROMELESS_ENDPOINT_API_KEY" env variables.',
   )
 }
 
@@ -53,8 +53,8 @@ export default class RemoteChrome implements Chrome {
 
         reject(
           new Error(
-            "Timed out after 30sec. Connection couldn't be established."
-          )
+            "Timed out after 30sec. Connection couldn't be established.",
+          ),
         )
       }, 30000)
 
@@ -109,7 +109,7 @@ export default class RemoteChrome implements Chrome {
             channel.publish(
               this.TOPIC_NEW_SESSION,
               JSON.stringify({ channelId, options: this.options }),
-              { qos: 1 }
+              { qos: 1 },
             )
           })
 
@@ -121,16 +121,16 @@ export default class RemoteChrome implements Chrome {
 
                 if (data.outOfTime) {
                   console.warn(
-                    `Chromeless Proxy disconnected because it reached it's execution time limit (5 minutes).`
+                    `Chromeless Proxy disconnected because it reached it's execution time limit (5 minutes).`,
                   )
                 } else if (data.inactivity) {
                   console.warn(
-                    'Chromeless Proxy disconnected due to inactivity (no commands sent for 30 seconds).'
+                    'Chromeless Proxy disconnected due to inactivity (no commands sent for 30 seconds).',
                   )
                 } else {
                   console.warn(
                     `Chromeless Proxy disconnected (we don't know why).`,
-                    data
+                    data,
                   )
                 }
 
@@ -143,7 +143,7 @@ export default class RemoteChrome implements Chrome {
         console.error(error)
 
         reject(
-          new Error('Unable to get presigned websocket URL and connect to it.')
+          new Error('Unable to get presigned websocket URL and connect to it.'),
         )
       }
     })
@@ -177,14 +177,13 @@ export default class RemoteChrome implements Chrome {
       })
     })
 
-
     return promise
   }
 
   async close(): Promise<void> {
     this.channel.publish(
       this.TOPIC_END,
-      JSON.stringify({ channelId: this.channelId, client: true })
+      JSON.stringify({ channelId: this.channelId, client: true }),
     )
 
     this.channel.end()

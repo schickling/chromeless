@@ -94,11 +94,9 @@ run().catch(console.error.bind(console))
 
 ### Local Chrome Usage
 
-To run Chromeless locally, you need a recent version of Chrome or Chrome Canary installed and running.
+To run Chromeless locally, you need a recent version of Chrome or Chrome Canary installed (version 60 or greater). By default, chromeless will start Chrome automatically and will default to the most recent version found on your system if there's multiple. You can override this behavior by starting Chrome yourself, and passing a flag of `launchChrome: false` in the `Chromeless` constructor.
 
-Chromeless requires Chrome version 60 or greater.
-
-For example, on MacOS:
+To launch Chrome yourself, and open the port for chromeless, follow this example:
 
 ```sh
 alias canary="/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary"
@@ -140,6 +138,7 @@ const chromeless = new Chromeless({
 
 **Chrome methods**
 - [`goto(url: string)`](docs/api.md#api-goto)
+- [`setUserAgent(useragent: string)`](docs/api.md#api-setUserAgent)
 - [`click(selector: string)`](docs/api.md#api-click)
 - [`wait(timeout: number)`](docs/api.md#api-wait-timeout)
 - [`wait(selector: string)`](docs/api.md#api-wait-selector)
@@ -159,8 +158,8 @@ const chromeless = new Chromeless({
 - [`inputValue(selector: string)`](docs/api.md#api-inputvalue)
 - [`exists(selector: string)`](docs/api.md#api-exists)
 - [`screenshot()`](docs/api.md#api-screenshot)
-- [`pdf()`](docs/api.md#api-pdf) - Not implemented yet
-- [`getHtml()`](docs/api.md#api-gethtml)
+- [`pdf(options?: PdfOptions)`](docs/api.md#api-pdf)
+- [`html()`](docs/api.md#api-html)
 - [`cookiesGet()`](docs/api.md#api-cookiesget)
 - [`cookiesGet(name: string)`](docs/api.md#api-cookiesget-name)
 - [`cookiesGet(query: CookieQuery)`](docs/api.md#api-cookiesget-query) - Not implemented yet
