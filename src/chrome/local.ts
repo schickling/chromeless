@@ -20,21 +20,6 @@ export default class LocalChrome implements Chrome {
     this.runtimeClientPromise = this.initRuntimeClient()
   }
 
-  private async startChrome(): Promise<Client> {
-    this.chromeInstance = await launch({
-      logLevel: this.options.debug ? 'info' : 'silent',
-      port: this.options.cdp.port,
-    })
-    const { host, secure } = this.options.cdp
-    return await CDP({ port: this.chromeInstance.port, host, secure })
-  }
-
-  private async connectToChrome(): Promise<Client> {
-    const { port, host, secure } = this.options.cdp
-    const target = await CDP.New({ port, host, secure })
-    return await CDP({ target })
-  }
-
   private async initRuntimeClient(): Promise<RuntimeClient> {
     const client = this.options.launchChrome
       ? await this.startChrome()
@@ -47,6 +32,22 @@ export default class LocalChrome implements Chrome {
     return { client, runtime }
   }
 
+  private async startChrome(): Promise<Client> {
+    this.chromeInstance = await launch({
+      logLevel: this.options.debug ? 'info' : 'silent',
+      port: this.options.cdp.port
+    })
+    return await CDP({ port: this.chromeInstance.port })
+  }
+
+  private async connectToChrome(): Promise<Client> {
+    const target = await CDP.New({
+      port: this.options.cdp.port,
+      host: this.options.cdp.host,
+    })
+    return await CDP({ target })
+  }
+
   private async setViewport(client: Client) {
     const { viewport = {} } = this.options
 
@@ -57,7 +58,8 @@ export default class LocalChrome implements Chrome {
       fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
     }
 
-    const versionResult = await CDP.Version({ port: this.chromeInstance.port })
+    const port = this.chromeInstance ? this.chromeInstance.port : 9222
+    const versionResult = await CDP.Version({ port })
     const isHeadless = versionResult['User-Agent'].includes('Headless')
 
     if (viewport.height && viewport.width) {

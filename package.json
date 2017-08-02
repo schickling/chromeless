@@ -20,15 +20,18 @@
     "node": ">= 6.10.0"
   },
   "scripts": {
-    "watch": "tsc -w",
+    "ava": "tsc && nyc ava",
     "build": "npm run clean && tsc -d",
     "clean": "rimraf dist",
+    "coverage": "npm run ava",
     "precommit": "lint-staged",
     "prepublishOnly": "npm test && npm run build",
     "prettier": "prettier --no-semi --single-quote --trailing-comma all --write \"src/**/*.ts\"",
     "release": "np",
-    "test": "npm run tslint",
-    "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**"
+    "test": "npm run tslint && npm run ava",
+    "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**",
+    "watch": "tsc -w",
+    "watch:test": "tsc -w & ava --watch"
   },
   "dependencies": {
     "aws-sdk": "^2.90.0",
@@ -47,6 +50,7 @@
     "ava": "^0.21.0",
     "lint-staged": "^4.0.2",
     "np": "^2.16.0",
+    "nyc": "^11.1.0",
     "prettier": "^1.5.3",
     "rimraf": "^2.6.1",
     "tslint": "^5.5.0",
