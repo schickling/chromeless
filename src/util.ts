@@ -262,6 +262,19 @@ export async function scrollTo(
   })
 }
 
+export async function scrollToElement(
+  client: Client,
+  selector: string
+): Promise<void> {
+  const clientRect = await getClientRect(client, selector)
+
+  return scrollTo(
+    client,
+    clientRect.left,
+    clientRect.top
+  )
+}
+
 export async function setHtml(client: Client, html: string): Promise<void> {
   const { Page } = client
 

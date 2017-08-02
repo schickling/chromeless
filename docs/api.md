@@ -21,6 +21,7 @@ Chromeless provides TypeScript typings.
 - [`mousedown(selector: string)`](#api-mousedown)
 - [`mouseup(selector: string)`](#api-mouseup)
 - [`scrollTo(x: number, y: number)`](#api-scrollto)
+- [`scrollToElement(selector: string)`](#api-scrolltoelement)
 - [`setHtml(html: string)`](#api-sethtml)
 - [`viewport(width: number, height: number)`](#api-viewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](#api-evaluate)
@@ -291,6 +292,23 @@ await chromeless.scrollTo(500, 0)
 ```
 
 ---------------------------------------
+
+<a name="api-scrolltoelement" />
+
+### scrollToElement(selector: string): Chromeless<T>
+
+Scroll to location of element.
+
+__Arguments__
+- `selector` - DOM selector for element to scroll to
+
+__Example__
+
+  ```js
+await chromeless.scrollToElement('.button')
+  ```
+
+  ---------------------------------------
 
 <a name="api-sethtml" />
 
