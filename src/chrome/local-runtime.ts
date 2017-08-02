@@ -139,9 +139,9 @@ export default class LocalRuntime {
   }
 
   private async mousedown(selector: string): Promise<void> {
-      if (this.chromlessOptions.implicitWait) {
+      if (this.chromelessOptions.implicitWait) {
           this.log(`mousedown(): Waiting for ${selector}`)
-          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+          await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
@@ -149,15 +149,15 @@ export default class LocalRuntime {
           throw new Error(`mousedown(): node for selector ${selector} doesn't exist`)
       }
 
-      const {scale} = this.chromlessOptions.viewport
+      const {scale} = this.chromelessOptions.viewport
       await mousedown(this.client, selector, scale)
       this.log(`Mousedown on ${selector}`)
   }
 
   private async mousup(selector: string): Promise<void> {
-      if (this.chromlessOptions.implicitWait) {
+      if (this.chromelessOptions.implicitWait) {
           this.log(`mouseup(): Waiting for ${selector}`)
-          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+          await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
@@ -165,7 +165,7 @@ export default class LocalRuntime {
           throw new Error(`mouseup(): node for selector ${selector} doesn't exist`)
       }
 
-      const {scale} = this.chromlessOptions.viewport
+      const {scale} = this.chromelessOptions.viewport
       await mouseup(this.client, selector, scale)
       this.log(`Mouseup on ${selector}`)
   }
@@ -175,9 +175,9 @@ export default class LocalRuntime {
   }
 
   private async focus(selector: string): Promise<void> {
-      if (this.chromlessOptions.implicitWait) {
+      if (this.chromelessOptions.implicitWait) {
           this.log(`focus(): Waiting for ${selector}`)
-          await waitForNode(this.client, selector, this.chromlessOptions.waitTimeout)
+          await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
