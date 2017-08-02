@@ -1,6 +1,6 @@
 {
   "name": "chromeless",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "🖥 Chrome automation made simple. Runs locally or headless on AWS Lambda.",
   "homepage": "https://github.com/graphcool/chromeless",
   "license": "MIT",
@@ -20,16 +20,21 @@
     "node": ">= 6.10.0"
   },
   "scripts": {
-    "watch": "tsc -w",
-    "build": "rimraf dist; tsc -d",
-    "prepublishOnly": "npm test; npm run build",
-    "test": "npm run build && npm run tslint && ava ./dist/tests/**/*.js",
-    "tslint": "tslint -c tslint.json -p tsconfig.json --exclude 'node_modules/**/*'"
+    "build": "npm run clean && tsc -d",
+    "clean": "rimraf dist",
+    "coverage": "nyc ava ./tests/**/*.js",
+    "precommit": "lint-staged",
+    "prepublishOnly": "npm test && npm run build",
+    "prettier": "prettier --no-semi --single-quote --trailing-comma all --write \"src/**/*.ts\"",
+    "release": "np",
+    "test": "npm run tslint && ava ./tests/**/*.js",
+    "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**",
+    "watch": "tsc -w"
   },
   "dependencies": {
     "aws-sdk": "^2.90.0",
     "bluebird": "^3.5.0",
-    "chrome-launcher": "^0.3.2",
+    "chrome-launcher": "^0.4.0",
     "chrome-remote-interface": "^0.24.2",
     "cuid": "^1.3.8",
     "form-data": "^2.1.4",
@@ -41,7 +46,18 @@
     "@types/cuid": "^1.3.0",
     "@types/node": "^8.0.15",
     "ava": "^0.21.0",
+    "lint-staged": "^4.0.2",
+    "np": "^2.16.0",
+    "prettier": "^1.5.3",
+    "rimraf": "^2.6.1",
     "tslint": "^5.5.0",
     "typescript": "^2.4.2"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "prettier --no-semi --single-quote --trailing-comma all --write",
+      "npm run lint",
+      "git add"
+    ]
   }
 }

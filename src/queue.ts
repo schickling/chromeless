@@ -1,7 +1,6 @@
 import { Chrome, Command } from './types'
 
 export default class Queue {
-
   private flushCount: number
   private commandQueue: {
     [flushCount: number]: Command[]
@@ -56,5 +55,4 @@ export default class Queue {
       await this.chrome.process(command)
     }
   }
-
 }

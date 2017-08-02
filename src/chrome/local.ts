@@ -21,9 +21,9 @@ export default class LocalChrome implements Chrome {
   }
 
   private async initRuntimeClient(): Promise<RuntimeClient> {
-    const client = this.options.launchChrome ?
-      await this.startChrome() :
-      await this.connectToChrome()
+    const client = this.options.launchChrome
+      ? await this.startChrome()
+      : await this.connectToChrome()
 
     await this.setViewport(client)
 
@@ -72,11 +72,11 @@ export default class LocalChrome implements Chrome {
     } else {
       config.height = await evaluate(
         client,
-        (() => window.innerHeight).toString()
+        (() => window.innerHeight).toString(),
       )
       config.width = await evaluate(
         client,
-        (() => window.innerWidth).toString()
+        (() => window.innerWidth).toString(),
       )
     }
 
