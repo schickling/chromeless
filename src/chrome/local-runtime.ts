@@ -25,6 +25,7 @@ export default class LocalRuntime {
 
   private client: Client
   private chromelessOptions: ChromelessOptions
+  private userAgentValue: string
 
   constructor(client: Client, chromelessOptions: ChromelessOptions) {
     this.client = client
@@ -44,6 +45,8 @@ export default class LocalRuntime {
           throw new Error('waitFn not yet implemented')
         }
       }
+      case 'setUserAgent':
+        return this.setUserAgent(command.useragent)
       case 'click':
         return this.click(command.selector)
       case 'returnCode':
@@ -88,10 +91,16 @@ export default class LocalRuntime {
   private async goto(url: string): Promise<void> {
     const {Network, Page} = this.client
     await Promise.all([Network.enable(), Page.enable()])
-    await Network.setUserAgentOverride({userAgent: `Chromeless ${version}`})
+    if (!this.userAgentValue) this.userAgentValue = `Chromeless ${version}`
+    await Network.setUserAgentOverride({userAgent: this.userAgentValue})
     await Page.navigate({url})
     await Page.loadEventFired()
     this.log(`Navigated to ${url}`)
+  }
+
+  private async setUserAgent(useragent: string): Promise<void> {
+    this.userAgentValue = useragent
+    await this.log(`Set useragent to ${this.userAgentValue}`)
   }
 
   private async waitTimeout(timeout: number): Promise<void> {

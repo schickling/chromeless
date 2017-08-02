@@ -7,6 +7,7 @@ Chromeless provides TypeScript typings.
 
 **Chrome methods**
 - [`goto(url: string)`](#api-goto)
+- [`setUserAgent(useragent: string)`](#api-setuseragent)
 - [`click(selector: string)`](#api-click)
 - [`wait(timeout: number)`](#api-wait-timeout)
 - [`wait(selector: string)`](#api-wait-selector)
@@ -67,6 +68,23 @@ __Example__
 
 ```js
 await chromeless.goto('https://google.com/')
+```
+
+---------------------------------------
+
+<a name="api-setuseragent" />
+
+### setUserAgent(useragent: string): Chromeless<T>
+
+Set the useragent of the browser. It should be called before `.goto()`.
+
+__Arguments__
+- `useragent` - UserAgent to use
+
+__Example__
+
+```js
+await chromeless.setUserAgent('Custom Chromeless UserAgent x.x.x')
 ```
 
 ---------------------------------------

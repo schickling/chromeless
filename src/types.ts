@@ -48,6 +48,10 @@ export type Command =
       url: string
     }
   | {
+      type: 'setUserAgent'
+      useragent: string
+    }
+  | {
       type: 'wait'
       timeout?: number
       selector?: string
