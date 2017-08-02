@@ -131,7 +131,7 @@ export default class LocalRuntime {
       await waitForNode(
         this.client,
         selector,
-        this.chromelessOptions.waitTimeout
+        this.chromelessOptions.waitTimeout,
       )
     }
 
@@ -159,14 +159,14 @@ export default class LocalRuntime {
       await waitForNode(
         this.client,
         selector,
-        this.chromelessOptions.waitTimeout
+        this.chromelessOptions.waitTimeout,
       )
     }
 
     const exists = await nodeExists(this.client, selector)
     if (!exists) {
       throw new Error(
-        `mousedown(): node for selector ${selector} doesn't exist`
+        `mousedown(): node for selector ${selector} doesn't exist`,
       )
     }
 
@@ -181,7 +181,7 @@ export default class LocalRuntime {
       await waitForNode(
         this.client,
         selector,
-        this.chromelessOptions.waitTimeout
+        this.chromelessOptions.waitTimeout,
       )
     }
 
@@ -205,7 +205,7 @@ export default class LocalRuntime {
       await waitForNode(
         this.client,
         selector,
-        this.chromelessOptions.waitTimeout
+        this.chromelessOptions.waitTimeout,
       )
     }
 
@@ -225,7 +225,7 @@ export default class LocalRuntime {
         await waitForNode(
           this.client,
           selector,
-          this.chromelessOptions.waitTimeout
+          this.chromelessOptions.waitTimeout,
         )
       }
 
@@ -248,7 +248,7 @@ export default class LocalRuntime {
 
   async cookiesSet(
     nameOrCookies: string | Cookie | Cookie[],
-    value?: string
+    value?: string,
   ): Promise<void> {
     if (typeof nameOrCookies !== 'string' && !value) {
       const cookies = Array.isArray(nameOrCookies)

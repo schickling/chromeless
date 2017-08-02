@@ -54,7 +54,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
 
   then<U>(
     onFulfill: (value: T) => U | PromiseLike<U>,
-    onReject?: (error: any) => U | PromiseLike<U>
+    onReject?: (error: any) => U | PromiseLike<U>,
   ): Promise<U> {
     return this.lastReturnPromise.then(onFulfill, onReject) as Promise<U>
   }
@@ -233,7 +233,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
    */
   cookiesGet(query: CookieQuery): Chromeless<Cookie[] | null>
   cookiesGet(
-    nameOrQuery?: string | CookieQuery
+    nameOrQuery?: string | CookieQuery,
   ): Chromeless<Cookie | Cookie[] | null> {
     if (typeof nameOrQuery !== 'undefined') {
       throw new Error('Querying cookies is not implemented yet')

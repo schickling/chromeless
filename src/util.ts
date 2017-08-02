@@ -15,7 +15,7 @@ export const version: string = ((): string => {
 export async function waitForNode(
   client: Client,
   selector: string,
-  waitTimeout: number
+  waitTimeout: number,
 ): Promise<void> {
   const { Runtime } = client
   const getNode = selector => {
@@ -33,7 +33,7 @@ export async function waitForNode(
         if (new Date().getTime() - start > waitTimeout) {
           clearInterval(interval)
           reject(
-            new Error(`wait("${selector}") timed out after ${waitTimeout}ms`)
+            new Error(`wait("${selector}") timed out after ${waitTimeout}ms`),
           )
         }
 
@@ -58,7 +58,7 @@ export async function wait(timeout: number): Promise<void> {
 
 export async function nodeExists(
   client: Client,
-  selector: string
+  selector: string,
 ): Promise<boolean> {
   const { Runtime } = client
   const exists = selector => {
@@ -164,7 +164,7 @@ export async function evaluate<T>(
   if (result && result.exceptionDetails) {
     throw new Error(
       result.exceptionDetails.exception.value ||
-        result.exceptionDetails.exception.description
+        result.exceptionDetails.exception.description,
     )
   }
 
@@ -178,7 +178,7 @@ export async function evaluate<T>(
 export async function type(
   client: Client,
   text: string,
-  selector?: string
+  selector?: string,
 ): Promise<void> {
   if (selector) {
     await focus(client, selector)
@@ -202,7 +202,7 @@ export async function press(
   client: Client,
   keyCode: number,
   count?: number,
-  modifiers?: any
+  modifiers?: any,
 ): Promise<void> {
   const { Input } = client
 
@@ -233,7 +233,7 @@ export async function press(
 
 export async function getValue(
   client: Client,
-  selector: string
+  selector: string,
 ): Promise<string> {
   const { Runtime } = client
   const browserCode = selector => {
@@ -250,7 +250,7 @@ export async function getValue(
 export async function scrollTo(
   client: Client,
   x: number,
-  y: number
+  y: number,
 ): Promise<void> {
   const { Runtime } = client
   const browserCode = (x, y) => {
@@ -271,7 +271,7 @@ export async function setHtml(client: Client, html: string): Promise<void> {
 
 export async function getCookies(
   client: Client,
-  nameOrQuery?: string | Cookie
+  nameOrQuery?: string | Cookie,
 ): Promise<any> {
   if (nameOrQuery) {
     throw new Error('Not yet implemented')
@@ -296,7 +296,7 @@ export async function getAllCookies(client: Client): Promise<any> {
 
 export async function setCookies(
   client: Client,
-  cookies: Cookie[]
+  cookies: Cookie[],
 ): Promise<void> {
   const { Network } = client
 
@@ -311,7 +311,7 @@ export async function setCookies(
 export async function mousedown(
   client: Client,
   selector: string,
-  scale: number
+  scale: number,
 ) {
   const clientRect = await getClientRect(client, selector)
   const { Input } = client
@@ -375,7 +375,7 @@ export async function html(client: Client): Promise<string> {
 
 export async function pdf(
   client: Client,
-  options?: PdfOptions
+  options?: PdfOptions,
 ): Promise<string> {
   const { Page } = client
 

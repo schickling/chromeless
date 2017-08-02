@@ -25,7 +25,7 @@
     "clean": "rimraf dist",
     "precommit": "lint-staged",
     "prepublishOnly": "npm test && npm run build",
-    "prettier": "prettier --single-quote --trailing-comma all --write \"src/**/*.ts\"",
+    "prettier": "prettier --no-semi --single-quote --trailing-comma all --write \"src/**/*.ts\"",
     "release": "np",
     "test": "npm run tslint",
     "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**"
@@ -52,8 +52,9 @@
     "typescript": "^2.4.2"
   },
   "lint-staged": {
-    "*.ts": [
-      "prettier --single-quote --trailing-comma all --write",
+    "*.{ts,js}": [
+      "prettier --no-semi --single-quote --trailing-comma all --write",
+      "npm run lint",
       "git add"
     ]
   }
