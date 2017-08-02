@@ -1,29 +1,31 @@
 import * as AWS from 'aws-sdk'
-import { Client, Command, ChromelessOptions, Cookie, CookieQuery } from '../types'
+import { Client, Command, ChromelessOptions, Cookie, CookieQuery, PdfOptions } from '../types'
 import * as cuid from 'cuid'
 import * as fs from 'fs'
 import {
-    nodeExists,
-    wait,
-    waitForNode,
-    click,
-    evaluate,
-    screenshot,
-    getHtml,
-    type,
-    getValue,
-    scrollTo,
-    setHtml,
-    press,
-    clearCookies,
-    getCookies,
-    setCookies, getAllCookies, version, mousedown, mouseup, focus, clear
+  nodeExists,
+  wait,
+  waitForNode,
+  click,
+  evaluate,
+  screenshot,
+  getHtml,
+  pdf,
+  type,
+  getValue,
+  scrollTo,
+  setHtml,
+  press,
+  clearCookies,
+  getCookies,
+  setCookies, getAllCookies, version, mousedown, mouseup, focus, clear
 } from '../util'
 
 export default class LocalRuntime {
 
   private client: Client
   private chromelessOptions: ChromelessOptions
+  private userAgentValue: string
 
   constructor(client: Client, chromelessOptions: ChromelessOptions) {
     this.client = client
@@ -43,6 +45,8 @@ export default class LocalRuntime {
           throw new Error('waitFn not yet implemented')
         }
       }
+      case 'setUserAgent':
+        return this.setUserAgent(command.useragent)
       case 'click':
         return this.click(command.selector)
       case 'returnCode':
@@ -53,6 +57,8 @@ export default class LocalRuntime {
         return this.returnScreenshot()
       case 'returnHtml':
         return this.returnHtml()
+      case 'returnPDF':
+        return this.returnPDF(command.options)
       case 'returnInputValue':
         return this.returnInputValue(command.selector)
       case 'type':
@@ -87,10 +93,16 @@ export default class LocalRuntime {
   private async goto(url: string): Promise<void> {
     const {Network, Page} = this.client
     await Promise.all([Network.enable(), Page.enable()])
-    await Network.setUserAgentOverride({userAgent: `Chromeless ${version}`})
+    if (!this.userAgentValue) this.userAgentValue = `Chromeless ${version}`
+    await Network.setUserAgentOverride({userAgent: this.userAgentValue})
     await Page.navigate({url})
     await Page.loadEventFired()
     this.log(`Navigated to ${url}`)
+  }
+
+  private async setUserAgent(useragent: string): Promise<void> {
+    this.userAgentValue = useragent
+    await this.log(`Set useragent to ${this.userAgentValue}`)
   }
 
   private async waitTimeout(timeout: number): Promise<void> {
@@ -291,6 +303,34 @@ export default class LocalRuntime {
 
   async returnHtml(): Promise<string> {
     return await getHtml(this.client)
+  }
+
+  // Returns the S3 url or local file path
+  async returnPDF(options?: PdfOptions): Promise<string> {
+    const data = await pdf(this.client, options)
+
+    // check if S3 configured
+    if (process.env['CHROMELESS_S3_BUCKET_NAME'] && process.env['CHROMELESS_S3_BUCKET_URL']) {
+      const s3Path = `${cuid()}.pdf`
+      const s3 = new AWS.S3()
+      await s3.putObject({
+        Bucket: process.env['CHROMELESS_S3_BUCKET_NAME'],
+        Key: s3Path,
+        ContentType: 'application/pdf',
+        ACL: 'public-read',
+        Body: new Buffer(data, 'base64'),
+      }).promise()
+
+      return `https://${process.env['CHROMELESS_S3_BUCKET_URL']}/${s3Path}`
+    }
+
+    // write to `/tmp` instead
+    else {
+      const filePath = `/tmp/${cuid()}.pdf`
+      fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
+
+      return filePath
+    }
   }
 
   private log(msg: string): void {
