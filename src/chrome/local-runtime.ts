@@ -247,6 +247,18 @@ export default class LocalRuntime {
 
   // Returns the S3 url or local file path
   async returnScreenshot(selector?: string, options?: ScreenshotOptions): Promise<string> {
+    if (selector) {
+      if (this.chromelessOptions.implicitWait) {
+        this.log(`screenshot(): Waiting for ${selector}`)
+        await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
+      }
+
+      const exists = await nodeExists(this.client, selector)
+      if (!exists) {
+        throw new Error(`screenshot(): node for selector ${selector} doesn't exist`)
+      }
+    }
+
     const data = await screenshot(this.client, selector)
 
     // check if S3 configured
