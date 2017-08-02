@@ -1,5 +1,5 @@
 import * as AWS from 'aws-sdk'
-import { Client, Command, ChromelessOptions, Cookie, CookieQuery } from '../types'
+import { Client, Command, ChromelessOptions, Cookie, CookieQuery, PdfOptions } from '../types'
 import * as cuid from 'cuid'
 import * as fs from 'fs'
 import {
@@ -10,6 +10,7 @@ import {
   evaluate,
   screenshot,
   getHtml,
+  pdf,
   type,
   getValue,
   scrollTo,
@@ -53,6 +54,8 @@ export default class LocalRuntime {
         return this.returnScreenshot()
       case 'returnHtml':
         return this.returnHtml()
+      case 'returnPDF':
+        return this.returnPDF(command.options)
       case 'returnInputValue':
         return this.returnInputValue(command.selector)
       case 'type':
@@ -273,6 +276,34 @@ export default class LocalRuntime {
 
   async returnHtml(): Promise<string> {
     return await getHtml(this.client)
+  }
+
+  // Returns the S3 url or local file path
+  async returnPDF(options?: PdfOptions): Promise<string> {
+    const data = await pdf(this.client, options)
+
+    // check if S3 configured
+    if (process.env['CHROMELESS_S3_BUCKET_NAME'] && process.env['CHROMELESS_S3_BUCKET_URL']) {
+      const s3Path = `${cuid()}.pdf`
+      const s3 = new AWS.S3()
+      await s3.putObject({
+        Bucket: process.env['CHROMELESS_S3_BUCKET_NAME'],
+        Key: s3Path,
+        ContentType: 'application/pdf',
+        ACL: 'public-read',
+        Body: new Buffer(data, 'base64'),
+      }).promise()
+
+      return `https://${process.env['CHROMELESS_S3_BUCKET_URL']}/${s3Path}`
+    }
+
+    // write to `/tmp` instead
+    else {
+      const filePath = `/tmp/${cuid()}.pdf`
+      fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
+
+      return filePath
+    }
   }
 
   private log(msg: string): void {

@@ -1,7 +1,7 @@
 import ChromeLocal from './chrome/local'
 import ChromeRemote from './chrome/remote'
 import Queue from './queue'
-import { ChromelessOptions, Cookie, CookieQuery } from './types'
+import { ChromelessOptions, Cookie, CookieQuery, PdfOptions } from './types'
 import { getDebugOption } from './util'
 
 export default class Chromeless<T extends any> implements Promise<T> {
@@ -182,6 +182,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
 
   getHtml(): Chromeless<string> {
     this.lastReturnPromise = this.queue.process<string>({type: 'returnHtml'})
+
+    return new Chromeless<string>({}, this)
+  }
+
+  pdf(options?: PdfOptions): Chromeless<string> {
+    this.lastReturnPromise = this.queue.process<string>({type: 'returnPDF', options})
 
     return new Chromeless<string>({}, this)
   }
