@@ -49,7 +49,7 @@ export type Command =
     }
   | {
       type: 'cacheClear'
-  }
+    }
   | {
       type: 'setUserAgent'
       useragent: string
