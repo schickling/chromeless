@@ -1,6 +1,7 @@
 version: 2
 jobs:
   build:
+    machine: true
     docker:
       - image: circleci/node
     steps:
