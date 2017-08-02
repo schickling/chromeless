@@ -136,6 +136,11 @@ export type Command =
       type: 'focus',
       selector: string
     }
+  | {
+      type: 'upload',
+      selector: string,
+      files: string[]
+    }
 
 export interface Cookie {
   url?: string

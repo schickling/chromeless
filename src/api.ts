@@ -3,6 +3,7 @@ import ChromeRemote from './chrome/remote'
 import Queue from './queue'
 import { ChromelessOptions, Cookie, CookieQuery, PdfOptions } from './types'
 import { getDebugOption } from './util'
+import {isArray} from "util";
 
 export default class Chromeless<T extends any> implements Promise<T> {
 
@@ -244,6 +245,14 @@ export default class Chromeless<T extends any> implements Promise<T> {
   cookiesClearAll(): Chromeless<T> {
     this.queue.enqueue({type: 'cookiesClearAll'})
 
+    return this
+  }
+
+  upload(selector: string, files: string[] | string): Chromeless<T> {
+    if (!isArray(files)) {
+        files = [files]
+    }
+    this.queue.enqueue({type: 'upload', selector, files})
     return this
   }
 

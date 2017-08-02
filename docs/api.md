@@ -607,3 +607,17 @@ __Example__
 ```js
 await chromeless.cookiesClearAll()
 ```
+---------------------------------------
+
+<a name="api-upload" />
+
+### upload(selector: string, files: string[] | string): Chromeless<T>
+
+Uploads file(s) to selected input.
+
+
+__Example__
+
+```js
+await chromeless.upload('.uploader', '/User/Me/Documents/img.jpg')
+```

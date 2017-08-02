@@ -3,22 +3,22 @@ import { Client, Command, ChromelessOptions, Cookie, CookieQuery, PdfOptions } f
 import * as cuid from 'cuid'
 import * as fs from 'fs'
 import {
-  nodeExists,
-  wait,
-  waitForNode,
-  click,
-  evaluate,
-  screenshot,
-  getHtml,
-  pdf,
-  type,
-  getValue,
-  scrollTo,
-  setHtml,
-  press,
-  clearCookies,
-  getCookies,
-  setCookies, getAllCookies, version, mousedown, mouseup, focus
+    nodeExists,
+    wait,
+    waitForNode,
+    click,
+    evaluate,
+    screenshot,
+    getHtml,
+    pdf,
+    type,
+    getValue,
+    scrollTo,
+    setHtml,
+    press,
+    clearCookies,
+    getCookies,
+    setCookies, getAllCookies, version, mousedown, mouseup, focus, upload
 } from '../util'
 
 export default class LocalRuntime {
@@ -83,6 +83,8 @@ export default class LocalRuntime {
         return this.mousup(command.selector)
       case 'focus':
         return this.focus(command.selector)
+      case 'upload':
+        return this.upload(command.selector, command.files)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -315,7 +317,23 @@ export default class LocalRuntime {
     }
   }
 
-  private log(msg: string): void {
+  private async upload(selector: string, files: string[]): Promise<void> {
+    if (this.chromelessOptions.implicitWait) {
+      this.log(`upload(): Waiting for ${selector}`)
+      await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
+    }
+
+    const exists = await nodeExists(this.client, selector)
+    if (!exists) {
+      throw new Error(`upload(): node for selector ${selector} doesn't exist`)
+    }
+
+    await upload(this.client, selector, files)
+    this.log(`Uploading ${files}`)
+}
+
+
+    private log(msg: string): void {
     if (this.chromelessOptions.debug) {
       console.log(msg)
     }
