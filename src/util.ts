@@ -422,6 +422,13 @@ export async function pdf(
   return pdf.data
 }
 
+export async function upload(client: Client, selector: string, files: string[]): Promise<string> {
+  const {DOM} = client
+  const dom = await DOM.getDocument()
+  const node = await DOM.querySelector({nodeId: dom.root.nodeId, selector: selector})
+  return await DOM.setFileInputFiles({files: files, nodeId: node.nodeId})
+}
+
 export function getDebugOption(): boolean {
   if (
     process &&

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - `placeholder()` API method [#000](https://github.com/graphcool/chromeless/pull/000) @contributor
-
+- `upload(selector: string, files: string[] | string)` API method @criticalbh
 ### Changed
 
 ### Fixed
