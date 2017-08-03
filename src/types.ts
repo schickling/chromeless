@@ -62,7 +62,7 @@ export type Command =
       url: string
     }
   | {
-      type: 'cacheClear'
+      type: 'clearCache'
     }
   | {
       type: 'setViewport'

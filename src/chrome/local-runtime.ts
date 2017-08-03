@@ -60,8 +60,8 @@ export default class LocalRuntime {
           throw new Error('waitFn not yet implemented')
         }
       }
-      case 'cacheClear':
-        return this.cacheClear()
+      case 'clearCache':
+        return this.clearCache()
       case 'setUserAgent':
         return this.setUserAgent(command.useragent)
       case 'click':
@@ -117,7 +117,7 @@ export default class LocalRuntime {
     this.log(`Navigated to ${url}`)
   }
 
-  private async cacheClear(): Promise<void> {
+  private async clearCache(): Promise<void> {
     const {Network} = this.client
     const canClearCache = await Network.canClearBrowserCache
     if (canClearCache) {

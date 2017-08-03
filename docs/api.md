@@ -12,7 +12,7 @@ Chromeless provides TypeScript typings.
 - [`wait(timeout: number)`](#api-wait-timeout)
 - [`wait(selector: string)`](#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
-- [`cacheClear()`](docs/api.md#api-cacheClear)
+- [`clearCache()`](docs/api.md#api-clearcache)
 - [`focus(selector: string)`](#api-focus)
 - [`press(keyCode: number, count?: number, modifiers?: any)`](#api-press)
 - [`type(input: string, selector?: string)`](#api-type)
@@ -161,16 +161,16 @@ await chromeless.wait(() => { return console.log('@TODO: put a better example he
 
 ---------------------------------------
 
-<a name="api-cacheClear" />
+<a name="api-clearcache" />
 
-### cacheClear(): Chromeless<T>
+### clearCache(): Chromeless<T>
 
 Clear browser cache.
 
 __Example__
 
 ```js
-await chromeless.cacheClear()
+await chromeless.clearCache()
 ```
 
 ---------------------------------------
