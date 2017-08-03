@@ -23,6 +23,7 @@ import {
   scrollTo,
   setHtml,
   press,
+  setViewport,
   clearCookies,
   getCookies,
   setCookies,
@@ -47,6 +48,8 @@ export default class LocalRuntime {
     switch (command.type) {
       case 'goto':
         return this.goto(command.url)
+        case 'setViewport':
+          return setViewport(this.client, command.options)
       case 'wait': {
         if (command.timeout) {
           return this.waitTimeout(command.timeout)

@@ -153,7 +153,7 @@ const chromeless = new Chromeless({
 - [`mouseup(selector: string)`](docs/api.md#api-mouseup)
 - [`scrollTo(x: number, y: number)`](docs/api.md#api-scrollto)
 - [`setHtml(html: string)`](docs/api.md#api-sethtml)
-- [`viewport(width: number, height: number)`](docs/api.md#api-viewport)
+- [`setViewport(options: DeviceMetrics)`](docs/api.md#api-setviewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](docs/api.md#api-evaluate)
 - [`inputValue(selector: string)`](docs/api.md#api-inputvalue)
 - [`exists(selector: string)`](docs/api.md#api-exists)

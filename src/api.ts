@@ -1,7 +1,7 @@
 import ChromeLocal from './chrome/local'
 import ChromeRemote from './chrome/remote'
 import Queue from './queue'
-import { ChromelessOptions, Cookie, CookieQuery, PdfOptions } from './types'
+import { ChromelessOptions, Cookie, CookieQuery, PdfOptions, DeviceMetrics } from './types'
 import { getDebugOption } from './util'
 
 export default class Chromeless<T extends any> implements Promise<T> {
@@ -154,14 +154,16 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
-  setHtml(html: string): Chromeless<T> {
-    this.queue.enqueue({ type: 'setHtml', html })
+  setViewport(options: DeviceMetrics): Chromeless<T> {
+    this.queue.enqueue({ type: 'setViewport', options })
 
     return this
   }
 
-  viewport(width: number, height: number): Chromeless<T> {
-    throw new Error('Not implemented yet')
+  setHtml(html: string): Chromeless<T> {
+    this.queue.enqueue({ type: 'setHtml', html })
+
+    return this
   }
 
   evaluate<U extends any>(
