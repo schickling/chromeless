@@ -36,8 +36,8 @@ export default class Chromeless<T extends any> implements Promise<T> {
       },
 
       cdp: {
-        host: 'localhost',
-        port: 9222,
+        host: process.env['CHROMELESS_CHROME_HOST'] || 'localhost',
+        port: parseInt(process.env['CHROMELESS_CHROME_PORT'], 10) || 9222,
         secure: false,
         closeTab: true,
         ...options.cdp,

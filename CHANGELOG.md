@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.1.0] - 2017-08-02
 
 ### Added
-- When using chromeless locally, Chromeless will now boot Chrome automatically [#120](https://github.com/graphcool/chromeless/pull/120) @joelgriffith
+- When using Chromeless locally, Chromeless will now boot Chrome automatically [#120](https://github.com/graphcool/chromeless/pull/120) @joelgriffith
 - `html()` and `setHtml()` API methods for getting and setting HTML [#112](https://github.com/graphcool/chromeless/pull/112), [#74](https://github.com/graphcool/chromeless/issues/74) @seangransee
 - `mousedown()` and `mouseup()` API methods [#118](https://github.com/graphcool/chromeless/pull/118) @criticalbh
 - `focus()` API method [#132](https://github.com/graphcool/chromeless/pull/132) @criticalbh
@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Ensure latest version of Serverless is used during deployment. [#58](https://github.com/graphcool/chromeless/issues/58) @adieuadieu
 - package repository url [#64](https://github.com/graphcool/chromeless/pull/64) @Hazealign
-- Spelling and minor bugfix when chromeless calls Version in CPD [#120](https://github.com/graphcool/chromeless/pull/120) @joelgriffith
+- Spelling and minor bugfix when Chromeless calls Version in CPD [#120](https://github.com/graphcool/chromeless/pull/120) @joelgriffith
 
 
 ## [1.0.1] - 2017-07-27
