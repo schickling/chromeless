@@ -1,4 +1,4 @@
-# Chromeless [![npm version](https://badge.fury.io/js/chromeless.svg)](https://badge.fury.io/js/chromeless)
+# Chromeless [![npm version](https://badge.fury.io/js/chromeless.svg)](https://badge.fury.io/js/chromeless) [![CircleCI](https://circleci.com/gh/graphcool/chromeless.svg?style=svg)](https://circleci.com/gh/graphcool/chromeless)
 
 Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[See Demo](https://chromeless.netlify.com/)**)
 
@@ -153,7 +153,7 @@ const chromeless = new Chromeless({
 - [`mouseup(selector: string)`](docs/api.md#api-mouseup)
 - [`scrollTo(x: number, y: number)`](docs/api.md#api-scrollto)
 - [`setHtml(html: string)`](docs/api.md#api-sethtml)
-- [`viewport(width: number, height: number)`](docs/api.md#api-viewport)
+- [`setViewport(options: DeviceMetrics)`](docs/api.md#api-setviewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](docs/api.md#api-evaluate)
 - [`inputValue(selector: string)`](docs/api.md#api-inputvalue)
 - [`exists(selector: string)`](docs/api.md#api-exists)
@@ -169,6 +169,7 @@ const chromeless = new Chromeless({
 - [`cookiesSet(cookies: Cookie[])`](docs/api.md#api-cookiesset-many)
 - [`cookiesDelete(name: string)`](docs/api.md#api-cookiesdelete)
 - [`cookiesClear()`](docs/api.md#api-cookiesclear)
+- [`clearInput(selector: string)`](docs/api.md#api-clearInput)
 
 ## Configuring Development Environment
 
@@ -237,6 +238,9 @@ In order for the commands to be processed, make sure, that you call one of the c
 
 A big thank you to all contributors and supporters of this repository 💚
 
+<a href="https://github.com/joelgriffith/" target="_blank">
+  <img src="https://github.com/joelgriffith.png?size=64" width="64" height="64" alt="joelgriffith">
+</a>
 <a href="https://github.com/adieuadieu/" target="_blank">
   <img src="https://github.com/adieuadieu.png?size=64" width="64" height="64" alt="adieuadieu">
 </a>
@@ -246,9 +250,52 @@ A big thank you to all contributors and supporters of this repository 💚
 <a href="https://github.com/timsuchanek/" target="_blank">
   <img src="https://github.com/timsuchanek.png?size=64" width="64" height="64" alt="timsuchanek">
 </a>
+
+
+<a href="https://github.com/Chrisgozd/" target="_blank">
+  <img src="https://github.com/Chrisgozd.png?size=64" width="64" height="64" alt="Chrisgozd">
+</a>
+<a href="https://github.com/criticalbh/" target="_blank">
+  <img src="https://github.com/criticalbh.png?size=64" width="64" height="64" alt="criticalbh">
+</a>
+<a href="https://github.com/d2s/" target="_blank">
+  <img src="https://github.com/d2s.png?size=64" width="64" height="64" alt="d2s">
+</a>
+<a href="https://github.com/emeth-/" target="_blank">
+  <img src="https://github.com/emeth-.png?size=64" width="64" height="64" alt="emeth-">
+</a>
+<a href="https://github.com/githubixx/" target="_blank">
+  <img src="https://github.com/githubixx.png?size=64" width="64" height="64" alt="githubixx">
+</a>
+<a href="https://github.com/hax/" target="_blank">
+  <img src="https://github.com/hax.png?size=64" width="64" height="64" alt="hax">
+</a>
+<a href="https://github.com/Hazealign/" target="_blank">
+  <img src="https://github.com/Hazealign.png?size=64" width="64" height="64" alt="Hazealign">
+</a>
+<a href="https://github.com/joeyvandijk/" target="_blank">
+  <img src="https://github.com/joeyvandijk.png?size=64" width="64" height="64" alt="joeyvandijk">
+</a>
+<a href="https://github.com/liady/" target="_blank">
+  <img src="https://github.com/liady.png?size=64" width="64" height="64" alt="liady">
+</a>
 <a href="https://github.com/matthewmueller/" target="_blank">
   <img src="https://github.com/matthewmueller.png?size=64" width="64" height="64" alt="matthewmueller">
 </a>
+<a href="https://github.com/seangransee/" target="_blank">
+  <img src="https://github.com/seangransee.png?size=64" width="64" height="64" alt="seangransee">
+</a>
+<a href="https://github.com/sorenbs/" target="_blank">
+  <img src="https://github.com/sorenbs.png?size=64" width="64" height="64" alt="sorenbs">
+</a>
+<a href="https://github.com/toddwprice/" target="_blank">
+  <img src="https://github.com/toddwprice.png?size=64" width="64" height="64" alt="toddwprice">
+</a>
+<a href="https://github.com/vladgolubev/" target="_blank">
+  <img src="https://github.com/vladgolubev.png?size=64" width="64" height="64" alt="vladgolubev">
+</a>
+
+
 
 
 ## Credits
