@@ -31,7 +31,7 @@ import {
   mousedown,
   mouseup,
   focus,
-  clear,
+  clearInput,
 } from '../util'
 
 export default class LocalRuntime {
@@ -96,7 +96,7 @@ export default class LocalRuntime {
       case 'focus':
         return this.focus(command.selector)
       case 'clearInput':
-        return this.clear(command.selector)
+        return this.clearInput(command.selector)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -362,19 +362,19 @@ export default class LocalRuntime {
     }
   }
 
-  async clear(selector: string): Promise<void> {
+  async clearInput(selector: string): Promise<void> {
     if (selector) {
       if (this.chromelessOptions.implicitWait) {
-        this.log(`clear(): Waiting for ${selector}`)
+        this.log(`clearInput(): Waiting for ${selector}`)
         await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
       }
 
       const exists = await nodeExists(this.client, selector)
       if (!exists) {
-        throw new Error(`clear(): Node not found for selector: ${selector}`)
+        throw new Error(`clearInput(): Node not found for selector: ${selector}`)
       }
     }
-    await clear(this.client, selector)
+    await clearInput(this.client, selector)
     this.log(`${selector} cleared`)
   }
 

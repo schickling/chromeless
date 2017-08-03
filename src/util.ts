@@ -384,7 +384,7 @@ export async function pdf(
   return pdf.data
 }
 
-export async function clear(client: Client, selector: string): Promise<void> {
+export async function clearInput(client: Client, selector: string): Promise<void> {
   await wait(500)
   await focus(client, selector)
 
