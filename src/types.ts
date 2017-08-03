@@ -176,6 +176,7 @@ export interface PdfOptions {
   marginRight?: number
   pageRanges?: string
   ignoreInvalidPageRanges?: boolean
+  filePath?: string // for internal use
 }
 
 export interface ScreenshotOptions {

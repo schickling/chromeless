@@ -355,7 +355,11 @@ export default class LocalRuntime {
 
   // Returns the S3 url or local file path
   async returnPdf(options?: PdfOptions): Promise<string> {
-    const data = await pdf(this.client, options)
+    const {
+      filePath,
+      ...cdpOptions
+    } = options || { filePath: undefined }
+    const data = await pdf(this.client, cdpOptions)
 
     // check if S3 configured
     if (
@@ -376,11 +380,11 @@ export default class LocalRuntime {
 
       return `https://${process.env['CHROMELESS_S3_BUCKET_URL']}/${s3Path}`
     } else {
-      // write to `/tmp` instead
-      const filePath = `/tmp/${cuid()}.pdf`
-      fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
+        // write to file instead
+        const pdfFilePath = filePath || path.join(os.tmpdir(), `${cuid()}.png`)
+      fs.writeFileSync(pdfFilePath, Buffer.from(data, 'base64'))
 
-      return filePath
+      return pdfFilePath
     }
   }
 
