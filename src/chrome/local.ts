@@ -58,7 +58,7 @@ export default class LocalChrome implements Chrome {
       fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
     }
 
-    const port = this.chromeInstance ? this.chromeInstance.port : 9222
+    const port = this.options.cdp.port
     const versionResult = await CDP.Version({ port })
     const isHeadless = versionResult['User-Agent'].includes('Headless')
 
