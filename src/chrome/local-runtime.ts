@@ -25,6 +25,7 @@ import {
   press,
   setViewport,
   clearCookies,
+  deleteCookie,
   getCookies,
   setCookies,
   getAllCookies,
@@ -82,10 +83,12 @@ export default class LocalRuntime {
         return this.press(command.keyCode, command.count, command.modifiers)
       case 'scrollTo':
         return this.scrollTo(command.x, command.y)
+      case 'deleteCookies':
+        return this.deleteCookies(command.name, command.url)
+      case 'clearCookies':
+        return this.clearCookies()
       case 'setHtml':
         return this.setHtml(command.html)
-      case 'cookiesClearAll':
-        return this.cookiesClearAll()
       case 'cookiesGet':
         return this.cookiesGet(command.nameOrQuery)
       case 'cookiesGetAll':
@@ -277,9 +280,26 @@ export default class LocalRuntime {
     throw new Error(`cookiesSet(): Invalid input ${nameOrCookies}, ${value}`)
   }
 
-  async cookiesClearAll(): Promise<void> {
-    await clearCookies(this.client)
-    this.log('Cookies cleared')
+  async deleteCookies(name: string, url: string): Promise<void> {
+    const { Network } = this.client
+    const canClearCookies = await Network.canClearBrowserCookies()
+    if (canClearCookies) {
+      await deleteCookie(this.client, name, url)
+      this.log(`Cookie ${name} cleared`)
+    } else {
+      this.log(`Cookie ${name} could not be cleared`)
+    }
+  }
+
+  async clearCookies(): Promise<void> {
+    const { Network } = this.client
+    const canClearCookies = await Network.canClearBrowserCookies()
+    if (canClearCookies) {
+      await clearCookies(this.client)
+      this.log('Cookies cleared')
+    } else {
+      this.log('Cookies could not be cleared')
+    }
   }
 
   async press(keyCode: number, count?: number, modifiers?: any): Promise<void> {

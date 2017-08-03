@@ -389,6 +389,12 @@ function getUrlFromCookie(cookie: Cookie) {
   return `https://${domain}`
 }
 
+export async function deleteCookie(client: Client, name: string, url: string): Promise<void> {
+  const {Network} = client
+
+  await Network.deleteCookie({cookieName: name, url})
+}
+
 export async function clearCookies(client: Client): Promise<void> {
   const { Network } = client
 

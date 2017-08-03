@@ -266,12 +266,20 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
-  cookiesClear(name: string): Chromeless<T> {
-    throw new Error('Not implemented yet')
+  deleteCookies(name: string, url: string): Chromeless<T> {
+    if (typeof name === 'undefined') {
+      throw new Error('Cookie name should be defined.')
+    }
+    if (typeof url === 'undefined') {
+      throw new Error('Cookie url should be defined.')
+    }
+    this.queue.enqueue({type: 'deleteCookies', name, url})
+
+    return this
   }
 
-  cookiesClearAll(): Chromeless<T> {
-    this.queue.enqueue({ type: 'cookiesClearAll' })
+  clearCookies(): Chromeless<T> {
+    this.queue.enqueue({type: 'clearCookies'})
 
     return this
   }

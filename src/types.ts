@@ -128,7 +128,12 @@ export type Command =
       selector?: string
     }
   | {
-      type: 'cookiesClearAll'
+      type: 'clearCookies'
+    }
+  | {
+      type: 'deleteCookies'
+      name: string
+      url: string
     }
   | {
       type: 'cookiesSet'
