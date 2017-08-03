@@ -165,7 +165,9 @@ await chromeless.wait(() => { return console.log('@TODO: put a better example he
 
 ### clearCache(): Chromeless<T>
 
-Clear browser cache.
+Clears browser cache. 
+
+Service workers and Storage (IndexedDB, WebSQL, etc) needs to be cleared separately. More information at the [Chrome Devtools Protocol website](https://chromedevtools.github.io/devtools-protocol/tot).
 
 __Example__
 
