@@ -36,8 +36,8 @@ Chromeless provides TypeScript typings.
 - [`cookiesSet(name: string, value: string)`](#api-cookiesset)
 - [`cookiesSet(cookie: Cookie)`](#api-cookiesset-one)
 - [`cookiesSet(cookies: Cookie[])`](#api-cookiesset-many)
-- [`cookiesDelete(name: string)`](#api-cookiesdelete)
-- [`cookiesClear()`](#api-cookiesclear)
+- [`deleteCookies(name: string)`](#api-deletecookies)
+- [`clearCookies()`](#api-clearcookies)
 
 
 ---------------------------------------
@@ -589,9 +589,9 @@ await chromeless.cookiesSet([
 
 ---------------------------------------
 
-<a name="api-cookiesclear" />
+<a name="api-deletecookies" />
 
-### cookiesDelete(name: string) - Not implemented yet
+### deleteCookies(name: string) - Not implemented yet
 
 Delete a specific cookie.
 
@@ -601,21 +601,21 @@ __Arguments__
 __Example__
 
 ```js
-await chromeless.cookiesDelete('cookieName')
+await chromeless.deleteCookies('cookieName')
 ```
 
 ---------------------------------------
 
-<a name="api-cookiesclear" />
+<a name="api-clearcookies" />
 
-### cookiesClear(): Chromeless<T>
+### clearCookies(): Chromeless<T>
 
 Clears all browser cookies.
 
 __Example__
 
 ```js
-await chromeless.cookiesClear()
+await chromeless.clearCookies()
 ```
 ---------------------------------------
 

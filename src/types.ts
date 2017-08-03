@@ -128,10 +128,10 @@ export type Command =
       selector?: string
     }
   | {
-      type: 'cookiesClear'
+      type: 'clearCookies'
     }
   | {
-      type: 'cookiesDelete'
+      type: 'deleteCookies'
       name: string
       url: string
     }
