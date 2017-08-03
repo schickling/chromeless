@@ -31,7 +31,7 @@ import {
   mousedown,
   mouseup,
   focus,
-  clear
+  clear,
 } from '../util'
 
 export default class LocalRuntime {
@@ -95,7 +95,7 @@ export default class LocalRuntime {
         return this.mousup(command.selector)
       case 'focus':
         return this.focus(command.selector)
-      case 'clear':
+      case 'clearInput':
         return this.clear(command.selector)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)

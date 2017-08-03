@@ -612,9 +612,9 @@ await chromeless.cookiesClearAll()
 ```
 ---------------------------------------
 
-<a name="api-clear" />
+<a name="api-clearInput" />
 
-### clear(selector: string): Chromeless<T>
+### clearInput(selector: string): Chromeless<T>
 
 Clear input text.
 
@@ -622,5 +622,5 @@ Clear input text.
 __Example__
 
 ```js
-await chromeless.clear('#username')
+await chromeless.clearInput('#username')
 ```

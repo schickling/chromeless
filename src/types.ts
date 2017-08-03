@@ -137,7 +137,7 @@ export type Command =
       selector: string
     }
   | {
-    type: 'clear',
+    type: 'clearInput'
     selector: string
   }
 
