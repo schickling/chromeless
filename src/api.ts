@@ -1,7 +1,7 @@
 import ChromeLocal from './chrome/local'
 import ChromeRemote from './chrome/remote'
 import Queue from './queue'
-import { ChromelessOptions, Cookie, CookieQuery, PdfOptions } from './types'
+import { Chrome, ChromelessOptions, Cookie, CookieQuery, PdfOptions } from './types'
 import { getDebugOption } from './util'
 
 export default class Chromeless<T extends any> implements Promise<T> {
@@ -150,6 +150,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
 
   scrollTo(x: number, y: number): Chromeless<T> {
     this.queue.enqueue({ type: 'scrollTo', x, y })
+
+    return this
+  }
+
+  scrollToElement(selector: string): Chromeless<T> {
+    this.queue.enqueue({ type: 'scrollToElement', selector })
 
     return this
   }

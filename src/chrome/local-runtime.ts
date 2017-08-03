@@ -21,6 +21,7 @@ import {
   type,
   getValue,
   scrollTo,
+  scrollToElement,
   setHtml,
   press,
   clearCookies,
@@ -78,6 +79,8 @@ export default class LocalRuntime {
         return this.press(command.keyCode, command.count, command.modifiers)
       case 'scrollTo':
         return this.scrollTo(command.x, command.y)
+      case 'scrollToElement':
+        return this.scrollToElement(command.selector)
       case 'setHtml':
         return this.setHtml(command.html)
       case 'cookiesClearAll':
@@ -151,6 +154,11 @@ export default class LocalRuntime {
 
   private async scrollTo<T>(x: number, y: number): Promise<void> {
     return scrollTo(this.client, x, y)
+  }
+
+  private async scrollToElement<T>(selector: string): Promise<void> {
+    const { scale } = this.chromelessOptions.viewport
+    return scrollToElement(this.client, selector, scale)
   }
 
   private async mousedown(selector: string): Promise<void> {

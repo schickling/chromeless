@@ -95,6 +95,10 @@ export type Command =
       y: number
     }
   | {
+      type: 'scrollToElement'
+      selector: string
+    }
+  | {
       type: 'setHtml'
       html: string
     }
