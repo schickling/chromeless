@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - chromeless can now be imported into TypeScript projects with activated `strictNullChecks` compiler option [#154](https://github.com/graphcool/chromeless/pull/154) @clebert
 
+### Breaking
+- We renamed `cookiesClear()` to `deleteCookies()`, `cookiesClearAll()` to `clearCookies()` and according to semver should bump the version to 2.0.0, however, just-this-time, we're not going to. [#123](https://github.com/graphcool/chromeless/pull/123) @joeyvandijk
+
 
 ## [1.1.0] - 2017-08-02
 
