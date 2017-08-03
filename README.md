@@ -151,8 +151,8 @@ const chromeless = new Chromeless({
 - [`refresh()`](docs/api.md#api-refresh) - Not implemented yet
 - [`mousedown(selector: string)`](docs/api.md#api-mousedown)
 - [`mouseup(selector: string)`](docs/api.md#api-mouseup)
-- [`scrollTo(x: number, y: number)`](docs/api.md#api-scrollto)
-- [`scrollToElement(selector: string)`](docs/api.md#api-scrolltoElement)
+- [`scrollTo(x: number, y: number)`](docs/api.md#api-scrollto-coordinates)
+- [`scrollTo(selector: string)`](docs/api.md#api-scrollto-selector)
 - [`setHtml(html: string)`](docs/api.md#api-sethtml)
 - [`viewport(width: number, height: number)`](docs/api.md#api-viewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](docs/api.md#api-evaluate)

@@ -77,10 +77,15 @@ export default class LocalRuntime {
         return this.type(command.input, command.selector)
       case 'press':
         return this.press(command.keyCode, command.count, command.modifiers)
-      case 'scrollTo':
-        return this.scrollTo(command.x, command.y)
-      case 'scrollToElement':
-        return this.scrollToElement(command.selector)
+      case 'scrollTo': {
+        if (command.x, command.y) {
+          return this.scrollTo(command.x, command.y)
+        } else if (command.selector) {
+          return this.scrollToElement(command.selector)
+        } else {
+          throw new Error('scrollFn not yet implemented')
+        }
+      }
       case 'setHtml':
         return this.setHtml(command.html)
       case 'cookiesClearAll':
