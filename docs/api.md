@@ -155,7 +155,14 @@ __Arguments__
 __Example__
 
 ```js
-await chromeless.wait(() => { return console.log('@TODO: put a better example here') })
+await chromeless.wait(() => { 
+  var someVar; 
+  // ...
+  // do stuff, and chromeless will wait 
+  // ...
+  
+  return someVar; // will continue after this
+})
 ```
 
 ---------------------------------------
