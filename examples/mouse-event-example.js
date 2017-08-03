@@ -4,9 +4,8 @@ async function run() {
     const chromeless = new Chromeless()
 
     const screenshot = await chromeless
-        .goto('https://www.google.com')
-        .mousedown('input[name="btnI"]')
-        .mouseup('input[name="btnI"]')
+        .goto('https://blueimp.github.io/jQuery-File-Upload/')
+        .selectFile('input[type="file"]', '/Users/admir/Downloads/thumbnail_datetime.jpg')
         .wait('.latest-doodle')
         .screenshot()
 

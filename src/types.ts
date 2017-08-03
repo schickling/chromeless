@@ -163,6 +163,11 @@ export type Command =
     type: 'clearInput'
     selector: string
   }
+  | {
+    type: 'selectFiles',
+    selector: string,
+    files: string[]
+  }
 
 export interface Cookie {
   url?: string

@@ -284,8 +284,17 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
-    clearInput(selector: string): Chromeless<T> {
+  clearInput(selector: string): Chromeless<T> {
     this.queue.enqueue({type: 'clearInput', selector})
+    return this
+  }
+
+  selectFile(selector: string, file: string): Chromeless<T> {
+    return this.selectFiles(selector, [file])
+  }
+
+  selectFiles(selector: string, files: string[]): Chromeless<T> {
+    this.queue.enqueue({type: 'selectFiles', selector, files})
     return this
   }
 

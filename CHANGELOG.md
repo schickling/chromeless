@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `placeholder()` API method [#000](https://github.com/graphcool/chromeless/pull/000) @contributor
 - `clearInput()` API method [#151](https://github.com/graphcool/chromeless/pull/151), [#133](https://github.com/graphcool/chromeless/issues/133) @criticalbh
 - `setViewport()` API method [#115](https://github.com/graphcool/chromeless/pull/115) @joeyvandijk
+- `selectFiles(selector: string, files: string[]) and selectFile(selector: string, file: string)` API methods @criticalbh
 
 ### Changed
 - **Breaking:** We renamed `cookiesClear()` to `deleteCookies()`, `cookiesClearAll()` to `clearCookies()` and according to semver should bump the version to 2.0.0, however, just-this-time, we're not going to. [#123](https://github.com/graphcool/chromeless/pull/123) @joeyvandijk

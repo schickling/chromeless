@@ -466,6 +466,13 @@ export async function clearInput(client: Client, selector: string): Promise<void
   }
 }
 
+export async function selectFiles(client: Client, selector: string, files: string[]): Promise<string> {
+  const {DOM} = client
+  const dom = await DOM.getDocument()
+  const node = await DOM.querySelector({nodeId: dom.root.nodeId, selector: selector})
+  return await DOM.setFileInputFiles({files: files, nodeId: node.nodeId})
+}
+
 export function getDebugOption(): boolean {
   if (
     process &&
