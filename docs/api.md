@@ -23,7 +23,7 @@ Chromeless provides TypeScript typings.
 - [`mouseup(selector: string)`](#api-mouseup)
 - [`scrollTo(x: number, y: number)`](#api-scrollto)
 - [`setHtml(html: string)`](#api-sethtml)
-- [`viewport(width: number, height: number)`](#api-viewport)
+- [`setViewport(options: DeviceMetrics)`](#api-setviewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](#api-evaluate)
 - [`inputValue(selector: string)`](#api-inputvalue)
 - [`exists(selector: string)`](#api-exists)
@@ -324,20 +324,19 @@ await chromeless.setHtml('<h1>Hello world!</h1>')
 
 ---------------------------------------
 
-<a name="api-viewport" />
+<a name="api-setviewport" />
 
-### viewport(width: number, height: number)
+### setViewport(options:DeviceMetrics)
 
 Resize the viewport. Useful if you want to capture more or less of the document in a screenshot.
 
 __Arguments__
-- `width` - Viewport width
-- `height` - Viewport height
+- `options` - DeviceMetrics object
 
 __Example__
 
 ```js
-await chromeless.viewport(1024, 800)
+await chromeless.setViewport({width: 1024, height: 600, scale: 1})
 ```
 
 ---------------------------------------
@@ -624,4 +623,18 @@ __Example__
 
 ```js
 await chromeless.cookiesClearAll()
+```
+---------------------------------------
+
+<a name="api-clearInput" />
+
+### clearInput(selector: string): Chromeless<T>
+
+Clear input text.
+
+
+__Example__
+
+```js
+await chromeless.clearInput('#username')
 ```

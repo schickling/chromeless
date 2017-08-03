@@ -6,3 +6,4 @@ dist
 .serverless
 .build
 .envrc
+.nyc_output/

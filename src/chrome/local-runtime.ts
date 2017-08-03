@@ -23,6 +23,7 @@ import {
   scrollTo,
   setHtml,
   press,
+  setViewport,
   clearCookies,
   getCookies,
   setCookies,
@@ -31,6 +32,7 @@ import {
   mousedown,
   mouseup,
   focus,
+  clearInput,
 } from '../util'
 
 export default class LocalRuntime {
@@ -47,6 +49,8 @@ export default class LocalRuntime {
     switch (command.type) {
       case 'goto':
         return this.goto(command.url)
+        case 'setViewport':
+          return setViewport(this.client, command.options)
       case 'wait': {
         if (command.timeout) {
           return this.waitTimeout(command.timeout)
@@ -96,6 +100,8 @@ export default class LocalRuntime {
         return this.mousup(command.selector)
       case 'focus':
         return this.focus(command.selector)
+      case 'clearInput':
+        return this.clearInput(command.selector)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -370,6 +376,22 @@ export default class LocalRuntime {
 
       return filePath
     }
+  }
+
+  async clearInput(selector: string): Promise<void> {
+    if (selector) {
+      if (this.chromelessOptions.implicitWait) {
+        this.log(`clearInput(): Waiting for ${selector}`)
+        await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
+      }
+
+      const exists = await nodeExists(this.client, selector)
+      if (!exists) {
+        throw new Error(`clearInput(): Node not found for selector: ${selector}`)
+      }
+    }
+    await clearInput(this.client, selector)
+    this.log(`${selector} cleared`)
   }
 
   private log(msg: string): void {
