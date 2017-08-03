@@ -53,8 +53,8 @@ export default class Chromeless<T extends any> implements Promise<T> {
   readonly [Symbol.toStringTag]: 'Promise'
 
   then<U>(
-    onFulfill: (value: T) => U | PromiseLike<U>,
-    onReject?: (error: any) => U | PromiseLike<U>,
+    onFulfill?: ((value: T) => U | PromiseLike<U>) | null,
+    onReject?: ((error: any) => U | PromiseLike<U>) | null,
   ): Promise<U> {
     return this.lastReturnPromise.then(onFulfill, onReject) as Promise<U>
   }
