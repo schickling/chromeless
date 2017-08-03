@@ -1,7 +1,7 @@
 import ChromeLocal from './chrome/local'
 import ChromeRemote from './chrome/remote'
 import Queue from './queue'
-import { Chrome, ChromelessOptions, Cookie, CookieQuery, PdfOptions } from './types'
+import { ChromelessOptions, Cookie, CookieQuery, PdfOptions } from './types'
 import { getDebugOption } from './util'
 
 export default class Chromeless<T extends any> implements Promise<T> {
