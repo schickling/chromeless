@@ -609,3 +609,17 @@ __Example__
 ```js
 await chromeless.cookiesClearAll()
 ```
+---------------------------------------
+
+<a name="api-clearInput" />
+
+### clearInput(selector: string): Chromeless<T>
+
+Clear input text.
+
+
+__Example__
+
+```js
+await chromeless.clearInput('#username')
+```

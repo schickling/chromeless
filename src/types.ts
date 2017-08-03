@@ -154,6 +154,10 @@ export type Command =
       type: 'focus'
       selector: string
     }
+  | {
+    type: 'clearInput'
+    selector: string
+  }
 
 export interface Cookie {
   url?: string
