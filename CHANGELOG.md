@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Chromeless can now be imported into TypeScript projects with activated `strictNullChecks` compiler option [#154](https://github.com/graphcool/chromeless/pull/154) @clebert
 - Fixed an issue in `clearCookies()` to check that it can clear cookies before trying to clear them [#123](https://github.com/graphcool/chromeless/pull/123) @joeyvandijk
-- When initialising runtime with `options.launchChrome = false`, use `port` from `options` instead of `this.chromeInstance`, the latter of which does not contain port information when Chromeless did not launch Chrome itself (e.g. in the Proxy) [#162](https://github.com/graphcool/chromeless/pull/123), [#99](https://github.com/graphcool/chromeless/issues/99#issuecomment-320094029) @torbs
+- When initialising runtime with `options.launchChrome = false`, use `port` from `options` instead of `this.chromeInstance`, the latter of which does not contain port information when Chromeless did not launch Chrome itself (e.g. in the Proxy) [#162](https://github.com/graphcool/chromeless/pull/123), [#99](https://github.com/graphcool/chromeless/issues/99#issuecomment-320094029), [#159](https://github.com/graphcool/chromeless/issues/159) @torbs
 
 
 ## [1.1.0] - 2017-08-02
