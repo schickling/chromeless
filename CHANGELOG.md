@@ -8,9 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added
-- `placeholder()` API method [#000](https://github.com/graphcool/chromeless/pull/000) @contributor
 - `clearInput()` API method [#151](https://github.com/graphcool/chromeless/pull/151), [#133](https://github.com/graphcool/chromeless/issues/133) @criticalbh
 - `setViewport()` API method [#115](https://github.com/graphcool/chromeless/pull/115) @joeyvandijk
+- Mocha E2E tests [example](examples/mocha-chai-test-example.js) [#164](https://github.com/graphcool/chromeless/pull/164) @FabioAntunes
 
 ### Changed
 - **Breaking:** We renamed `cookiesClear()` to `deleteCookies()`, `cookiesClearAll()` to `clearCookies()` and according to semver should bump the version to 2.0.0, however, just-this-time, we're not going to. [#123](https://github.com/graphcool/chromeless/pull/123) @joeyvandijk
@@ -18,8 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Chromeless can now be imported into TypeScript projects with activated `strictNullChecks` compiler option [#154](https://github.com/graphcool/chromeless/pull/154) @clebert
 - Fixed an issue in `clearCookies()` to check that it can clear cookies before trying to clear them [#123](https://github.com/graphcool/chromeless/pull/123) @joeyvandijk
-- When initialising runtime with `options.launchChrome = false`, use `port` from `options` instead of `this.chromeInstance`, the latter of which does not contain port information when Chromeless did not launch Chrome itself (e.g. in the Proxy) [#162](https://github.com/graphcool/chromeless/pull/162), [#99](https://github.com/graphcool/chromeless/issues/99#issuecomment-320094029), [#159](https://github.com/graphcool/chromeless/issues/159) @torbs
-
+- When initialising runtime with `options.launchChrome = false`, use `port` from `options` instead of `this.chromeInstance`, the latter of which does not contain port information when Chromeless did not launch Chrome itself (e.g. in the Proxy) [#162](https://github.com/graphcool/chromeless/pull/162), [#99 (comment)](https://github.com/graphcool/chromeless/issues/99#issuecomment-320094029), [#159](https://github.com/graphcool/chromeless/issues/159) @torbs
+- Removed packaging excludes in the Proxy so that chrome-launcher dependencies are included in the deployment package. [#99 (comment)](https://github.com/graphcool/chromeless/issues/99#issuecomment-320076119), [#173](https://github.com/graphcool/chromeless/pull/173) @adieuadieu
 
 ## [1.1.0] - 2017-08-02
 
