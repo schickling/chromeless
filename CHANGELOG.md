@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed an issue in `clearCookies()` to check that it can clear cookies before trying to clear them [#123](https://github.com/graphcool/chromeless/pull/123) @joeyvandijk
 - When initialising runtime with `options.launchChrome = false`, use `port` from `options` instead of `this.chromeInstance`, the latter of which does not contain port information when Chromeless did not launch Chrome itself (e.g. in the Proxy) [#162](https://github.com/graphcool/chromeless/pull/162), [#99 (comment)](https://github.com/graphcool/chromeless/issues/99#issuecomment-320094029), [#159](https://github.com/graphcool/chromeless/issues/159) @torbs
 - Removed packaging excludes in the Proxy so that chrome-launcher dependencies are included in the deployment package. [#99 (comment)](https://github.com/graphcool/chromeless/issues/99#issuecomment-320076119), [#173](https://github.com/graphcool/chromeless/pull/173) @adieuadieu
-- We're now using `os.tempdir()` when saving screenshots/pdfs to disk. [#129](https://github.com/graphcool/chromeless/issues/129), [#172](https://github.com/graphcool/chromeless/pull/172), [#137](https://github.com/graphcool/chromeless/pull/137) @Kivol, @elisherer
+- We're now using `os.tmpdir()` when saving screenshots/pdfs to disk. [#129](https://github.com/graphcool/chromeless/issues/129), [#172](https://github.com/graphcool/chromeless/pull/172), [#137](https://github.com/graphcool/chromeless/pull/137) @Kivol, @elisherer
 
 ## [1.1.0] - 2017-08-02
 
