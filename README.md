@@ -220,7 +220,7 @@ In case you get an error like this when running the Chromeless client:
 ...
 Error: Unable to get presigned websocket URL and connect to it.
 ```
-Make sure that you're running at least version `1.8.0` of [`serverless`](https://github.com/serverless/serverless). It is a known [issue](https://github.com/serverless/serverless/issues/2450), that the API Keys are not working in older serverless versions. With running `npm run deploy` that shouldn't happen at all, as it uses the local installed version of `serverless`.
+Make sure that you're running at least version `1.19.0` of [`serverless`](https://github.com/serverless/serverless). It is a known [issue](https://github.com/serverless/serverless/issues/2450), that the API Gateway API keys are not setup correctly in older Serverless versions. Best is to run `npm run deploy` within the project as this will use the local installed version of `serverless`.
 
 ### Resource ServerlessDeploymentBucket does not exist for stack chromeless-serverless-dev
 In case the deployment of the serverless function returns an error like this:
