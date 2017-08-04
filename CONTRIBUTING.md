@@ -17,6 +17,7 @@ As a contributor, you represent that the code you submit is your original work o
 
 0. [Fork][fork] and clone the repository
 0. Create a new branch: `git checkout -b feature/my-new-feature-name`
+0. Run `npm install` or `yarn install` to make sure you've got the latest dependencies.
 0. Make your change
 0. Run the unit tests and make sure they pass and have 100% coverage. (`npm test`)
 0. Push to your fork and [submit a pull request][pr]
