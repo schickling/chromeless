@@ -154,7 +154,7 @@ const chromeless = new Chromeless({
 - [`scrollTo(x: number, y: number)`](docs/api.md#api-scrollto-coordinates)
 - [`scrollTo(selector: string)`](docs/api.md#api-scrollto-selector)
 - [`setHtml(html: string)`](docs/api.md#api-sethtml)
-- [`viewport(width: number, height: number)`](docs/api.md#api-viewport)
+- [`setViewport(options: DeviceMetrics)`](docs/api.md#api-setviewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](docs/api.md#api-evaluate)
 - [`inputValue(selector: string)`](docs/api.md#api-inputvalue)
 - [`exists(selector: string)`](docs/api.md#api-exists)
@@ -168,8 +168,9 @@ const chromeless = new Chromeless({
 - [`cookiesSet(name: string, value: string)`](docs/api.md#api-cookiesset)
 - [`cookiesSet(cookie: Cookie)`](docs/api.md#api-cookiesset-one)
 - [`cookiesSet(cookies: Cookie[])`](docs/api.md#api-cookiesset-many)
-- [`cookiesClear(name: string)`](docs/api.md#api-cookiesclear)
-- [`cookiesClearAll()`](docs/api.md#api-cookiesclearall)
+- [`deleteCookies(name: string)`](docs/api.md#api-deletecookies)
+- [`clearCookies()`](docs/api.md#api-clearcookies)
+- [`clearInput(selector: string)`](docs/api.md#api-clearInput)
 
 ## Configuring Development Environment
 

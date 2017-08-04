@@ -23,7 +23,7 @@ Chromeless provides TypeScript typings.
 - [`scrollTo(x: number, y: number)`](#api-scrollto-coordinates)
 - [`scrollTo(selector: string)`](#api-scrollto-selector)
 - [`setHtml(html: string)`](#api-sethtml)
-- [`viewport(width: number, height: number)`](#api-viewport)
+- [`setViewport(options: DeviceMetrics)`](#api-setviewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](#api-evaluate)
 - [`inputValue(selector: string)`](#api-inputvalue)
 - [`exists(selector: string)`](#api-exists)
@@ -37,8 +37,8 @@ Chromeless provides TypeScript typings.
 - [`cookiesSet(name: string, value: string)`](#api-cookiesset)
 - [`cookiesSet(cookie: Cookie)`](#api-cookiesset-one)
 - [`cookiesSet(cookies: Cookie[])`](#api-cookiesset-many)
-- [`cookiesClear(name: string)`](#api-cookiesclear)
-- [`cookiesClearAll()`](#api-cookiesclearall)
+- [`deleteCookies(name: string)`](#api-deletecookies)
+- [`clearCookies()`](#api-clearcookies)
 
 
 ---------------------------------------
@@ -327,20 +327,19 @@ await chromeless.setHtml('<h1>Hello world!</h1>')
 
 ---------------------------------------
 
-<a name="api-viewport" />
+<a name="api-setviewport" />
 
-### viewport(width: number, height: number)
+### setViewport(options:DeviceMetrics)
 
 Resize the viewport. Useful if you want to capture more or less of the document in a screenshot.
 
 __Arguments__
-- `width` - Viewport width
-- `height` - Viewport height
+- `options` - DeviceMetrics object
 
 __Example__
 
 ```js
-await chromeless.viewport(1024, 800)
+await chromeless.setViewport({width: 1024, height: 600, scale: 1})
 ```
 
 ---------------------------------------
@@ -608,23 +607,45 @@ await chromeless.cookiesSet([
 
 ---------------------------------------
 
-<a name="api-cookiesclear" />
+<a name="api-deletecookies" />
 
-### cookiesClear(name: string) - Not implemented yet
+### deleteCookies(name: string) - Not implemented yet
 
-Not implemented yet
+Delete a specific cookie.
+
+__Arguments__
+- `name` - name of the cookie
+
+__Example__
+
+```js
+await chromeless.deleteCookies('cookieName')
+```
 
 ---------------------------------------
 
-<a name="api-cookiesclearall" />
+<a name="api-clearcookies" />
 
-### cookiesClearAll(): Chromeless<T>
+### clearCookies(): Chromeless<T>
 
-Clears browser cookies.
+Clears all browser cookies.
+
+__Example__
+
+```js
+await chromeless.clearCookies()
+```
+---------------------------------------
+
+<a name="api-clearInput" />
+
+### clearInput(selector: string): Chromeless<T>
+
+Clear input text.
 
 
 __Example__
 
 ```js
-await chromeless.cookiesClearAll()
+await chromeless.clearInput('#username')
 ```

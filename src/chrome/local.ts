@@ -2,7 +2,8 @@ import { Chrome, Command, ChromelessOptions, Client } from '../types'
 import * as CDP from 'chrome-remote-interface'
 import { LaunchedChrome, launch } from 'chrome-launcher'
 import LocalRuntime from './local-runtime'
-import { evaluate } from '../util'
+import { evaluate, setViewport } from '../util'
+import { DeviceMetrics } from '../types'
 
 interface RuntimeClient {
   client: Client
@@ -25,7 +26,8 @@ export default class LocalChrome implements Chrome {
       ? await this.startChrome()
       : await this.connectToChrome()
 
-    await this.setViewport(client)
+    const { viewport = {} as DeviceMetrics} = this.options
+    await setViewport(client, viewport as DeviceMetrics)
 
     const runtime = new LocalRuntime(client, this.options)
 
