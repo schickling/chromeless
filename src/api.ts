@@ -157,7 +157,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
         break
       }
       case 'string': {
-        this.queue.enqueue({ type: 'scrollTo', selector: firstArg})
+        this.queue.enqueue({ type: 'scrollTo', selector: firstArg })
         break
       }
       default:

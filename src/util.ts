@@ -302,12 +302,13 @@ export async function scrollTo(
 
 export async function scrollToElement(
     client: Client,
-    selector: string
+    selector: string,
+    scale: number,
 ): Promise<void> {
     const clientRect = await getClientRect(client, selector)
     const coordinates = {
-        x: Math.round(clientRect.left),
-        y: Math.round(clientRect.top)
+        x: Math.round((clientRect.left + clientRect.width / 2) * scale),
+        y: Math.round((clientRect.top + clientRect.height / 2) * scale)
     }
     const { Runtime } = client
     const browserCode = (x, y) => {

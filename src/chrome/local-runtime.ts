@@ -167,7 +167,8 @@ export default class LocalRuntime {
   }
 
   private async scrollToElement<T>(selector: string): Promise<void> {
-    return scrollToElement(this.client, selector)
+    const { scale } = this.chromelessOptions.viewport
+    return scrollToElement(this.client, selector, scale)
   }
 
   private async mousedown(selector: string): Promise<void> {
