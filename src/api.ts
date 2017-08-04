@@ -105,6 +105,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
+  clearCache(): Chromeless<T> {
+    this.queue.enqueue({ type: 'clearCache' })
+
+    return this
+  }
+
   focus(selector: string): Chromeless<T> {
     this.queue.enqueue({ type: 'focus', selector })
     return this

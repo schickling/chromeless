@@ -62,6 +62,9 @@ export type Command =
       url: string
     }
   | {
+      type: 'clearCache'
+    }
+  | {
       type: 'setViewport'
       options: DeviceMetrics
     }
