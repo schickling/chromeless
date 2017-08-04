@@ -9,6 +9,8 @@ import {
 } from '../types'
 import * as cuid from 'cuid'
 import * as fs from 'fs'
+import * as os from 'os'
+import * as path from 'path'
 import {
   nodeExists,
   wait,
@@ -342,8 +344,8 @@ export default class LocalRuntime {
 
       return `https://${process.env['CHROMELESS_S3_BUCKET_URL']}/${s3Path}`
     } else {
-      // write to `/tmp` instead
-      const filePath = `/tmp/${cuid()}.png`
+      // write to `${os.tmpdir()}` instead
+      const filePath = path.join(os.tmpdir(), `${cuid()}.png`)
       fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
 
       return filePath
@@ -377,8 +379,8 @@ export default class LocalRuntime {
 
       return `https://${process.env['CHROMELESS_S3_BUCKET_URL']}/${s3Path}`
     } else {
-      // write to `/tmp` instead
-      const filePath = `/tmp/${cuid()}.pdf`
+      // write to `${os.tmpdir()}` instead
+      const filePath = path.join(os.tmpdir(), `${cuid()}.pdf`)
       fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
 
       return filePath
