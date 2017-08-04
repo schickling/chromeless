@@ -1,4 +1,3 @@
-import * as AWS from 'aws-sdk'
 import {
   Client,
   Command,
@@ -8,10 +7,6 @@ import {
   PdfOptions,
   ScreenshotOptions,
 } from '../types'
-import * as cuid from 'cuid'
-import * as fs from 'fs'
-import * as os from 'os'
-import * as path from 'path'
 import {
   nodeExists,
   wait,
@@ -37,6 +32,9 @@ import {
   mouseup,
   focus,
   clearInput,
+  writeToFile,
+  isS3Configured,
+  uploadToS3,
 } from '../util'
 
 export default class LocalRuntime {
@@ -360,31 +358,10 @@ export default class LocalRuntime {
 
     const data = await screenshot(this.client, selector)
 
-    // check if S3 configured
-    if (
-      process.env['CHROMELESS_S3_BUCKET_NAME'] &&
-      process.env['CHROMELESS_S3_BUCKET_URL']
-    ) {
-      const s3Path = `${cuid()}.png`
-      const s3 = new AWS.S3()
-      await s3
-        .putObject({
-          Bucket: process.env['CHROMELESS_S3_BUCKET_NAME'],
-          Key: s3Path,
-          ContentType: 'image/png',
-          ACL: 'public-read',
-          Body: new Buffer(data, 'base64'),
-        })
-        .promise()
-
-      return `https://${process.env['CHROMELESS_S3_BUCKET_URL']}/${s3Path}`
+    if (isS3Configured()) {
+      return await uploadToS3(data, 'image/png')
     } else {
-      // write to file instead
-      const filePath =
-        (options && options.filePath) || path.join(os.tmpdir(), `${cuid()}.png`)
-      fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
-
-      return filePath
+      return writeToFile(data, options && options.filePath)
     }
   }
 
@@ -400,30 +377,10 @@ export default class LocalRuntime {
     } = options || { filePath: undefined }
     const data = await pdf(this.client, cdpOptions)
 
-    // check if S3 configured
-    if (
-      process.env['CHROMELESS_S3_BUCKET_NAME'] &&
-      process.env['CHROMELESS_S3_BUCKET_URL']
-    ) {
-      const s3Path = `${cuid()}.pdf`
-      const s3 = new AWS.S3()
-      await s3
-        .putObject({
-          Bucket: process.env['CHROMELESS_S3_BUCKET_NAME'],
-          Key: s3Path,
-          ContentType: 'application/pdf',
-          ACL: 'public-read',
-          Body: new Buffer(data, 'base64'),
-        })
-        .promise()
-
-      return `https://${process.env['CHROMELESS_S3_BUCKET_URL']}/${s3Path}`
+    if (isS3Configured()) {
+      return await uploadToS3(data, 'application/pdf')
     } else {
-        // write to file instead
-        const pdfFilePath = filePath || path.join(os.tmpdir(), `${cuid()}.png`)
-      fs.writeFileSync(pdfFilePath, Buffer.from(data, 'base64'))
-
-      return pdfFilePath
+      return writeToFile(data, filePath)
     }
   }
 

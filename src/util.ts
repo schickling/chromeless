@@ -1,7 +1,10 @@
 import * as fs from 'fs'
+import * as os from 'os'
 import * as path from 'path'
+import * as cuid from 'cuid'
 import { Client, Cookie, DeviceMetrics, PdfOptions, BoxModel, Viewport } from './types'
 import * as CDP from 'chrome-remote-interface'
+import * as AWS from 'aws-sdk'
 
 export const version: string = ((): string => {
   if (fs.existsSync(path.join(__dirname, '../package.json'))) {
@@ -425,6 +428,10 @@ export function boxModelToViewPort(model: BoxModel, scale: number): Viewport {
   }
 }
 
+function writeToFileSync(data) {
+
+}
+
 export async function screenshot(
   client: Client,
   selector: string,
@@ -516,4 +523,51 @@ export function getDebugOption(): boolean {
   }
 
   return false
+}
+
+export function writeToFile(data: string, filePathOverride?: string): string {
+  const filePath = filePathOverride || path.join(os.tmpdir(), `${cuid()}.png`)
+  fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
+  return filePath
+}
+
+function getS3BucketName() {
+  return process.env['CHROMELESS_S3_BUCKET_NAME']
+}
+
+function getS3BucketURL() {
+  return process.env['CHROMELESS_S3_BUCKET_URL']
+}
+
+export function isS3Configured() {
+  return getS3BucketName() && getS3BucketURL()
+}
+
+const s3ContentTypes = {
+  'image/png': {
+    extension: 'png'
+  },
+  'application/pdf': {
+    extension: 'pdf'
+  },
+}
+
+export async function uploadToS3(data: string, contentType: string): Promise<string> {
+  const s3ContentType = s3ContentTypes[contentType];
+  if (!s3ContentType) {
+    throw new Error(`Unknown S3 Content type ${contentType}`)
+  }
+  const s3Path = `${cuid()}.${s3ContentType.extension}`
+  const s3 = new AWS.S3()
+  await s3
+        .putObject({
+          Bucket: getS3BucketName(),
+          Key: s3Path,
+          ContentType: contentType,
+          ACL: 'public-read',
+          Body: Buffer.from(data, 'base64'),
+        })
+        .promise()
+
+  return `https://${getS3BucketURL()}/${s3Path}`
 }
