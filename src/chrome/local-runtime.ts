@@ -21,6 +21,7 @@ import {
   type,
   getValue,
   scrollTo,
+  scrollToElement,
   setHtml,
   press,
   setViewport,
@@ -81,12 +82,15 @@ export default class LocalRuntime {
         return this.type(command.input, command.selector)
       case 'press':
         return this.press(command.keyCode, command.count, command.modifiers)
-      case 'scrollTo':
-        return this.scrollTo(command.x, command.y)
-      case 'deleteCookies':
-        return this.deleteCookies(command.name, command.url)
-      case 'clearCookies':
-        return this.clearCookies()
+      case 'scrollTo': {
+        if (command.x, command.y) {
+          return this.scrollTo(command.x, command.y)
+        } else if (command.selector) {
+          return this.scrollToElement(command.selector)
+        } else {
+          throw new Error('scrollFn not yet implemented')
+        }
+      }
       case 'setHtml':
         return this.setHtml(command.html)
       case 'cookiesGet':
@@ -160,6 +164,11 @@ export default class LocalRuntime {
 
   private async scrollTo<T>(x: number, y: number): Promise<void> {
     return scrollTo(this.client, x, y)
+  }
+
+  private async scrollToElement<T>(selector: string): Promise<void> {
+    const { scale } = this.chromelessOptions.viewport
+    return scrollToElement(this.client, selector, scale)
   }
 
   private async mousedown(selector: string): Promise<void> {

@@ -109,8 +109,9 @@ export type Command =
     }
   | {
       type: 'scrollTo'
-      x: number
-      y: number
+      x?: number
+      y?: number
+      selector?: string
     }
   | {
       type: 'setHtml'

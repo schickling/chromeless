@@ -148,8 +148,21 @@ export default class Chromeless<T extends any> implements Promise<T> {
     throw new Error('Not implemented yet')
   }
 
-  scrollTo(x: number, y: number): Chromeless<T> {
-    this.queue.enqueue({ type: 'scrollTo', x, y })
+  scrollTo(x: number, y: number): Chromeless<T>
+  scrollTo(selector: string): Chromeless<T>
+  scrollTo(firstArg, ...args: any[]): Chromeless<T> {
+    switch (typeof firstArg) {
+      case 'number': {
+        this.queue.enqueue({ type: 'scrollTo', x: firstArg, y: args[0] })
+        break
+      }
+      case 'string': {
+        this.queue.enqueue({ type: 'scrollTo', selector: firstArg })
+        break
+      }
+      default:
+        throw new Error(`Invalid scrollTo arguments: ${firstArg} ${args}`)
+    }
 
     return this
   }
