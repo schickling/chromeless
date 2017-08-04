@@ -2,7 +2,8 @@ import { Chrome, Command, ChromelessOptions, Client } from '../types'
 import * as CDP from 'chrome-remote-interface'
 import { LaunchedChrome, launch } from 'chrome-launcher'
 import LocalRuntime from './local-runtime'
-import { evaluate } from '../util'
+import { evaluate, setViewport } from '../util'
+import { DeviceMetrics } from '../types'
 
 interface RuntimeClient {
   client: Client
@@ -25,7 +26,8 @@ export default class LocalChrome implements Chrome {
       ? await this.startChrome()
       : await this.connectToChrome()
 
-    await this.setViewport(client)
+    const { viewport = {} as DeviceMetrics} = this.options
+    await setViewport(client, viewport as DeviceMetrics)
 
     const runtime = new LocalRuntime(client, this.options)
 
@@ -58,7 +60,7 @@ export default class LocalChrome implements Chrome {
       fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
     }
 
-    const port = this.chromeInstance ? this.chromeInstance.port : 9222
+    const port = this.options.cdp.port
     const versionResult = await CDP.Version({ port })
     const isHeadless = versionResult['User-Agent'].includes('Headless')
 

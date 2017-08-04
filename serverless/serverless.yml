@@ -46,25 +46,6 @@ plugins:
   - serverless-plugin-chrome
   - serverless-offline
 
-package:
-  exclude:
-    # - ./**
-    - node_modules/typescript/**
-    - node_modules/serverless-**/**
-    - node_modules/lighthouse**/**
-    - node_modules/devtools-timeline-model/**
-    - node_modules/chrome-devtools-frontend/**
-    - node_modules/uglify-js/**
-    # - node_modules/chromeless/**
-    # - '!node_modules/chromeless/dist/**'
-    # - '!node_modules/chromeless/package.json'
-  include:
-    - ./src/**.js
-    # - node_modules/chromeless/dist/**
-    # - node_modules/chromeless/package.json
-
-  excludeDevDependencies: false
-
 functions:
   run:
     memorySize: 1536

@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { Client, Cookie, PdfOptions, BoxModel, Viewport } from './types'
+import { Client, Cookie, DeviceMetrics, PdfOptions, BoxModel, Viewport } from './types'
+import * as CDP from 'chrome-remote-interface'
 
 export const version: string = ((): string => {
   if (fs.existsSync(path.join(__dirname, '../package.json'))) {
@@ -11,6 +12,43 @@ export const version: string = ((): string => {
     return require('../../package.json').version
   }
 })()
+
+export async function setViewport(client: Client, viewport: DeviceMetrics = { width: 1, height: 1, scale: 1 }): Promise<void> {
+  const config: any = {
+      deviceScaleFactor: 1,
+      mobile: false,
+      scale: viewport.scale || 1,
+      fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
+  }
+
+  const versionResult = await CDP.Version()
+  const isHeadless = versionResult['User-Agent'].includes('Headless')
+
+  if (viewport.height && viewport.width) {
+      config.height = viewport.height
+      config.width = viewport.width
+  } else if (isHeadless) {
+      // just apply default value in headless mode to maintain original browser viewport
+      config.height = 900
+      config.width = 1440
+  } else {
+      config.height = await evaluate(
+          client,
+          (() => window.innerHeight).toString()
+      )
+      config.width = await evaluate(
+          client,
+          (() => window.innerWidth).toString()
+      )
+  }
+
+  await client.Emulation.setDeviceMetricsOverride(config)
+  await client.Emulation.setVisibleSize({
+      width: config.width,
+      height: config.height,
+  })
+  return
+}
 
 export async function waitForNode(
   client: Client,
@@ -351,6 +389,12 @@ function getUrlFromCookie(cookie: Cookie) {
   return `https://${domain}`
 }
 
+export async function deleteCookie(client: Client, name: string, url: string): Promise<void> {
+  const {Network} = client
+
+  await Network.deleteCookie({cookieName: name, url})
+}
+
 export async function clearCookies(client: Client): Promise<void> {
   const { Network } = client
 
@@ -421,6 +465,44 @@ export async function pdf(
   const pdf = await Page.printToPDF(options)
 
   return pdf.data
+}
+
+export async function clearInput(client: Client, selector: string): Promise<void> {
+  await wait(500)
+  await focus(client, selector)
+
+  const {Input} = client
+
+  const text = await getValue(client, selector)
+
+  const optionsDelete = {
+    nativeVirtualKeyCode: 46,
+    windowsVirtualKeyCode: 46,
+  }
+
+  const optionsBackspace = {
+    nativeVirtualKeyCode: 8,
+    windowsVirtualKeyCode: 8,
+  }
+
+  for (let i = 0; i < text.length; i++) {
+    await Input.dispatchKeyEvent({
+      ...optionsDelete,
+      type: 'rawKeyDown',
+    })
+    Input.dispatchKeyEvent({
+      ...optionsDelete,
+      type: 'keyUp',
+    })
+    await Input.dispatchKeyEvent({
+      ...optionsBackspace,
+      type: 'rawKeyDown',
+    })
+    Input.dispatchKeyEvent({
+      ...optionsBackspace,
+      type: 'keyUp',
+    })
+  }
 }
 
 export function getDebugOption(): boolean {

@@ -26,7 +26,9 @@ import {
   scrollTo,
   setHtml,
   press,
+  setViewport,
   clearCookies,
+  deleteCookie,
   getCookies,
   setCookies,
   getAllCookies,
@@ -34,6 +36,7 @@ import {
   mousedown,
   mouseup,
   focus,
+  clearInput,
 } from '../util'
 
 export default class LocalRuntime {
@@ -50,6 +53,8 @@ export default class LocalRuntime {
     switch (command.type) {
       case 'goto':
         return this.goto(command.url)
+        case 'setViewport':
+          return setViewport(this.client, command.options)
       case 'wait': {
         if (command.timeout) {
           return this.waitTimeout(command.timeout)
@@ -59,6 +64,8 @@ export default class LocalRuntime {
           throw new Error('waitFn not yet implemented')
         }
       }
+      case 'clearCache':
+        return this.clearCache()
       case 'setUserAgent':
         return this.setUserAgent(command.useragent)
       case 'click':
@@ -81,10 +88,12 @@ export default class LocalRuntime {
         return this.press(command.keyCode, command.count, command.modifiers)
       case 'scrollTo':
         return this.scrollTo(command.x, command.y)
+      case 'deleteCookies':
+        return this.deleteCookies(command.name, command.url)
+      case 'clearCookies':
+        return this.clearCookies()
       case 'setHtml':
         return this.setHtml(command.html)
-      case 'cookiesClearAll':
-        return this.cookiesClearAll()
       case 'cookiesGet':
         return this.cookiesGet(command.nameOrQuery)
       case 'cookiesGetAll':
@@ -97,6 +106,8 @@ export default class LocalRuntime {
         return this.mousup(command.selector)
       case 'focus':
         return this.focus(command.selector)
+      case 'clearInput':
+        return this.clearInput(command.selector)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -110,6 +121,17 @@ export default class LocalRuntime {
     await Page.navigate({ url })
     await Page.loadEventFired()
     this.log(`Navigated to ${url}`)
+  }
+
+  private async clearCache(): Promise<void> {
+    const {Network} = this.client
+    const canClearCache = await Network.canClearBrowserCache
+    if (canClearCache) {
+      await Network.clearBrowserCache()
+      this.log(`Cache is cleared`)
+    } else {
+      this.log(`Cache could not be cleared`)
+    }
   }
 
   private async setUserAgent(useragent: string): Promise<void> {
@@ -274,9 +296,26 @@ export default class LocalRuntime {
     throw new Error(`cookiesSet(): Invalid input ${nameOrCookies}, ${value}`)
   }
 
-  async cookiesClearAll(): Promise<void> {
-    await clearCookies(this.client)
-    this.log('Cookies cleared')
+  async deleteCookies(name: string, url: string): Promise<void> {
+    const { Network } = this.client
+    const canClearCookies = await Network.canClearBrowserCookies()
+    if (canClearCookies) {
+      await deleteCookie(this.client, name, url)
+      this.log(`Cookie ${name} cleared`)
+    } else {
+      this.log(`Cookie ${name} could not be cleared`)
+    }
+  }
+
+  async clearCookies(): Promise<void> {
+    const { Network } = this.client
+    const canClearCookies = await Network.canClearBrowserCookies()
+    if (canClearCookies) {
+      await clearCookies(this.client)
+      this.log('Cookies cleared')
+    } else {
+      this.log('Cookies could not be cleared')
+    }
   }
 
   async press(keyCode: number, count?: number, modifiers?: any): Promise<void> {
@@ -386,6 +425,22 @@ export default class LocalRuntime {
 
       return pdfFilePath
     }
+  }
+
+  async clearInput(selector: string): Promise<void> {
+    if (selector) {
+      if (this.chromelessOptions.implicitWait) {
+        this.log(`clearInput(): Waiting for ${selector}`)
+        await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
+      }
+
+      const exists = await nodeExists(this.client, selector)
+      if (!exists) {
+        throw new Error(`clearInput(): Node not found for selector: ${selector}`)
+      }
+    }
+    await clearInput(this.client, selector)
+    this.log(`${selector} cleared`)
   }
 
   private log(msg: string): void {
