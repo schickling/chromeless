@@ -264,13 +264,12 @@ export async function scrollTo(
 
 export async function scrollToElement(
     client: Client,
-    selector: string,
-    scale: number,
+    selector: string
 ): Promise<void> {
     const clientRect = await getClientRect(client, selector)
     const coordinates = {
-        x: Math.round((clientRect.left + clientRect.width / 2) * scale),
-        y: Math.round((clientRect.top + clientRect.height / 2) * scale)
+        x: Math.round(clientRect.left),
+        y: Math.round(clientRect.top)
     }
     const { Runtime } = client
     const browserCode = (x, y) => {
