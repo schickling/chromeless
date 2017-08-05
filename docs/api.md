@@ -297,7 +297,7 @@ await chromeless.scrollTo(500, 0)
 
 ### scrollToElement(selector: string): Chromeless<T>
 
-Scroll to location of element.
+Scroll to location of element. Behavior is simiar to `<a href="#fragment"></a>` — target element will be at the top of viewport
 
 __Arguments__
 - `selector` - DOM selector for element to scroll to
