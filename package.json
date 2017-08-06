@@ -29,6 +29,7 @@
     "prettier": "prettier --no-semi --single-quote --trailing-comma all --write \"src/**/*.ts\"",
     "release": "np",
     "test": "npm run tslint && npm run ava",
+    "lint": "npm run lint",
     "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**",
     "watch": "tsc -w",
     "watch:test": "tsc -w & ava --watch"
@@ -59,7 +60,7 @@
   "lint-staged": {
     "*.{ts,js}": [
       "prettier --no-semi --single-quote --trailing-comma all --write",
-      "npm run lint",
+      "lint",
       "git add"
     ]
   }
