@@ -41,6 +41,7 @@ export interface ChromelessOptions {
   debug?: boolean // false
   waitTimeout?: number // 10000ms
   implicitWait?: boolean // false
+  scrollBeforeClick?: boolean // false
   viewport?: {
     width?: number // 1440 if headless
     height?: number // 900 if headless
@@ -60,6 +61,9 @@ export type Command =
   | {
       type: 'goto'
       url: string
+    }
+  | {
+      type: 'clearCache'
     }
   | {
       type: 'setViewport'
@@ -112,6 +116,10 @@ export type Command =
       x: number
       y: number
     }
+  | {
+      type: 'scrollToElement'
+      selector: string
+  }
   | {
       type: 'setHtml'
       html: string

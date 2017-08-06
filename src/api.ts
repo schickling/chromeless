@@ -20,6 +20,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
       waitTimeout: 10000,
       remote: false,
       implicitWait: true,
+      scrollBeforeClick: false,
       launchChrome: true,
 
       ...options,
@@ -105,6 +106,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
+  clearCache(): Chromeless<T> {
+    this.queue.enqueue({ type: 'clearCache' })
+
+    return this
+  }
+
   focus(selector: string): Chromeless<T> {
     this.queue.enqueue({ type: 'focus', selector })
     return this
@@ -150,6 +157,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
 
   scrollTo(x: number, y: number): Chromeless<T> {
     this.queue.enqueue({ type: 'scrollTo', x, y })
+
+    return this
+  }
+
+  scrollToElement(selector: string): Chromeless<T> {
+    this.queue.enqueue({ type: 'scrollToElement', selector })
 
     return this
   }
