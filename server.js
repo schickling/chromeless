@@ -25,43 +25,41 @@ const indexHtml = `<!DOCTYPE html>
 </html>
 `;
 
-(async () => {
-  const version = await CDP.Version();
+CDP.Version().then(version => {
   console.log(`Detected Chrome running: ${version['User-Agent']}`);
-})();
 
-http.createServer((request, response) => {
+  http.createServer((request, response) => {
 
-  const pathname = url.parse(request.url).pathname;
+    const pathname = url.parse(request.url).pathname;
 
-  if (pathname === '/' || pathname === '/index.html') {
-    response.writeHead(200, {'Content-Type': 'text/html'});
-    response.write(indexHtml);
-    response.end();
-  }
-  else {
-    // Currently no other file exists
-    response.writeHead(404, {'Content-Type': 'text/plain'});
-    response.write('404 Not Found');
-    response.end();
-  }
-}).listen(port, () => {
-  console.log('Listening on port: ' + port);
-  /*if (execCommand) {
-    console.log('> ' + execCommand);
-    execSync(execCommand, { stdio: [0, 1, 2] });
-    process.exit(0);
-  }*/
-
-  execCommand && exec(execCommand, (error, stdout, stderr) => {
-    if (error) {
-      console.error(error);
-      process.exit(1);
-      return;
+    if (pathname === '/' || pathname === '/index.html') {
+      response.writeHead(200, {'Content-Type': 'text/html'});
+      response.write(indexHtml);
+      response.end();
     }
-    console.log(stdout);
-    console.error(stderr);
-    process.exit(0);
-  });
+    else {
+      // Currently no other file exists
+      response.writeHead(404, {'Content-Type': 'text/plain'});
+      response.write('404 Not Found');
+      response.end();
+    }
+  }).listen(port, () => {
+    console.log('Listening on port: ' + port);
+    /*if (execCommand) {
+     console.log('> ' + execCommand);
+     execSync(execCommand, { stdio: [0, 1, 2] });
+     process.exit(0);
+     }*/
 
+    execCommand && exec(execCommand, (error, stdout, stderr) => {
+      if (error) {
+        console.error(error);
+        process.exit(1);
+        return;
+      }
+      console.log(stdout);
+      console.error(stderr);
+      process.exit(0);
+    });
+  });
 });

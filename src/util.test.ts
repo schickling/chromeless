@@ -38,7 +38,7 @@ test('screenshot and pdf path', async t => {
 
   await chromeless.end()
 
-  const regex = new RegExp(os.tmpdir())
+  const regex = new RegExp(os.tmpdir().replace(/\\/g, '\\\\'))
 
   t.regex(screenshot, regex)
   t.regex(pdf, regex)
