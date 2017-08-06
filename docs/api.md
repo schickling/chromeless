@@ -674,6 +674,8 @@ await chromeless.clearInput('#username')
 
 Set file(s) for selected file input.
 
+Currently not supported in the Proxy. Progress tracked in [#186](https://github.com/graphcool/chromeless/issues/186)
+
 
 __Example__
 
