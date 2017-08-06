@@ -54,8 +54,8 @@ export default class LocalRuntime {
     switch (command.type) {
       case 'goto':
         return this.goto(command.url)
-        case 'setViewport':
-          return setViewport(this.client, command.options)
+      case 'setViewport':
+        return setViewport(this.client, command.options)
       case 'wait': {
         if (command.timeout) {
           return this.waitTimeout(command.timeout)
@@ -129,7 +129,7 @@ export default class LocalRuntime {
   }
 
   private async clearCache(): Promise<void> {
-    const {Network} = this.client
+    const { Network } = this.client
     const canClearCache = await Network.canClearBrowserCache
     if (canClearCache) {
       await Network.clearBrowserCache()
@@ -425,12 +425,18 @@ export default class LocalRuntime {
     if (selector) {
       if (this.chromelessOptions.implicitWait) {
         this.log(`clearInput(): Waiting for ${selector}`)
-        await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
+        await waitForNode(
+          this.client,
+          selector,
+          this.chromelessOptions.waitTimeout,
+        )
       }
 
       const exists = await nodeExists(this.client, selector)
       if (!exists) {
-        throw new Error(`clearInput(): Node not found for selector: ${selector}`)
+        throw new Error(
+          `clearInput(): Node not found for selector: ${selector}`,
+        )
       }
     }
     await clearInput(this.client, selector)
@@ -440,12 +446,18 @@ export default class LocalRuntime {
   async setFileInput(selector: string, files: string[]): Promise<void> {
     if (this.chromelessOptions.implicitWait) {
       this.log(`setFileInput(): Waiting for ${selector}`)
-      await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
+      await waitForNode(
+        this.client,
+        selector,
+        this.chromelessOptions.waitTimeout,
+      )
     }
 
     const exists = await nodeExists(this.client, selector)
     if (!exists) {
-      throw new Error(`setFileInput(): node for selector ${selector} doesn't exist`)
+      throw new Error(
+        `setFileInput(): node for selector ${selector} doesn't exist`,
+      )
     }
 
     await setFileInput(this.client, selector, files)

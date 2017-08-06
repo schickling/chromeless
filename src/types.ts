@@ -119,7 +119,7 @@ export type Command =
   | {
       type: 'scrollToElement'
       selector: string
-  }
+    }
   | {
       type: 'setHtml'
       html: string
@@ -168,14 +168,14 @@ export type Command =
       selector: string
     }
   | {
-    type: 'clearInput'
-    selector: string
-  }
+      type: 'clearInput'
+      selector: string
+    }
   | {
-    type: 'setFileInput',
-    selector: string,
-    files: string[]
-  }
+      type: 'setFileInput'
+      selector: string
+      files: string[]
+    }
 
 export interface Cookie {
   url?: string

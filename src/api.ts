@@ -1,7 +1,13 @@
 import ChromeLocal from './chrome/local'
 import ChromeRemote from './chrome/remote'
 import Queue from './queue'
-import { ChromelessOptions, Cookie, CookieQuery, PdfOptions, DeviceMetrics } from './types'
+import {
+  ChromelessOptions,
+  Cookie,
+  CookieQuery,
+  PdfOptions,
+  DeviceMetrics,
+} from './types'
 import { getDebugOption } from './util'
 import { isArray } from 'util'
 
@@ -252,7 +258,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
     nameOrQuery?: string | CookieQuery,
   ): Chromeless<Cookie | Cookie[] | null> {
     if (typeof nameOrQuery !== 'undefined' && typeof nameOrQuery !== 'string') {
-        throw new Error('Querying cookies is not implemented yet')
+      throw new Error('Querying cookies is not implemented yet')
     }
 
     this.lastReturnPromise = this.queue.process<Cookie[] | Cookie | null>({
@@ -287,19 +293,19 @@ export default class Chromeless<T extends any> implements Promise<T> {
     if (typeof url === 'undefined') {
       throw new Error('Cookie url should be defined.')
     }
-    this.queue.enqueue({type: 'deleteCookies', name, url})
+    this.queue.enqueue({ type: 'deleteCookies', name, url })
 
     return this
   }
 
   clearCookies(): Chromeless<T> {
-    this.queue.enqueue({type: 'clearCookies'})
+    this.queue.enqueue({ type: 'clearCookies' })
 
     return this
   }
 
   clearInput(selector: string): Chromeless<T> {
-    this.queue.enqueue({type: 'clearInput', selector})
+    this.queue.enqueue({ type: 'clearInput', selector })
     return this
   }
 
@@ -309,7 +315,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
     if (!isArray(files)) {
       files = [files]
     }
-    this.queue.enqueue({type: 'setFileInput', selector, files})
+    this.queue.enqueue({ type: 'setFileInput', selector, files })
     return this
   }
 

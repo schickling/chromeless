@@ -19,9 +19,7 @@ test('screenshot and pdf path', async t => {
   const screenshot = await chromeless
     .goto('https://www.google.com')
     .screenshot()
-  const pdf = await chromeless
-    .goto('https://www.google.com')
-    .pdf()
+  const pdf = await chromeless.goto('https://www.google.com').pdf()
 
   await chromeless.end()
 
