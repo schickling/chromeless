@@ -49,7 +49,7 @@ test('screenshot and pdf path', async t => {
 
 test('screenshot by selector', async t => {
     const version = await CDP.Version()
-    const versionMajor = parseInt(/\/(\d+)/.exec(version['User-Agent'])[1])
+    const versionMajor = parseInt(/Chrome\/(\d+)/.exec(version['User-Agent'])[1])
     // clipping will only work on chrome 61+
 
     const chromeless = new Chromeless({ launchChrome: false })
