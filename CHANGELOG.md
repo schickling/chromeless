@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Fixed
+
+
+
+## [1.2.0] - 2017-08-06
+
+### Added
 - `clearInput()` API method [#151](https://github.com/graphcool/chromeless/pull/151), [#133](https://github.com/graphcool/chromeless/issues/133) @criticalbh
 - `setViewport()` API method [#115](https://github.com/graphcool/chromeless/pull/115) @joeyvandijk
 - `setFileInput()` API method [#100](https://github.com/graphcool/chromeless/issues/100), [#170](https://github.com/graphcool/chromeless/pull/170) @criticalbh
@@ -27,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - When initialising runtime with `options.launchChrome = false`, use `port` from `options` instead of `this.chromeInstance`, the latter of which does not contain port information when Chromeless did not launch Chrome itself (e.g. in the Proxy) [#162](https://github.com/graphcool/chromeless/pull/162), [#99 (comment)](https://github.com/graphcool/chromeless/issues/99#issuecomment-320094029), [#159](https://github.com/graphcool/chromeless/issues/159) @torbs
 - Removed packaging excludes in the Proxy so that chrome-launcher dependencies are included in the deployment package. [#99 (comment)](https://github.com/graphcool/chromeless/issues/99#issuecomment-320076119), [#173](https://github.com/graphcool/chromeless/pull/173) @adieuadieu
 - We're now using `os.tmpdir()` when saving screenshots/pdfs to disk. [#129](https://github.com/graphcool/chromeless/issues/129), [#172](https://github.com/graphcool/chromeless/pull/172), [#137](https://github.com/graphcool/chromeless/pull/137) @Kivol, @elisherer
+
 
 ## [1.1.0] - 2017-08-02
 
