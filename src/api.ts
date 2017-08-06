@@ -302,6 +302,54 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
+  requestWillBeSentEvent(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'requestWillBeSentEvent', func})
+
+    return this
+  }
+
+  requestSentEvent(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'requestSentEvent', func})
+
+    return this
+  }
+
+  responseReceivedEvent(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'responseReceivedEvent', func})
+
+    return this
+  }
+
+  requestServedFromCacheEvent(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'requestServedFromCacheEvent', func})
+
+    return this
+  }
+
+  dataReceivedEvent(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'dataReceivedEvent', func})
+
+    return this
+  }
+
+  loadingFinishedEvent(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'loadingFinishedEvent', func})
+
+    return this
+  }
+
+  loadingFailedEvent(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'loadingFailedEvent', func})
+
+    return this
+  }
+
+  requestInterceptedEvent(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'requestInterceptedEvent', func})
+
+    return this
+  }
+
   async end(): Promise<T> {
     const result = await this.lastReturnPromise
     await this.queue.end()

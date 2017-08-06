@@ -171,6 +171,38 @@ export type Command =
     type: 'clearInput'
     selector: string
   }
+  | {
+      type: 'requestWillBeSentEvent'
+      func: void
+    }
+  | {
+      type: 'requestSentEvent'
+      func: void
+  }
+  | {
+      type: 'dataReceivedEvent'
+      func: void
+    }
+  | {
+      type: 'requestServedFromCacheEvent'
+      func: void
+    }
+  | {
+      type: 'loadingFinishedEvent'
+      func: void
+  }
+  | {
+      type: 'loadingFailedEvent'
+      func: void
+  }
+  | {
+      type: 'requestInterceptedEvent'
+      func: void
+  }
+  | {
+      type: 'responseReceivedEvent'
+      func: void
+  }
 
 export interface Cookie {
   url?: string
