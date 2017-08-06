@@ -324,18 +324,20 @@ export async function getCookies(
   client: Client,
   nameOrQuery?: string | Cookie,
 ): Promise<any> {
-  if (nameOrQuery) {
-    throw new Error('Not yet implemented')
-  }
-
-  const { Network } = client
+  const {Network} = client
 
   const fn = () => location.href
 
-  const url = (await evaluate(client, `${fn}`)) as string
+  const url = await evaluate(client, `${fn}`) as string
 
   const result = await Network.getCookies([url])
-  return result.cookies
+  const cookies = result.cookies
+
+  if (typeof nameOrQuery !== 'undefined' && typeof nameOrQuery === 'string') {
+    const filteredCookies: Cookie[] = cookies.filter(cookie => cookie.name === nameOrQuery)
+    return filteredCookies
+  }
+  return cookies
 }
 
 export async function getAllCookies(client: Client): Promise<any> {
