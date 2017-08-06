@@ -41,6 +41,7 @@ export interface ChromelessOptions {
   debug?: boolean // false
   waitTimeout?: number // 10000ms
   implicitWait?: boolean // false
+  scrollBeforeClick?: boolean // false
   viewport?: {
     width?: number // 1440 if headless
     height?: number // 900 if headless
@@ -118,6 +119,10 @@ export type Command =
       y: number
     }
   | {
+      type: 'scrollToElement'
+      selector: string
+    }
+  | {
       type: 'setHtml'
       html: string
     }
@@ -141,15 +146,15 @@ export type Command =
       url: string
     }
   | {
-      type: 'cookiesSet'
+      type: 'setCookies'
       nameOrCookies: string | Cookie | Cookie[]
       value?: string
     }
   | {
-      type: 'cookiesGetAll'
+      type: 'allCookies'
     }
   | {
-      type: 'cookiesGet'
+      type: 'cookies'
       nameOrQuery?: string | CookieQuery
     }
   | {
@@ -165,9 +170,14 @@ export type Command =
       selector: string
     }
   | {
-    type: 'clearInput'
-    selector: string
-  }
+      type: 'clearInput'
+      selector: string
+    }
+  | {
+      type: 'setFileInput'
+      selector: string
+      files: string[]
+    }
 
 export interface Cookie {
   url?: string

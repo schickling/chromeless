@@ -38,13 +38,10 @@ test('screenshot and pdf path', async t => {
 
   await chromeless.end()
 
-  if (os.platform() === 'win32') {
-    t.regex(screenshot, /\\/)
-    t.regex(pdf, /\\/)
-  } else {
-    t.regex(screenshot, /tmp/)
-    t.regex(pdf, /tmp/)
-  }
+  const regex = new RegExp(os.tmpdir())
+
+  t.regex(screenshot, regex)
+  t.regex(pdf, regex)
 })
 
 test('screenshot by selector', async t => {

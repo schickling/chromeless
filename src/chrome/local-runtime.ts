@@ -19,6 +19,7 @@ import {
   type,
   getValue,
   scrollTo,
+  scrollToElement,
   setHtml,
   press,
   setViewport,
@@ -32,6 +33,7 @@ import {
   mouseup,
   focus,
   clearInput,
+  setFileInput,
   writeToFile,
   isS3Configured,
   uploadToS3,
@@ -51,8 +53,8 @@ export default class LocalRuntime {
     switch (command.type) {
       case 'goto':
         return this.goto(command.url)
-        case 'setViewport':
-          return setViewport(this.client, command.options)
+      case 'setViewport':
+        return setViewport(this.client, command.options)
       case 'wait': {
         if (command.timeout) {
           return this.waitTimeout(command.timeout)
@@ -86,18 +88,20 @@ export default class LocalRuntime {
         return this.press(command.keyCode, command.count, command.modifiers)
       case 'scrollTo':
         return this.scrollTo(command.x, command.y)
+      case 'scrollToElement':
+        return this.scrollToElement(command.selector)
       case 'deleteCookies':
         return this.deleteCookies(command.name, command.url)
       case 'clearCookies':
         return this.clearCookies()
       case 'setHtml':
         return this.setHtml(command.html)
-      case 'cookiesGet':
-        return this.cookiesGet(command.nameOrQuery)
-      case 'cookiesGetAll':
-        return this.cookiesGetAll()
-      case 'cookiesSet':
-        return this.cookiesSet(command.nameOrCookies, command.value)
+      case 'cookies':
+        return this.cookies(command.nameOrQuery)
+      case 'allCookies':
+        return this.allCookies()
+      case 'setCookies':
+        return this.setCookies(command.nameOrCookies, command.value)
       case 'mousedown':
         return this.mousedown(command.selector)
       case 'mouseup':
@@ -106,6 +110,8 @@ export default class LocalRuntime {
         return this.focus(command.selector)
       case 'clearInput':
         return this.clearInput(command.selector)
+      case 'setFileInput':
+        return this.setFileInput(command.selector, command.files)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -122,7 +128,7 @@ export default class LocalRuntime {
   }
 
   private async clearCache(): Promise<void> {
-    const {Network} = this.client
+    const { Network } = this.client
     const canClearCache = await Network.canClearBrowserCache
     if (canClearCache) {
       await Network.clearBrowserCache()
@@ -164,6 +170,9 @@ export default class LocalRuntime {
     }
 
     const { scale } = this.chromelessOptions.viewport
+    if (this.chromelessOptions.scrollBeforeClick) {
+      await scrollToElement(this.client, selector)
+    }
     await click(this.client, selector, scale)
     this.log(`Clicked on ${selector}`)
   }
@@ -174,6 +183,18 @@ export default class LocalRuntime {
 
   private async scrollTo<T>(x: number, y: number): Promise<void> {
     return scrollTo(this.client, x, y)
+  }
+
+  private async scrollToElement<T>(selector: string): Promise<void> {
+    if (this.chromelessOptions.implicitWait) {
+      this.log(`scrollToElement(): Waiting for ${selector}`)
+      await waitForNode(
+        this.client,
+        selector,
+        this.chromelessOptions.waitTimeout,
+      )
+    }
+    return scrollToElement(this.client, selector)
   }
 
   private async mousedown(selector: string): Promise<void> {
@@ -261,15 +282,15 @@ export default class LocalRuntime {
     this.log(`Typed ${text} in ${selector}`)
   }
 
-  async cookiesGet(nameOrQuery?: string | CookieQuery): Promise<Cookie[]> {
+  async cookies(nameOrQuery?: string | CookieQuery): Promise<Cookie[]> {
     return await getCookies(this.client, nameOrQuery as string | undefined)
   }
 
-  async cookiesGetAll(): Promise<Cookie[]> {
+  async allCookies(): Promise<Cookie[]> {
     return await getAllCookies(this.client)
   }
 
-  async cookiesSet(
+  async setCookies(
     nameOrCookies: string | Cookie | Cookie[],
     value?: string,
   ): Promise<void> {
@@ -291,7 +312,7 @@ export default class LocalRuntime {
       return await setCookies(this.client, [cookie])
     }
 
-    throw new Error(`cookiesSet(): Invalid input ${nameOrCookies}, ${value}`)
+    throw new Error(`setCookies(): Invalid input ${nameOrCookies}, ${value}`)
   }
 
   async deleteCookies(name: string, url: string): Promise<void> {
@@ -388,16 +409,43 @@ export default class LocalRuntime {
     if (selector) {
       if (this.chromelessOptions.implicitWait) {
         this.log(`clearInput(): Waiting for ${selector}`)
-        await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
+        await waitForNode(
+          this.client,
+          selector,
+          this.chromelessOptions.waitTimeout,
+        )
       }
 
       const exists = await nodeExists(this.client, selector)
       if (!exists) {
-        throw new Error(`clearInput(): Node not found for selector: ${selector}`)
+        throw new Error(
+          `clearInput(): Node not found for selector: ${selector}`,
+        )
       }
     }
     await clearInput(this.client, selector)
     this.log(`${selector} cleared`)
+  }
+
+  async setFileInput(selector: string, files: string[]): Promise<void> {
+    if (this.chromelessOptions.implicitWait) {
+      this.log(`setFileInput(): Waiting for ${selector}`)
+      await waitForNode(
+        this.client,
+        selector,
+        this.chromelessOptions.waitTimeout,
+      )
+    }
+
+    const exists = await nodeExists(this.client, selector)
+    if (!exists) {
+      throw new Error(
+        `setFileInput(): node for selector ${selector} doesn't exist`,
+      )
+    }
+
+    await setFileInput(this.client, selector, files)
+    this.log(`setFileInput() files ${files}`)
   }
 
   private log(msg: string): void {

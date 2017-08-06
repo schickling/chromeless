@@ -16,39 +16,39 @@ export const version: string = ((): string => {
   }
 })()
 
-export async function setViewport(client: Client, viewport: DeviceMetrics = { width: 1, height: 1, scale: 1 }): Promise<void> {
+export async function setViewport(
+  client: Client,
+  viewport: DeviceMetrics = { width: 1, height: 1, scale: 1 },
+): Promise<void> {
   const config: any = {
-      deviceScaleFactor: 1,
-      mobile: false,
-      scale: viewport.scale || 1,
-      fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
+    deviceScaleFactor: 1,
+    mobile: false,
+    scale: viewport.scale || 1,
+    fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
   }
 
   const versionResult = await CDP.Version()
   const isHeadless = versionResult['User-Agent'].includes('Headless')
 
   if (viewport.height && viewport.width) {
-      config.height = viewport.height
-      config.width = viewport.width
+    config.height = viewport.height
+    config.width = viewport.width
   } else if (isHeadless) {
-      // just apply default value in headless mode to maintain original browser viewport
-      config.height = 900
-      config.width = 1440
+    // just apply default value in headless mode to maintain original browser viewport
+    config.height = 900
+    config.width = 1440
   } else {
-      config.height = await evaluate(
-          client,
-          (() => window.innerHeight).toString()
-      )
-      config.width = await evaluate(
-          client,
-          (() => window.innerWidth).toString()
-      )
+    config.height = await evaluate(
+      client,
+      (() => window.innerHeight).toString(),
+    )
+    config.width = await evaluate(client, (() => window.innerWidth).toString())
   }
 
   await client.Emulation.setDeviceMetricsOverride(config)
   await client.Emulation.setVisibleSize({
-      width: config.width,
-      height: config.height,
+    width: config.width,
+    height: config.height,
   })
   return
 }
@@ -303,6 +303,15 @@ export async function scrollTo(
   })
 }
 
+export async function scrollToElement(
+  client: Client,
+  selector: string,
+): Promise<void> {
+  const clientRect = await getClientRect(client, selector)
+
+  return scrollTo(client, clientRect.left, clientRect.top)
+}
+
 export async function setHtml(client: Client, html: string): Promise<void> {
   const { Page } = client
 
@@ -314,10 +323,6 @@ export async function getCookies(
   client: Client,
   nameOrQuery?: string | Cookie,
 ): Promise<any> {
-  if (nameOrQuery) {
-    throw new Error('Not yet implemented')
-  }
-
   const { Network } = client
 
   const fn = () => location.href
@@ -325,7 +330,15 @@ export async function getCookies(
   const url = (await evaluate(client, `${fn}`)) as string
 
   const result = await Network.getCookies([url])
-  return result.cookies
+  const cookies = result.cookies
+
+  if (typeof nameOrQuery !== 'undefined' && typeof nameOrQuery === 'string') {
+    const filteredCookies: Cookie[] = cookies.filter(
+      cookie => cookie.name === nameOrQuery,
+    )
+    return filteredCookies
+  }
+  return cookies
 }
 
 export async function getAllCookies(client: Client): Promise<any> {
@@ -392,10 +405,14 @@ function getUrlFromCookie(cookie: Cookie) {
   return `https://${domain}`
 }
 
-export async function deleteCookie(client: Client, name: string, url: string): Promise<void> {
-  const {Network} = client
+export async function deleteCookie(
+  client: Client,
+  name: string,
+  url: string,
+): Promise<void> {
+  const { Network } = client
 
-  await Network.deleteCookie({cookieName: name, url})
+  await Network.deleteCookie({ cookieName: name, url })
 }
 
 export async function clearCookies(client: Client): Promise<void> {
@@ -471,11 +488,14 @@ export async function pdf(
   return pdf.data
 }
 
-export async function clearInput(client: Client, selector: string): Promise<void> {
+export async function clearInput(
+  client: Client,
+  selector: string,
+): Promise<void> {
   await wait(500)
   await focus(client, selector)
 
-  const {Input} = client
+  const { Input } = client
 
   const text = await getValue(client, selector)
 
@@ -507,6 +527,20 @@ export async function clearInput(client: Client, selector: string): Promise<void
       type: 'keyUp',
     })
   }
+}
+
+export async function setFileInput(
+  client: Client,
+  selector: string,
+  files: string[],
+): Promise<string> {
+  const { DOM } = client
+  const dom = await DOM.getDocument()
+  const node = await DOM.querySelector({
+    nodeId: dom.root.nodeId,
+    selector: selector,
+  })
+  return await DOM.setFileInputFiles({ files: files, nodeId: node.nodeId })
 }
 
 export function getDebugOption(): boolean {
