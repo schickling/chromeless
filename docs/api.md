@@ -31,10 +31,10 @@ Chromeless provides TypeScript typings.
 - [`screenshot()`](#api-screenshot)
 - [`pdf(options?: PdfOptions)`](#api-pdf)
 - [`html()`](#api-html)
-- [`cookiesGet()`](#api-cookiesget)
-- [`cookiesGet(name: string)`](#api-cookiesget-name)
-- [`cookiesGet(query: CookieQuery)`](#api-cookiesget-query) - Not implemented yet
-- [`cookiesGetAll()`](#api-cookiesgetall)
+- [`cookies()`](#api-cookies)
+- [`cookies(name: string)`](#api-cookies-name)
+- [`cookies(query: CookieQuery)`](#api-cookies-query) - Not implemented yet
+- [`allCookies()`](#api-all-cookies)
 - [`cookiesSet(name: string, value: string)`](#api-cookiesset)
 - [`cookiesSet(cookie: Cookie)`](#api-cookiesset-one)
 - [`cookiesSet(cookies: Cookie[])`](#api-cookiesset-many)
@@ -484,23 +484,23 @@ console.log(html) // <html><head></head><body><h1>Hello world!</h1></body></html
 
 ---------------------------------------
 
-<a name="api-cookiesget" />
+<a name="api-cookies" />
 
-### cookiesGet(): Chromeless<Cookie[] | null>
+### cookies(): Chromeless<Cookie[] | null>
 
 Returns all browser cookies for the current URL.
 
 __Example__
 
 ```js
-await chromeless.cookiesGet()
+await chromeless.cookies()
 ```
 
 ---------------------------------------
 
-<a name="api-cookiesget-name" />
+<a name="api-cookies-name" />
 
-### cookiesGet(name: string): Chromeless<Cookie | null>
+### cookies(name: string): Chromeless<Cookie | null>
 
 Returns a specific browser cookie by name for the current URL.
 
@@ -510,29 +510,29 @@ __Arguments__
 __Example__
 
 ```js
-const cookie = await chromeless.cookiesGet('creepyTrackingCookie')
+const cookie = await chromeless.cookies('creepyTrackingCookie')
 ```
 
 ---------------------------------------
 
-<a name="api-cookiesget-query" />
+<a name="api-cookies-query" />
 
-### cookiesGet(query: CookieQuery) - Not implemented yet
+### cookies(query: CookieQuery) - Not implemented yet
 
 Not implemented yet
 
 ---------------------------------------
 
-<a name="api-cookiesgetall" />
+<a name="api-all-cookies" />
 
-### cookiesGetAll(): Chromeless<Cookie[]>
+### allCookies(): Chromeless<Cookie[]>
 
 Returns all browser cookies. Nam nom nom.
 
 __Example__
 
 ```js
-await chromeless.cookiesGetAll()
+await chromeless.allCookies()
 ```
 
 ---------------------------------------

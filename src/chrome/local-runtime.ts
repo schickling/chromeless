@@ -96,10 +96,10 @@ export default class LocalRuntime {
         return this.clearCookies()
       case 'setHtml':
         return this.setHtml(command.html)
-      case 'cookiesGet':
-        return this.cookiesGet(command.nameOrQuery)
-      case 'cookiesGetAll':
-        return this.cookiesGetAll()
+      case 'cookies':
+        return this.cookies(command.nameOrQuery)
+      case 'allCookies':
+        return this.allCookies()
       case 'cookiesSet':
         return this.cookiesSet(command.nameOrCookies, command.value)
       case 'mousedown':
@@ -280,11 +280,11 @@ export default class LocalRuntime {
     this.log(`Typed ${text} in ${selector}`)
   }
 
-  async cookiesGet(nameOrQuery?: string | CookieQuery): Promise<Cookie[]> {
+  async cookies(nameOrQuery?: string | CookieQuery): Promise<Cookie[]> {
     return await getCookies(this.client, nameOrQuery as string | undefined)
   }
 
-  async cookiesGetAll(): Promise<Cookie[]> {
+  async allCookies(): Promise<Cookie[]> {
     return await getAllCookies(this.client)
   }
 
