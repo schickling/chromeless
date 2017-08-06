@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `clearInput()` API method [#151](https://github.com/graphcool/chromeless/pull/151), [#133](https://github.com/graphcool/chromeless/issues/133) @criticalbh
 - `setViewport()` API method [#115](https://github.com/graphcool/chromeless/pull/115) @joeyvandijk
 - `clearCache()` API method [#122](https://github.com/graphcool/chromeless/pull/122) @joeyvandijk
+- `scrollToElement()` command and `scrollBeforeClick` constructor option [#15](https://github.com/graphcool/chromeless/issues/15), [#167](https://github.com/graphcool/chromeless/pull/167) @janza
 - Mocha E2E tests [example](examples/mocha-chai-test-example.js) [#164](https://github.com/graphcool/chromeless/pull/164) @FabioAntunes
 
 ### Changed
