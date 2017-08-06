@@ -13,11 +13,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `clearCache()` API method [#122](https://github.com/graphcool/chromeless/pull/122) @joeyvandijk
 - `scrollToElement()` command and `scrollBeforeClick` constructor option [#15](https://github.com/graphcool/chromeless/issues/15), [#167](https://github.com/graphcool/chromeless/pull/167) @janza
 - Mocha E2E tests [example](examples/mocha-chai-test-example.js) [#164](https://github.com/graphcool/chromeless/pull/164) @FabioAntunes
-- `cookies(name: string)` API method @criticalbh
+- `cookies(name: string)` API method [#183] (https://github.com/graphcool/chromeless/pull/183/files) @criticalbh
 
 ### Changed
 - **Breaking:** We renamed `cookiesClear()` to `deleteCookies()`, `cookiesClearAll()` to `clearCookies()` and according to semver should bump the version to 2.0.0, however, just-this-time, we're not going to. [#123](https://github.com/graphcool/chromeless/pull/123) @joeyvandijk
-- We renamed `cookiesGet(name: string | query: CookieQuery)` to `cookies(name: string | query: CookieQuery)`, `cookiesGet()` to `cookies()` and `cookiesGetAll()` to `allCookies()` @criticalbh
+- We renamed `cookiesGet(name: string | query: CookieQuery)` to `cookies(name: string | query: CookieQuery)`, `cookiesGet()` to `cookies()` and `cookiesGetAll()` to `allCookies()` [#183] (https://github.com/graphcool/chromeless/pull/183/files) @criticalbh
 
 ### Fixed
 - Chromeless can now be imported into TypeScript projects with activated `strictNullChecks` compiler option [#154](https://github.com/graphcool/chromeless/pull/154) @clebert
