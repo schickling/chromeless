@@ -277,11 +277,11 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return new Chromeless<Cookie[]>({}, this)
   }
 
-  cookiesSet(name: string, value: string): Chromeless<T>
-  cookiesSet(cookie: Cookie): Chromeless<T>
-  cookiesSet(cookies: Cookie[]): Chromeless<T>
-  cookiesSet(nameOrCookies, value?: string): Chromeless<T> {
-    this.queue.enqueue({ type: 'cookiesSet', nameOrCookies, value })
+  setCookies(name: string, value: string): Chromeless<T>
+  setCookies(cookie: Cookie): Chromeless<T>
+  setCookies(cookies: Cookie[]): Chromeless<T>
+  setCookies(nameOrCookies, value?: string): Chromeless<T> {
+    this.queue.enqueue({ type: 'setCookies', nameOrCookies, value })
 
     return this
   }

@@ -101,8 +101,8 @@ export default class LocalRuntime {
         return this.cookies(command.nameOrQuery)
       case 'allCookies':
         return this.allCookies()
-      case 'cookiesSet':
-        return this.cookiesSet(command.nameOrCookies, command.value)
+      case 'setCookies':
+        return this.setCookies(command.nameOrCookies, command.value)
       case 'mousedown':
         return this.mousedown(command.selector)
       case 'mouseup':
@@ -291,7 +291,7 @@ export default class LocalRuntime {
     return await getAllCookies(this.client)
   }
 
-  async cookiesSet(
+  async setCookies(
     nameOrCookies: string | Cookie | Cookie[],
     value?: string,
   ): Promise<void> {
@@ -313,7 +313,7 @@ export default class LocalRuntime {
       return await setCookies(this.client, [cookie])
     }
 
-    throw new Error(`cookiesSet(): Invalid input ${nameOrCookies}, ${value}`)
+    throw new Error(`setCookies(): Invalid input ${nameOrCookies}, ${value}`)
   }
 
   async deleteCookies(name: string, url: string): Promise<void> {

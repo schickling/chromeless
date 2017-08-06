@@ -144,7 +144,7 @@ export type Command =
       url: string
     }
   | {
-      type: 'cookiesSet'
+      type: 'setCookies'
       nameOrCookies: string | Cookie | Cookie[]
       value?: string
     }
