@@ -20,7 +20,7 @@
     "node": ">= 6.10.0"
   },
   "scripts": {
-    "ava": "tsc && nyc ava",
+    "ava": "tsc -d && nyc ava",
     "build": "npm run clean && tsc -d",
     "clean": "rimraf dist",
     "coverage": "npm run ava",
@@ -32,7 +32,7 @@
     "lint": "npm run tslint",
     "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**",
     "watch": "tsc -w",
-    "watch:test": "tsc -w & ava --watch"
+    "watch:test": "tsc -d -w & ava --watch"
   },
   "dependencies": {
     "aws-sdk": "^2.90.0",
