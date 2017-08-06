@@ -1,7 +1,8 @@
 const fs = require("fs"),
   http = require("http"),
   path = require("path"),
-  url = require("url");
+  url = require("url"),
+  CDP = require("chrome-remote-interface");
 const { exec } = require('child_process');
 
 const port = 9999;
@@ -23,6 +24,11 @@ const indexHtml = `<!DOCTYPE html>
 </body>
 </html>
 `;
+
+(async () => {
+  const version = await CDP.Version();
+  console.log(`Detected Chrome running: ${version['User-Agent']}`);
+})();
 
 http.createServer((request, response) => {
 
