@@ -23,6 +23,7 @@ import {
   type,
   getValue,
   scrollTo,
+  scrollToElement,
   setHtml,
   press,
   setViewport,
@@ -87,6 +88,8 @@ export default class LocalRuntime {
         return this.press(command.keyCode, command.count, command.modifiers)
       case 'scrollTo':
         return this.scrollTo(command.x, command.y)
+      case 'scrollToElement':
+        return this.scrollToElement(command.selector)
       case 'deleteCookies':
         return this.deleteCookies(command.name, command.url)
       case 'clearCookies':
@@ -165,6 +168,9 @@ export default class LocalRuntime {
     }
 
     const { scale } = this.chromelessOptions.viewport
+    if (this.chromelessOptions.scrollBeforeClick) {
+      await scrollToElement(this.client, selector)
+    }
     await click(this.client, selector, scale)
     this.log(`Clicked on ${selector}`)
   }
@@ -175,6 +181,18 @@ export default class LocalRuntime {
 
   private async scrollTo<T>(x: number, y: number): Promise<void> {
     return scrollTo(this.client, x, y)
+  }
+
+  private async scrollToElement<T>(selector: string): Promise<void> {
+    if (this.chromelessOptions.implicitWait) {
+      this.log(`scrollToElement(): Waiting for ${selector}`)
+      await waitForNode(
+        this.client,
+        selector,
+        this.chromelessOptions.waitTimeout,
+      )
+    }
+    return scrollToElement(this.client, selector)
   }
 
   private async mousedown(selector: string): Promise<void> {
