@@ -20,7 +20,7 @@
     "node": ">= 6.10.0"
   },
   "scripts": {
-    "ava": "tsc && nyc ava",
+    "ava": "tsc && npm start nyc ava",
     "build": "npm run clean && tsc -d",
     "clean": "rimraf dist",
     "coverage": "npm run ava",

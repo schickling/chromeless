@@ -59,9 +59,9 @@ export async function waitForNode(
   waitTimeout: number,
 ): Promise<void> {
   const { Runtime } = client
-  const getNode = selector => {
+  const getNode = `selector => {
     return document.querySelector(selector)
-  }
+  }`
 
   const result = await Runtime.evaluate({
     expression: `(${getNode})(\`${selector}\`)`,
@@ -102,9 +102,9 @@ export async function nodeExists(
   selector: string,
 ): Promise<boolean> {
   const { Runtime } = client
-  const exists = selector => {
+  const exists = `selector => {
     return !!document.querySelector(selector)
-  }
+  }`
 
   const expression = `(${exists})(\`${selector}\`)`
 
@@ -118,7 +118,7 @@ export async function nodeExists(
 export async function getClientRect(client, selector): Promise<ClientRect> {
   const { Runtime } = client
 
-  const code = selector => {
+  const code = `selector => {
     const element = document.querySelector(selector)
     if (!element) {
       return undefined
@@ -133,7 +133,7 @@ export async function getClientRect(client, selector): Promise<ClientRect> {
       height: rect.height,
       width: rect.width,
     })
-  }
+  }`
 
   const expression = `(${code})(\`${selector}\`)`
   const result = await Runtime.evaluate({ expression })
@@ -277,9 +277,9 @@ export async function getValue(
   selector: string,
 ): Promise<string> {
   const { Runtime } = client
-  const browserCode = selector => {
+  const browserCode = `selector => {
     return document.querySelector(selector).value
-  }
+  }`
   const expression = `(${browserCode})(\`${selector}\`)`
   const result = await Runtime.evaluate({
     expression,
@@ -294,9 +294,9 @@ export async function scrollTo(
   y: number,
 ): Promise<void> {
   const { Runtime } = client
-  const browserCode = (x, y) => {
+  const browserCode = `(x, y) => {
     return window.scrollTo(x, y)
-  }
+  }`
   const expression = `(${browserCode})(${x}, ${y})`
   await Runtime.evaluate({
     expression,
@@ -415,7 +415,9 @@ export async function getBoxModel(
     nodeId: documentNodeId,
   })
 
-  return await DOM.getBoxModel({ nodeId })
+  const { model } = await DOM.getBoxModel({ nodeId })
+
+  return model
 }
 
 export function boxModelToViewPort(model: BoxModel, scale: number): Viewport {
@@ -428,10 +430,6 @@ export function boxModelToViewPort(model: BoxModel, scale: number): Viewport {
   }
 }
 
-function writeToFileSync(data) {
-
-}
-
 export async function screenshot(
   client: Client,
   selector: string,
@@ -440,6 +438,7 @@ export async function screenshot(
 
   const captureScreenshotOptions = {
     format: 'png',
+    fromSurface: true,
     clip: undefined,
   }
 
@@ -448,9 +447,7 @@ export async function screenshot(
     captureScreenshotOptions.clip = boxModelToViewPort(model, 1)
   }
 
-  const screenshot = await Page.captureScreenshot({
-    format: 'png',
-  })
+  const screenshot = await Page.captureScreenshot(captureScreenshotOptions)
 
   return screenshot.data
 }
@@ -525,8 +522,8 @@ export function getDebugOption(): boolean {
   return false
 }
 
-export function writeToFile(data: string, filePathOverride?: string): string {
-  const filePath = filePathOverride || path.join(os.tmpdir(), `${cuid()}.png`)
+export function writeToFile(data: string, extension: string, filePathOverride: string): string {
+  const filePath = filePathOverride || path.join(os.tmpdir(), `${cuid()}.${extension}`)
   fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
   return filePath
 }
@@ -535,12 +532,12 @@ function getS3BucketName() {
   return process.env['CHROMELESS_S3_BUCKET_NAME']
 }
 
-function getS3BucketURL() {
+function getS3BucketUrl() {
   return process.env['CHROMELESS_S3_BUCKET_URL']
 }
 
 export function isS3Configured() {
-  return getS3BucketName() && getS3BucketURL()
+  return getS3BucketName() && getS3BucketUrl()
 }
 
 const s3ContentTypes = {
@@ -553,7 +550,7 @@ const s3ContentTypes = {
 }
 
 export async function uploadToS3(data: string, contentType: string): Promise<string> {
-  const s3ContentType = s3ContentTypes[contentType];
+  const s3ContentType = s3ContentTypes[contentType]
   if (!s3ContentType) {
     throw new Error(`Unknown S3 Content type ${contentType}`)
   }
@@ -569,5 +566,5 @@ export async function uploadToS3(data: string, contentType: string): Promise<str
         })
         .promise()
 
-  return `https://${getS3BucketURL()}/${s3Path}`
+  return `https://${getS3BucketUrl()}/${s3Path}`
 }

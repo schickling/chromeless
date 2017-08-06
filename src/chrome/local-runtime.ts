@@ -361,7 +361,7 @@ export default class LocalRuntime {
     if (isS3Configured()) {
       return await uploadToS3(data, 'image/png')
     } else {
-      return writeToFile(data, options && options.filePath)
+      return writeToFile(data, 'png', options && options.filePath)
     }
   }
 
@@ -380,7 +380,7 @@ export default class LocalRuntime {
     if (isS3Configured()) {
       return await uploadToS3(data, 'application/pdf')
     } else {
-      return writeToFile(data, filePath)
+      return writeToFile(data, 'pdf', filePath)
     }
   }
 
