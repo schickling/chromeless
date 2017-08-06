@@ -35,9 +35,9 @@ Chromeless provides TypeScript typings.
 - [`cookies(name: string)`](#api-cookies-name)
 - [`cookies(query: CookieQuery)`](#api-cookies-query) - Not implemented yet
 - [`allCookies()`](#api-all-cookies)
-- [`cookiesSet(name: string, value: string)`](#api-cookiesset)
-- [`cookiesSet(cookie: Cookie)`](#api-cookiesset-one)
-- [`cookiesSet(cookies: Cookie[])`](#api-cookiesset-many)
+- [`setCookies(name: string, value: string)`](#api-setcookies)
+- [`setCookies(cookie: Cookie)`](#api-setcookies-one)
+- [`setCookies(cookies: Cookie[])`](#api-setcookies-many)
 - [`deleteCookies(name: string)`](#api-deletecookies)
 - [`clearCookies()`](#api-clearcookies)
 
@@ -166,7 +166,7 @@ await chromeless.wait(() => { return console.log('@TODO: put a better example he
 
 ### clearCache(): Chromeless<T>
 
-Clears browser cache. 
+Clears browser cache.
 
 Service workers and Storage (IndexedDB, WebSQL, etc) needs to be cleared separately. More information at the [Chrome Devtools Protocol website](https://chromedevtools.github.io/devtools-protocol/tot).
 
@@ -537,9 +537,9 @@ await chromeless.allCookies()
 
 ---------------------------------------
 
-<a name="api-cookiesset" />
+<a name="api-setcookies" />
 
-### cookiesSet(name: string, value: string): Chromeless<T>
+### setCookies(name: string, value: string): Chromeless<T>
 
 Sets a cookie with the given name and value.
 
@@ -550,14 +550,14 @@ __Arguments__
 __Example__
 
 ```js
-await chromeless.cookiesSet('visited', '1')
+await chromeless.setCookies('visited', '1')
 ```
 
 ---------------------------------------
 
-<a name="api-cookiesset-one" />
+<a name="api-setcookies-one" />
 
-### cookiesSet(cookie: Cookie): Chromeless<T>
+### setCookies(cookie: Cookie): Chromeless<T>
 
 Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
 
@@ -567,7 +567,7 @@ __Arguments__
 __Example__
 
 ```js
-await chromeless.cookiesSet({
+await chromeless.setCookies({
   url: 'http://google.com/',
   domain: 'google.com',
   name: 'userData',
@@ -583,9 +583,9 @@ await chromeless.cookiesSet({
 
 ---------------------------------------
 
-<a name="api-cookiesset-many" />
+<a name="api-setcookies-many" />
 
-### cookiesSet(cookies: Cookie[]): Chromeless<T>
+### setCookies(cookies: Cookie[]): Chromeless<T>
 
 Sets many cookies with the given cookie data; may overwrite equivalent cookies if they exist.
 
@@ -595,7 +595,7 @@ __Arguments__
 __Example__
 
 ```js
-await chromeless.cookiesSet([
+await chromeless.setCookies([
   {
     url: 'http://google.com/',
     domain: 'google.com',
