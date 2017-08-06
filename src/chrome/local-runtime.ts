@@ -37,6 +37,7 @@ import {
   mouseup,
   focus,
   clearInput,
+  setFileInput,
 } from '../util'
 
 export default class LocalRuntime {
@@ -110,6 +111,8 @@ export default class LocalRuntime {
         return this.focus(command.selector)
       case 'clearInput':
         return this.clearInput(command.selector)
+      case 'setFileInput':
+        return this.setFileInput(command.selector, command.files)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -432,6 +435,21 @@ export default class LocalRuntime {
     }
     await clearInput(this.client, selector)
     this.log(`${selector} cleared`)
+  }
+
+  async setFileInput(selector: string, files: string[]): Promise<void> {
+    if (this.chromelessOptions.implicitWait) {
+      this.log(`setFileInput(): Waiting for ${selector}`)
+      await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
+    }
+
+    const exists = await nodeExists(this.client, selector)
+    if (!exists) {
+      throw new Error(`setFileInput(): node for selector ${selector} doesn't exist`)
+    }
+
+    await setFileInput(this.client, selector, files)
+    this.log(`setFileInput() files ${files}`)
   }
 
   private log(msg: string): void {

@@ -666,3 +666,17 @@ __Example__
 ```js
 await chromeless.clearInput('#username')
 ```
+---------------------------------------
+
+<a name="api-set-file-input" />
+
+### setFileInput(selector: string, files: string | string[]): Chromeless<T>
+
+Set file(s) for selected file input.
+
+
+__Example__
+
+```js
+await chromeless.setFileInput('.uploader', '/User/Me/Documents/img.jpg')
+```
