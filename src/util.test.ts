@@ -4,6 +4,9 @@ import * as CDP from 'chrome-remote-interface'
 import test from 'ava'
 import Chromeless from '../src'
 
+const testHtml = fs.readFileSync('./src/__tests__/test.html')
+const testUrl = `data:text/html,${testHtml}`
+
 const getPngMetaData = async (filePath): Promise<any> => {
   const fd = fs.openSync(filePath, 'r')
   return await new Promise((resolve) => {
@@ -16,24 +19,24 @@ const getPngMetaData = async (filePath): Promise<any> => {
 }
 
 // POC
-test('google title', async t => {
+test('evaluate (document.title)', async t => {
   const chromeless = new Chromeless({ launchChrome: false })
   const title = await chromeless
-    .goto('http://localhost:9999')
+    .goto(testUrl)
     .evaluate(() => document.title)
 
   await chromeless.end()
 
-  t.is(title, 'Chromeless test page')
+  t.is(title, 'Title')
 })
 
 test('screenshot and pdf path', async t => {
   const chromeless = new Chromeless({ launchChrome: false })
   const screenshot = await chromeless
-    .goto('http://localhost:9999')
+    .goto(testUrl)
     .screenshot()
   const pdf = await chromeless
-    .goto('http://localhost:9999')
+    .goto(testUrl)
     .pdf()
 
   await chromeless.end()
@@ -51,7 +54,7 @@ test('screenshot by selector', async t => {
 
     const chromeless = new Chromeless({ launchChrome: false })
     const screenshot = await chromeless
-        .goto('http://localhost:9999')
+        .goto(testUrl)
         .screenshot('img')
 
     await chromeless.end()
