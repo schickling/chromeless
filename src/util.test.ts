@@ -50,7 +50,7 @@ test('screenshot and pdf path', async t => {
 test('screenshot by selector', async t => {
     const version = await CDP.Version()
     const versionMajor = parseInt(/\/(\d+)/.exec(version['User-Agent'])[1])
-    // clipping will only work on chrome 62+
+    // clipping will only work on chrome 61+
 
     const chromeless = new Chromeless({ launchChrome: false })
     const screenshot = await chromeless
@@ -60,6 +60,6 @@ test('screenshot by selector', async t => {
     await chromeless.end()
 
     const png = await getPngMetaData(screenshot)
-    t.is(png.width, versionMajor > 61 ? 512 : 1440)
-    t.is(png.height, versionMajor > 61 ? 512 : 900)
+    t.is(png.width, versionMajor > 60 ? 512 : 1440)
+    t.is(png.height, versionMajor > 60 ? 512 : 900)
 })
