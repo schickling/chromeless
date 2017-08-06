@@ -479,7 +479,7 @@ export async function clearInput(client: Client, selector: string): Promise<void
   }
 }
 
-export async function selectFiles(client: Client, selector: string, files: string[]): Promise<string> {
+export async function setFileInput(client: Client, selector: string, files: string[]): Promise<string> {
   const {DOM} = client
   const dom = await DOM.getDocument()
   const node = await DOM.querySelector({nodeId: dom.root.nodeId, selector: selector})

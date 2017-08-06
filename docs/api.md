@@ -668,29 +668,15 @@ await chromeless.clearInput('#username')
 ```
 ---------------------------------------
 
-<a name="api-selectFile" />
+<a name="api-set-file-input" />
 
-### selectFile(selector: string, file: string): Chromeless<T>
+### setFileInput(selector: string, files: string | string[]): Chromeless<T>
 
-Select file for selected file input.
-
-
-__Example__
-
-```js
-await chromeless.selectFile('.uploader', '/User/Me/Documents/img.jpg')
-```
----------------------------------------
-
-<a name="api-selectFiles" />
-
-### selectFile(selector: string, files: string[]): Chromeless<T>
-
-Select files for selected file input.
+Set file(s) for selected file input.
 
 
 __Example__
 
 ```js
-await chromeless.selectFiles('.multi-uploader', ['/User/Me/Documents/img.jpg', '/User/Me/Documents/img2.jpg'])
+await chromeless.setFileInput('.uploader', '/User/Me/Documents/img.jpg')
 ```

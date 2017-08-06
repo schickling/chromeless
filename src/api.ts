@@ -3,6 +3,7 @@ import ChromeRemote from './chrome/remote'
 import Queue from './queue'
 import { ChromelessOptions, Cookie, CookieQuery, PdfOptions, DeviceMetrics } from './types'
 import { getDebugOption } from './util'
+import { isArray } from 'util'
 
 export default class Chromeless<T extends any> implements Promise<T> {
   private queue: Queue
@@ -302,12 +303,13 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
-  selectFile(selector: string, file: string): Chromeless<T> {
-    return this.selectFiles(selector, [file])
-  }
-
-  selectFiles(selector: string, files: string[]): Chromeless<T> {
-    this.queue.enqueue({type: 'selectFiles', selector, files})
+  setFileInput(selector: string, files: string): Chromeless<T>
+  setFileInput(selector: string, files: string[]): Chromeless<T>
+  setFileInput(selector: string, files: string | string[]): Chromeless<T> {
+    if (!isArray(files)) {
+      files = [files]
+    }
+    this.queue.enqueue({type: 'setFileInput', selector, files})
     return this
   }
 

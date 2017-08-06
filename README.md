@@ -172,8 +172,7 @@ const chromeless = new Chromeless({
 - [`deleteCookies(name: string)`](docs/api.md#api-deletecookies)
 - [`clearCookies()`](docs/api.md#api-clearcookies)
 - [`clearInput(selector: string)`](docs/api.md#api-clearInput)
-- [`selectFiles(selector: string, files: string[])`](docs/api.md#api-selectFiles)
-- [`selectFile(selector: string, file: string)`](docs/api.md#api-selectFile)
+- [`setFileInput(selector: string, files: string | string[])`](docs/api.md#api-set-file-input)
 
 ## Configuring Development Environment
 

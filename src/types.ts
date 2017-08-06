@@ -172,7 +172,7 @@ export type Command =
     selector: string
   }
   | {
-    type: 'selectFiles',
+    type: 'setFileInput',
     selector: string,
     files: string[]
   }
