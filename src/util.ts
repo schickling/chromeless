@@ -1,9 +1,29 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { Client, Cookie, DeviceMetrics, PdfOptions } from './types'
-import * as CDP from 'chrome-remote-interface'
+
+// I moved this to constants in the hopes of better unit testing,
+// but still exprimenting with it. The problem is that TypeScript compiles,
+// and then jest adds istanbul comments
+export const BROWSER_EXPRESSIONS = {
+  window: {
+    innerHeight: (() => window.innerHeight).toString(),
+    innerWidth: (() => window.innerWidth).toString(),
+    scrollTo: ((x, y) => window.scrollTo(x, y)).toString(),
+  },
+  document: {
+    querySelector: (selector => document.querySelector(selector)).toString(),
+  },
+  location: {
+    href: (() => location.href).toString(),
+  },
+  exists: (selector => !!document.querySelector(selector)).toString(),
+  value: (selector =>
+    (document.querySelector(selector) || {}).value).toString(),
+}
 
 export const version: string = ((): string => {
+  /* istanbul ignore else */
   if (fs.existsSync(path.join(__dirname, '../package.json'))) {
     // development (look in /src)
     return require('../package.json').version
@@ -13,41 +33,40 @@ export const version: string = ((): string => {
   }
 })()
 
-export async function setViewport(client: Client, viewport: DeviceMetrics = { width: 1, height: 1, scale: 1 }): Promise<void> {
+export async function setViewport(
+  client: Client,
+  viewport: DeviceMetrics = { width: 1, height: 1, scale: 1 },
+): Promise<void> {
   const config: any = {
-      deviceScaleFactor: 1,
-      mobile: false,
-      scale: viewport.scale || 1,
-      fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
+    deviceScaleFactor: 1,
+    mobile: false,
+    scale: viewport.scale || 1,
+    fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
   }
 
-  const versionResult = await CDP.Version()
+  const versionResult = client.ChromeInfo
   const isHeadless = versionResult['User-Agent'].includes('Headless')
 
   if (viewport.height && viewport.width) {
-      config.height = viewport.height
-      config.width = viewport.width
+    config.height = viewport.height
+    config.width = viewport.width
   } else if (isHeadless) {
-      // just apply default value in headless mode to maintain original browser viewport
-      config.height = 900
-      config.width = 1440
+    // just apply default value in headless mode to maintain original browser viewport
+    config.height = 900
+    config.width = 1440
   } else {
-      config.height = await evaluate(
-          client,
-          (() => window.innerHeight).toString()
-      )
-      config.width = await evaluate(
-          client,
-          (() => window.innerWidth).toString()
-      )
+    config.height = await evaluate(
+      client,
+      BROWSER_EXPRESSIONS.window.innerHeight,
+    )
+    config.width = await evaluate(client, BROWSER_EXPRESSIONS.window.innerWidth)
   }
 
   await client.Emulation.setDeviceMetricsOverride(config)
   await client.Emulation.setVisibleSize({
-      width: config.width,
-      height: config.height,
+    width: config.width,
+    height: config.height,
   })
-  return
 }
 
 export async function waitForNode(
@@ -56,12 +75,11 @@ export async function waitForNode(
   waitTimeout: number,
 ): Promise<void> {
   const { Runtime } = client
-  const getNode = selector => {
-    return document.querySelector(selector)
-  }
 
+  const selectorExpress = `(${BROWSER_EXPRESSIONS.document
+    .querySelector})(\`${selector}\`)`
   const result = await Runtime.evaluate({
-    expression: `(${getNode})(\`${selector}\`)`,
+    expression: selectorExpress,
   })
 
   if (result.result.value === null) {
@@ -76,7 +94,7 @@ export async function waitForNode(
         }
 
         const result = await Runtime.evaluate({
-          expression: `(${getNode})(\`${selector}\`)`,
+          expression: selectorExpress,
         })
 
         if (result.result.value !== null) {
@@ -85,9 +103,9 @@ export async function waitForNode(
         }
       }, 500)
     })
-  } else {
-    return
   }
+
+  return
 }
 
 export async function wait(timeout: number): Promise<void> {
@@ -99,11 +117,8 @@ export async function nodeExists(
   selector: string,
 ): Promise<boolean> {
   const { Runtime } = client
-  const exists = selector => {
-    return !!document.querySelector(selector)
-  }
 
-  const expression = `(${exists})(\`${selector}\`)`
+  const expression = `(${BROWSER_EXPRESSIONS.exists})(\`${selector}\`)`
 
   const result = await Runtime.evaluate({
     expression,
@@ -178,13 +193,12 @@ export async function evaluate<T>(
   fn: string,
   ...args: any[]
 ): Promise<T> {
-  const { Runtime } = client
   const jsonArgs = JSON.stringify(args)
   const argStr = jsonArgs.substr(1, jsonArgs.length - 2)
 
   const expression = `
     (() => {
-      const expressionResult = (${fn})(${argStr});
+      const expressionResult = (${fn.toString()})(${argStr});
       if (expressionResult && expressionResult.then) {
         expressionResult.catch((error) => { throw new Error(error); });
         return expressionResult;
@@ -193,7 +207,7 @@ export async function evaluate<T>(
     })();
   `
 
-  const result = await Runtime.evaluate({
+  const result = await client.Runtime.evaluate({
     expression,
     returnByValue: true,
     awaitPromise: true,
@@ -274,10 +288,7 @@ export async function getValue(
   selector: string,
 ): Promise<string> {
   const { Runtime } = client
-  const browserCode = selector => {
-    return document.querySelector(selector).value
-  }
-  const expression = `(${browserCode})(\`${selector}\`)`
+  const expression = `(${BROWSER_EXPRESSIONS.value})(\`${selector}\`)`
   const result = await Runtime.evaluate({
     expression,
   })
@@ -291,10 +302,7 @@ export async function scrollTo(
   y: number,
 ): Promise<void> {
   const { Runtime } = client
-  const browserCode = (x, y) => {
-    return window.scrollTo(x, y)
-  }
-  const expression = `(${browserCode})(${x}, ${y})`
+  const expression = `(${BROWSER_EXPRESSIONS.window.scrollTo})(${x}, ${y})`
   await Runtime.evaluate({
     expression,
   })
@@ -317,9 +325,10 @@ export async function getCookies(
 
   const { Network } = client
 
-  const fn = () => location.href
-
-  const url = (await evaluate(client, `${fn}`)) as string
+  const url = (await evaluate(
+    client,
+    BROWSER_EXPRESSIONS.location.href,
+  )) as string
 
   const result = await Network.getCookies([url])
   return result.cookies
@@ -385,14 +394,24 @@ export async function mouseup(client: Client, selector: string, scale: number) {
 }
 
 function getUrlFromCookie(cookie: Cookie) {
-  const domain = cookie.domain.slice(1, cookie.domain.length)
+  if (!cookie.domain) {
+    return undefined
+  }
+  const domain =
+    cookie.domain[0] === '.'
+      ? cookie.domain.slice(1, cookie.domain.length)
+      : cookie.domain
   return `https://${domain}`
 }
 
-export async function deleteCookie(client: Client, name: string, url: string): Promise<void> {
-  const {Network} = client
+export async function deleteCookie(
+  client: Client,
+  name: string,
+  url: string,
+): Promise<void> {
+  const { Network } = client
 
-  await Network.deleteCookie({cookieName: name, url})
+  await Network.deleteCookie({ cookieName: name, url })
 }
 
 export async function clearCookies(client: Client): Promise<void> {
@@ -428,11 +447,14 @@ export async function pdf(
   return pdf.data
 }
 
-export async function clearInput(client: Client, selector: string): Promise<void> {
+export async function clearInput(
+  client: Client,
+  selector: string,
+): Promise<void> {
   await wait(500)
   await focus(client, selector)
 
-  const {Input} = client
+  const { Input } = client
 
   const text = await getValue(client, selector)
 

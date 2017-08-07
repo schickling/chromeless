@@ -20,41 +20,70 @@
     "node": ">= 6.10.0"
   },
   "scripts": {
-    "ava": "tsc && nyc ava",
     "build": "npm run clean && tsc -d",
     "clean": "rimraf dist",
-    "coverage": "npm run ava",
+    "coverage": "npm run jest",
     "precommit": "lint-staged",
     "prepublishOnly": "npm test && npm run build",
     "prettier": "prettier --no-semi --single-quote --trailing-comma all --write \"src/**/*.ts\"",
     "release": "np",
-    "test": "npm run tslint && npm run ava",
+    "test": "npm run tslint && npm run jest",
     "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**",
     "watch": "tsc -w",
-    "watch:test": "tsc -w & ava --watch"
+    "watch:test": "npm run jest:watch",
+    "launch:chrome": "ts-node utils/launch_chrome.ts",
+    "jest": "tsc && jest --coverage --no-cache",
+    "jest:watch": "jest --watch --no-cache"
   },
   "dependencies": {
+    "@types/typescript": "^2.0.0",
     "aws-sdk": "^2.90.0",
     "bluebird": "^3.5.0",
     "chrome-launcher": "^0.4.0",
     "chrome-remote-interface": "^0.24.2",
     "cuid": "^1.3.8",
-    "form-data": "^2.1.4",
+    "form-data": "^2.2.0",
     "got": "^7.1.0",
-    "mqtt": "^2.9.2"
+    "mqtt": "^2.11.0"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.8",
     "@types/cuid": "^1.3.0",
+    "@types/jest": "^20.0.6",
     "@types/node": "^8.0.15",
-    "ava": "^0.21.0",
+    "@types/shelljs": "^0.7.4",
+    "babel-jest": "^20.0.3",
+    "chalk": "^2.0.1",
+    "jest": "^20.0.4",
     "lint-staged": "^4.0.2",
     "np": "^2.16.0",
-    "nyc": "^11.1.0",
     "prettier": "^1.5.3",
     "rimraf": "^2.6.1",
+    "shelljs": "^0.7.8",
+    "ts-jest": "^20.0.9",
+    "ts-node": "^3.3.0",
     "tslint": "^5.5.0",
     "typescript": "^2.4.2"
+  },
+  "jest": {
+    "mapCoverage": true,
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/(?!chrome-launcher)"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "dist"
+    ],
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ]
   },
   "lint-staged": {
     "*.{ts,js}": [

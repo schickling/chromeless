@@ -1,9 +1,14 @@
-const { Chromeless } = require('chromeless')
+const { Chromeless } = require('../dist/src')
 
-async function run() {
-  const chromeless = new Chromeless({ remote: true })
+async function run () {
+  const chromeless = await new Chromeless({
+    launchChrome: false,
+    cdp: {
+      port: 4456
+    }
+  })
 
-  const links = await chromeless
+  const links = chromeless
     .goto('https://www.google.com')
     .type('chromeless', 'input[name="q"]')
     .press(13)

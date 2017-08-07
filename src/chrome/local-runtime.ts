@@ -6,6 +6,7 @@ import {
   Cookie,
   CookieQuery,
   PdfOptions,
+  ChromeInfo,
 } from '../types'
 import * as cuid from 'cuid'
 import * as fs from 'fs'
@@ -52,8 +53,8 @@ export default class LocalRuntime {
     switch (command.type) {
       case 'goto':
         return this.goto(command.url)
-        case 'setViewport':
-          return setViewport(this.client, command.options)
+      case 'setViewport':
+        return setViewport(this.client, command.options)
       case 'wait': {
         if (command.timeout) {
           return this.waitTimeout(command.timeout)
@@ -107,6 +108,8 @@ export default class LocalRuntime {
         return this.focus(command.selector)
       case 'clearInput':
         return this.clearInput(command.selector)
+      case 'returnVersionInfo':
+        return this.returnVersionInfo()
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -123,7 +126,7 @@ export default class LocalRuntime {
   }
 
   private async clearCache(): Promise<void> {
-    const {Network} = this.client
+    const { Network } = this.client
     const canClearCache = await Network.canClearBrowserCache
     if (canClearCache) {
       await Network.clearBrowserCache()
@@ -317,6 +320,12 @@ export default class LocalRuntime {
     }
   }
 
+  async returnVersionInfo(): Promise<ChromeInfo> {
+    const info = await this.client.ChromeInfo
+    this.log(`Got Version info ${info['User-Agent']}`)
+    return info
+  }
+
   async press(keyCode: number, count?: number, modifiers?: any): Promise<void> {
     this.log(`Sending keyCode ${keyCode} (modifiers: ${modifiers})`)
     await press(this.client, keyCode, count, modifiers)
@@ -404,12 +413,18 @@ export default class LocalRuntime {
     if (selector) {
       if (this.chromelessOptions.implicitWait) {
         this.log(`clearInput(): Waiting for ${selector}`)
-        await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
+        await waitForNode(
+          this.client,
+          selector,
+          this.chromelessOptions.waitTimeout,
+        )
       }
 
       const exists = await nodeExists(this.client, selector)
       if (!exists) {
-        throw new Error(`clearInput(): Node not found for selector: ${selector}`)
+        throw new Error(
+          `clearInput(): Node not found for selector: ${selector}`,
+        )
       }
     }
     await clearInput(this.client, selector)
