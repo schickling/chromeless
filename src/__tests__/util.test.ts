@@ -631,3 +631,19 @@ test('getDebugOption()', () => {
   process.env.DEBUG = d
   expect(expTrue).toBe(true)
 })
+
+test('setFileInput()', async () => {
+  client.DOM.getDocument = jest.fn(resolveValue({
+    root: { nodeId: 'id' }
+  }))
+  client.DOM.setFileInput = jest.fn(resolveValue())
+  await Utils.setFileInput(client, 'div', ['files'])
+  expect(client.DOM.getDocument).toHaveBeenCalledTimes(1)
+  expect(client.DOM.querySelector).toHaveBeenCalledWith({
+    nodeId: 'id',
+    selector: 'div'
+  })
+  expect(client.DOM.setFileInputFiles).toHaveBeenCalledWith({
+    files: ['files']
+  })
+})

@@ -37,6 +37,7 @@ export const mockClientFactory = (): Client => ({
     ),
     querySelector: jest.fn(resolveValue({ id: 'default-id' })),
     focus: jest.fn(resolveValue()),
+    setFileInputFiles: jest.fn(resolveValue())
   },
   Input: {
     dispatchMouseEvent: jest.fn(resolveValue()),
@@ -65,4 +66,3 @@ export const mockClientFactory = (): Client => ({
     id: '123',
   },
 })
-
