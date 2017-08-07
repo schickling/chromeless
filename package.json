@@ -32,9 +32,9 @@
     "watch:test": "npm run jest:watch",
     "launch:chrome": "ts-node utils/launch_chrome.ts",
     "jest": "tsc && jest --coverage --no-cache",
-    "jest:watch": "jest --watch --no-cache"
+    "jest:watch": "jest --watch --no-cache",
     "lint": "npm run tslint",
-    "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**",
+    "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**"
   },
   "dependencies": {
     "@types/typescript": "^2.0.0",

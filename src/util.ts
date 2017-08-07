@@ -2,25 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { Client, Cookie, DeviceMetrics, PdfOptions } from './types'
 
-// I moved this to constants in the hopes of better unit testing,
-// but still exprimenting with it. The problem is that TypeScript compiles,
-// and then jest adds istanbul comments
-export const BROWSER_EXPRESSIONS = {
-  window: {
-    innerHeight: (() => window.innerHeight).toString(),
-    innerWidth: (() => window.innerWidth).toString(),
-    scrollTo: ((x, y) => window.scrollTo(x, y)).toString(),
-  },
-  document: {
-    querySelector: (selector => document.querySelector(selector)).toString(),
-  },
-  location: {
-    href: (() => location.href).toString(),
-  },
-  exists: (selector => !!document.querySelector(selector)).toString(),
-  value: (selector =>
-    (document.querySelector(selector) || {}).value).toString(),
-}
+import { BROWSER_EXPRESSIONS, getClientRect } from './browser-expressions'
 
 export const version: string = ((): string => {
   /* istanbul ignore else */
@@ -59,10 +41,7 @@ export async function setViewport(
       client,
       BROWSER_EXPRESSIONS.window.innerHeight,
     )
-    config.width = await evaluate(
-      client,
-      BROWSER_EXPRESSIONS.window.innerWidth
-    )
+    config.width = await evaluate(client, BROWSER_EXPRESSIONS.window.innerWidth)
   }
 
   await client.Emulation.setDeviceMetricsOverride(config)
@@ -121,43 +100,13 @@ export async function nodeExists(
 ): Promise<boolean> {
   const { Runtime } = client
 
-  const expression = `(${BROWSER_EXPRESSIONS.exists})(\`${selector}\`)`
+  const expression = `(${BROWSER_EXPRESSIONS.element.exists})(\`${selector}\`)`
 
   const result = await Runtime.evaluate({
     expression,
   })
 
   return result.result.value
-}
-
-export async function getClientRect(client, selector): Promise<ClientRect> {
-  const { Runtime } = client
-
-  const code = selector => {
-    const element = document.querySelector(selector)
-    if (!element) {
-      return undefined
-    }
-
-    const rect = element.getBoundingClientRect()
-    return JSON.stringify({
-      left: rect.left,
-      top: rect.top,
-      right: rect.right,
-      bottom: rect.bottom,
-      height: rect.height,
-      width: rect.width,
-    })
-  }
-
-  const expression = `(${code})(\`${selector}\`)`
-  const result = await Runtime.evaluate({ expression })
-
-  if (!result.result.value) {
-    throw new Error(`No element found for selector: ${selector}`)
-  }
-
-  return JSON.parse(result.result.value) as ClientRect
 }
 
 export async function click(client: Client, selector: string, scale: number) {
@@ -291,7 +240,7 @@ export async function getValue(
   selector: string,
 ): Promise<string> {
   const { Runtime } = client
-  const expression = `(${BROWSER_EXPRESSIONS.value})(\`${selector}\`)`
+  const expression = `(${BROWSER_EXPRESSIONS.element.value})(\`${selector}\`)`
   const result = await Runtime.evaluate({
     expression,
   })

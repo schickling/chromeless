@@ -1,56 +1,20 @@
+import * as BrowserExpressions from '../browser-expressions'
+
 import { Client, Cookie } from '../types'
 import * as Utils from '../util'
-import { resolveValue } from '../../utils/test_helper'
-
-const mockClientFactory = (): Client => ({
-  Network: {
-    clearBrowserCookies: jest.fn(resolveValue()),
-  },
-  Page: {
-    captureScreenshot: jest.fn(resolveValue({ data: 'some_blob' })),
-    // is this not yet implemented by CDP??
-    printToPDF: jest.fn(resolveValue({ data: 'pdf_blob' })),
-  },
-  DOM: {
-    getDocument: jest.fn(
-      resolveValue({
-        root: { nodeId: 222 },
-      }),
-    ),
-    querySelector: jest.fn(resolveValue({ id: 'default-id' })),
-    focus: jest.fn(resolveValue()),
-  },
-  Input: {
-    dispatchMouseEvent: jest.fn(resolveValue()),
-    dispatchKeyEvent: jest.fn(resolveValue()),
-  },
-  Target: {},
-  Runtime: {
-    evaluate: jest.fn(resolveValue()),
-  },
-  Emulation: {
-    setDeviceMetricsOverride: jest.fn(resolveValue()),
-    setVisibleSize: jest.fn(
-      resolveValue({
-        height: 900,
-        width: 1440,
-      }),
-    ),
-  },
-  ChromeInfo: {
-    'User-Agent': 'Chrome',
-  },
-  port: 1234,
-  host: 'localhost',
-  close: jest.fn(),
-  target: {
-    id: '123',
-  },
-})
+import { resolveValue, mockClientFactory } from '../../utils/test_helper'
 
 let client: Client
 beforeEach(() => {
   client = mockClientFactory()
+  jest.spyOn(BrowserExpressions, 'getClientRect').mockImplementation(resolveValue({
+    left: 1,
+    top: 2,
+    right: 3,
+    bottom: 4,
+    height: 5,
+    width: 6,
+  }))
 })
 
 test('version', () => {
@@ -208,66 +172,6 @@ test('nodeExists()', async () => {
   expect(await Utils.nodeExists(client, 'div.blah')).toBe(true)
   expect(client.Runtime.evaluate).toHaveBeenCalledWith({
     expression: expect.any(String),
-  })
-})
-
-describe('getClientRect()', () => {
-  const code = selector => {
-    const element = document.querySelector(selector)
-    if (!element) {
-      return undefined
-    }
-
-    const rect = element.getBoundingClientRect()
-    return JSON.stringify({
-      left: rect.left,
-      top: rect.top,
-      right: rect.right,
-      bottom: rect.bottom,
-      height: rect.height,
-      width: rect.width,
-    })
-  }
-
-  it('evals with passed selector', async () => {
-    const selector = 'div'
-    client.Runtime.evaluate = jest.fn(
-      resolveValue({
-        result: {
-          value: JSON.stringify({
-            left: 1,
-            top: 2,
-            right: 3,
-            bottom: 4,
-            height: 5,
-            width: 6,
-          }),
-        },
-      }),
-    )
-
-    const rect: ClientRect = await Utils.getClientRect(client, selector)
-    expect(rect).toEqual({
-      left: 1,
-      top: 2,
-      right: 3,
-      bottom: 4,
-      height: 5,
-      width: 6,
-    })
-
-    expect(client.Runtime.evaluate).toHaveBeenCalledWith({
-      expression: expect.any(String),
-    })
-  })
-
-  it('excepts if selector not found', async () => {
-    client.Runtime.evaluate = jest.fn(resolveValue({ result: { value: null } }))
-    try {
-      await Utils.getClientRect(client, 'div')
-    } catch (err) {
-      expect(err.message).toBe(`No element found for selector: div`)
-    }
   })
 })
 
@@ -475,6 +379,16 @@ test('scrollTo()', async () => {
   expect(exp).toContain(')(10, 20)')
 })
 
+test('scrollToElement()', async () => {
+  client.Runtime.evaluate = jest.fn(resolveValue())
+  await Utils.scrollToElement(client, '#an-id')
+  expect(client.Runtime.evaluate).toHaveBeenCalledWith({
+    expression:
+    `(${BrowserExpressions.BROWSER_EXPRESSIONS.window.scrollTo})(1, 2)`,
+  })
+})
+
+
 test('setHtml()', async () => {
   client.Page.getResourceTree = jest.fn(
     resolveValue({
@@ -494,32 +408,59 @@ test('setHtml()', async () => {
 
 describe('cookies', () => {
   beforeEach(() => {
+    // expecting this to run an array
     client.Network.getCookies = jest.fn(
-      resolveValue({ cookies: 'some cookie' }),
+      resolveValue({
+        cookies: [
+          {
+            name: 'acookie',
+            value: 'avalue',
+          },
+        ],
+      }),
     )
     client.Runtime.evaluate.mockImplementation(
       resolveValue({
         result: { value: 'http://example.com' },
       }),
     )
+
+    // expecting this to run an array
     client.Network.getAllCookies = jest.fn(
-      resolveValue({ cookies: 'some cookie' }),
+      resolveValue({
+        cookies: [
+          {
+            name: 'acookie',
+            value: 'avalue',
+          },
+        ],
+      }),
     )
     client.Network.setCookie = jest.fn(resolveValue())
     client.Network.deleteCookie = jest.fn(resolveValue())
   })
 
-  test('name or query not yet implemented', async () => {
-    try {
-      await Utils.getCookies(client, 'something')
-    } catch (err) {
-      expect(err.message).toContain('Not yet implemented')
-    }
+  test('finds by exact cookie name', async () => {
+    const nothingFound = await Utils.getCookies(client, 'not_found')
+    expect(nothingFound).toEqual([])
+
+    const found = await Utils.getCookies(client, 'acookie')
+    expect(found).toEqual([
+      {
+        name: 'acookie',
+        value: 'avalue',
+      },
+    ])
   })
 
   test('gets url and calls Network.getCookies', async () => {
     const cookies = await Utils.getCookies(client)
-    expect(cookies).toBe('some cookie')
+    expect(cookies).toEqual([
+      {
+        name: 'acookie',
+        value: 'avalue',
+      },
+    ])
     expect(client.Network.getCookies).toHaveBeenCalledWith([
       'http://example.com',
     ])
@@ -527,7 +468,12 @@ describe('cookies', () => {
 
   test('getAllCookies()', async () => {
     const cookies = await Utils.getAllCookies(client)
-    expect(cookies).toBe('some cookie')
+    expect(cookies).toEqual([
+      {
+        name: 'acookie',
+        value: 'avalue',
+      },
+    ])
     expect(client.Network.getAllCookies).toHaveBeenCalledTimes(1)
   })
 
