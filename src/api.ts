@@ -1,8 +1,15 @@
 import ChromeLocal from './chrome/local'
 import ChromeRemote from './chrome/remote'
 import Queue from './queue'
-import { ChromelessOptions, Cookie, CookieQuery, PdfOptions, DeviceMetrics } from './types'
+import {
+  ChromelessOptions,
+  Cookie,
+  CookieQuery,
+  PdfOptions,
+  DeviceMetrics,
+} from './types'
 import { getDebugOption } from './util'
+import { isArray } from 'util'
 
 export default class Chromeless<T extends any> implements Promise<T> {
   private queue: Queue
@@ -236,45 +243,45 @@ export default class Chromeless<T extends any> implements Promise<T> {
   /**
    * Get the cookies for the current url
    */
-  cookiesGet(): Chromeless<Cookie[] | null>
+  cookies(): Chromeless<Cookie[] | null>
   /**
    * Get a specific cookie for the current url
    * @param name
    */
-  cookiesGet(name: string): Chromeless<Cookie | null>
+  cookies(name: string): Chromeless<Cookie | null>
   /**
    * Get a specific cookie by query. Not implemented yet
    * @param query
    */
-  cookiesGet(query: CookieQuery): Chromeless<Cookie[] | null>
-  cookiesGet(
+  cookies(query: CookieQuery): Chromeless<Cookie[] | null>
+  cookies(
     nameOrQuery?: string | CookieQuery,
   ): Chromeless<Cookie | Cookie[] | null> {
-    if (typeof nameOrQuery !== 'undefined') {
+    if (typeof nameOrQuery !== 'undefined' && typeof nameOrQuery !== 'string') {
       throw new Error('Querying cookies is not implemented yet')
     }
 
     this.lastReturnPromise = this.queue.process<Cookie[] | Cookie | null>({
-      type: 'cookiesGet',
+      type: 'cookies',
       nameOrQuery,
     })
 
     return new Chromeless<Cookie | Cookie[] | null>({}, this)
   }
 
-  cookiesGetAll(): Chromeless<Cookie[]> {
+  allCookies(): Chromeless<Cookie[]> {
     this.lastReturnPromise = this.queue.process<Cookie[]>({
-      type: 'cookiesGetAll',
+      type: 'allCookies',
     })
 
     return new Chromeless<Cookie[]>({}, this)
   }
 
-  cookiesSet(name: string, value: string): Chromeless<T>
-  cookiesSet(cookie: Cookie): Chromeless<T>
-  cookiesSet(cookies: Cookie[]): Chromeless<T>
-  cookiesSet(nameOrCookies, value?: string): Chromeless<T> {
-    this.queue.enqueue({ type: 'cookiesSet', nameOrCookies, value })
+  setCookies(name: string, value: string): Chromeless<T>
+  setCookies(cookie: Cookie): Chromeless<T>
+  setCookies(cookies: Cookie[]): Chromeless<T>
+  setCookies(nameOrCookies, value?: string): Chromeless<T> {
+    this.queue.enqueue({ type: 'setCookies', nameOrCookies, value })
 
     return this
   }
@@ -286,19 +293,29 @@ export default class Chromeless<T extends any> implements Promise<T> {
     if (typeof url === 'undefined') {
       throw new Error('Cookie url should be defined.')
     }
-    this.queue.enqueue({type: 'deleteCookies', name, url})
+    this.queue.enqueue({ type: 'deleteCookies', name, url })
 
     return this
   }
 
   clearCookies(): Chromeless<T> {
-    this.queue.enqueue({type: 'clearCookies'})
+    this.queue.enqueue({ type: 'clearCookies' })
 
     return this
   }
 
-    clearInput(selector: string): Chromeless<T> {
-    this.queue.enqueue({type: 'clearInput', selector})
+  clearInput(selector: string): Chromeless<T> {
+    this.queue.enqueue({ type: 'clearInput', selector })
+    return this
+  }
+
+  setFileInput(selector: string, files: string): Chromeless<T>
+  setFileInput(selector: string, files: string[]): Chromeless<T>
+  setFileInput(selector: string, files: string | string[]): Chromeless<T> {
+    if (!isArray(files)) {
+      files = [files]
+    }
+    this.queue.enqueue({ type: 'setFileInput', selector, files })
     return this
   }
 

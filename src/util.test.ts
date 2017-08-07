@@ -2,6 +2,8 @@ import * as os from 'os'
 import test from 'ava'
 import Chromeless from '../src'
 
+const testUrl = 'https://www.google.com'
+
 // POC
 test('google title', async t => {
   const chromeless = new Chromeless({ launchChrome: false })
@@ -16,20 +18,13 @@ test('google title', async t => {
 
 test('screenshot and pdf path', async t => {
   const chromeless = new Chromeless({ launchChrome: false })
-  const screenshot = await chromeless
-    .goto('https://www.google.com')
-    .screenshot()
-  const pdf = await chromeless
-    .goto('https://www.google.com')
-    .pdf()
+  const screenshot = await chromeless.goto(testUrl).screenshot()
+  const pdf = await chromeless.goto(testUrl).pdf()
 
   await chromeless.end()
 
-  if (os.platform() === 'win32') {
-    t.regex(screenshot, /\\/)
-    t.regex(pdf, /\\/)
-  } else {
-    t.regex(screenshot, /tmp/)
-    t.regex(pdf, /tmp/)
-  }
+  const regex = new RegExp(os.tmpdir())
+
+  t.regex(screenshot, regex)
+  t.regex(pdf, regex)
 })

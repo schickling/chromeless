@@ -119,7 +119,7 @@ export type Command =
   | {
       type: 'scrollToElement'
       selector: string
-  }
+    }
   | {
       type: 'setHtml'
       html: string
@@ -144,15 +144,15 @@ export type Command =
       url: string
     }
   | {
-      type: 'cookiesSet'
+      type: 'setCookies'
       nameOrCookies: string | Cookie | Cookie[]
       value?: string
     }
   | {
-      type: 'cookiesGetAll'
+      type: 'allCookies'
     }
   | {
-      type: 'cookiesGet'
+      type: 'cookies'
       nameOrQuery?: string | CookieQuery
     }
   | {
@@ -168,6 +168,14 @@ export type Command =
       selector: string
     }
   | {
+      type: 'clearInput'
+      selector: string
+    }
+  | {
+      type: 'setFileInput'
+      selector: string
+      files: string[]
+    }
     type: 'clearInput'
     selector: string
   }

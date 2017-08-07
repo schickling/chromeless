@@ -162,16 +162,17 @@ const chromeless = new Chromeless({
 - [`screenshot()`](docs/api.md#api-screenshot)
 - [`pdf(options?: PdfOptions)`](docs/api.md#api-pdf)
 - [`html()`](docs/api.md#api-html)
-- [`cookiesGet()`](docs/api.md#api-cookiesget)
-- [`cookiesGet(name: string)`](docs/api.md#api-cookiesget-name)
-- [`cookiesGet(query: CookieQuery)`](docs/api.md#api-cookiesget-query) - Not implemented yet
-- [`cookiesGetAll()`](docs/api.md#api-cookiesgetall)
-- [`cookiesSet(name: string, value: string)`](docs/api.md#api-cookiesset)
-- [`cookiesSet(cookie: Cookie)`](docs/api.md#api-cookiesset-one)
-- [`cookiesSet(cookies: Cookie[])`](docs/api.md#api-cookiesset-many)
+- [`cookies()`](docs/api.md#api-cookies)
+- [`cookies(name: string)`](docs/api.md#api-cookies-name)
+- [`cookies(query: CookieQuery)`](docs/api.md#api-cookies-query) - Not implemented yet
+- [`allCookies()`](docs/api.md#api-all-cookies)
+- [`setCookies(name: string, value: string)`](docs/api.md#api-setcookies)
+- [`setCookies(cookie: Cookie)`](docs/api.md#api-setcookies-one)
+- [`setCookies(cookies: Cookie[])`](docs/api.md#api-setcookies-many)
 - [`deleteCookies(name: string)`](docs/api.md#api-deletecookies)
 - [`clearCookies()`](docs/api.md#api-clearcookies)
 - [`clearInput(selector: string)`](docs/api.md#api-clearInput)
+- [`setFileInput(selector: string, files: string | string[])`](docs/api.md#api-set-file-input)
 
 ## Configuring Development Environment
 

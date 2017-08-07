@@ -31,13 +31,13 @@ Chromeless provides TypeScript typings.
 - [`screenshot()`](#api-screenshot)
 - [`pdf(options?: PdfOptions)`](#api-pdf)
 - [`html()`](#api-html)
-- [`cookiesGet()`](#api-cookiesget)
-- [`cookiesGet(name: string)`](#api-cookiesget-name)
-- [`cookiesGet(query: CookieQuery)`](#api-cookiesget-query) - Not implemented yet
-- [`cookiesGetAll()`](#api-cookiesgetall)
-- [`cookiesSet(name: string, value: string)`](#api-cookiesset)
-- [`cookiesSet(cookie: Cookie)`](#api-cookiesset-one)
-- [`cookiesSet(cookies: Cookie[])`](#api-cookiesset-many)
+- [`cookies()`](#api-cookies)
+- [`cookies(name: string)`](#api-cookies-name)
+- [`cookies(query: CookieQuery)`](#api-cookies-query) - Not implemented yet
+- [`allCookies()`](#api-all-cookies)
+- [`setCookies(name: string, value: string)`](#api-setcookies)
+- [`setCookies(cookie: Cookie)`](#api-setcookies-one)
+- [`setCookies(cookies: Cookie[])`](#api-setcookies-many)
 - [`deleteCookies(name: string)`](#api-deletecookies)
 - [`clearCookies()`](#api-clearcookies)
 
@@ -166,7 +166,7 @@ await chromeless.wait(() => { return console.log('@TODO: put a better example he
 
 ### clearCache(): Chromeless<T>
 
-Clears browser cache. 
+Clears browser cache.
 
 Service workers and Storage (IndexedDB, WebSQL, etc) needs to be cleared separately. More information at the [Chrome Devtools Protocol website](https://chromedevtools.github.io/devtools-protocol/tot).
 
@@ -484,23 +484,23 @@ console.log(html) // <html><head></head><body><h1>Hello world!</h1></body></html
 
 ---------------------------------------
 
-<a name="api-cookiesget" />
+<a name="api-cookies" />
 
-### cookiesGet(): Chromeless<Cookie[] | null>
+### cookies(): Chromeless<Cookie[] | null>
 
 Returns all browser cookies for the current URL.
 
 __Example__
 
 ```js
-await chromeless.cookiesGet()
+await chromeless.cookies()
 ```
 
 ---------------------------------------
 
-<a name="api-cookiesget-name" />
+<a name="api-cookies-name" />
 
-### cookiesGet(name: string): Chromeless<Cookie | null>
+### cookies(name: string): Chromeless<Cookie | null>
 
 Returns a specific browser cookie by name for the current URL.
 
@@ -510,36 +510,36 @@ __Arguments__
 __Example__
 
 ```js
-const cookie = await chromeless.cookiesGet('creepyTrackingCookie')
+const cookie = await chromeless.cookies('creepyTrackingCookie')
 ```
 
 ---------------------------------------
 
-<a name="api-cookiesget-query" />
+<a name="api-cookies-query" />
 
-### cookiesGet(query: CookieQuery) - Not implemented yet
+### cookies(query: CookieQuery) - Not implemented yet
 
 Not implemented yet
 
 ---------------------------------------
 
-<a name="api-cookiesgetall" />
+<a name="api-all-cookies" />
 
-### cookiesGetAll(): Chromeless<Cookie[]>
+### allCookies(): Chromeless<Cookie[]>
 
 Returns all browser cookies. Nam nom nom.
 
 __Example__
 
 ```js
-await chromeless.cookiesGetAll()
+await chromeless.allCookies()
 ```
 
 ---------------------------------------
 
-<a name="api-cookiesset" />
+<a name="api-setcookies" />
 
-### cookiesSet(name: string, value: string): Chromeless<T>
+### setCookies(name: string, value: string): Chromeless<T>
 
 Sets a cookie with the given name and value.
 
@@ -550,14 +550,14 @@ __Arguments__
 __Example__
 
 ```js
-await chromeless.cookiesSet('visited', '1')
+await chromeless.setCookies('visited', '1')
 ```
 
 ---------------------------------------
 
-<a name="api-cookiesset-one" />
+<a name="api-setcookies-one" />
 
-### cookiesSet(cookie: Cookie): Chromeless<T>
+### setCookies(cookie: Cookie): Chromeless<T>
 
 Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
 
@@ -567,7 +567,7 @@ __Arguments__
 __Example__
 
 ```js
-await chromeless.cookiesSet({
+await chromeless.setCookies({
   url: 'http://google.com/',
   domain: 'google.com',
   name: 'userData',
@@ -583,9 +583,9 @@ await chromeless.cookiesSet({
 
 ---------------------------------------
 
-<a name="api-cookiesset-many" />
+<a name="api-setcookies-many" />
 
-### cookiesSet(cookies: Cookie[]): Chromeless<T>
+### setCookies(cookies: Cookie[]): Chromeless<T>
 
 Sets many cookies with the given cookie data; may overwrite equivalent cookies if they exist.
 
@@ -595,7 +595,7 @@ __Arguments__
 __Example__
 
 ```js
-await chromeless.cookiesSet([
+await chromeless.setCookies([
   {
     url: 'http://google.com/',
     domain: 'google.com',
@@ -665,4 +665,20 @@ __Example__
 
 ```js
 await chromeless.clearInput('#username')
+```
+---------------------------------------
+
+<a name="api-set-file-input" />
+
+### setFileInput(selector: string, files: string | string[]): Chromeless<T>
+
+Set file(s) for selected file input.
+
+Currently not supported in the Proxy. Progress tracked in [#186](https://github.com/graphcool/chromeless/issues/186)
+
+
+__Example__
+
+```js
+await chromeless.setFileInput('.uploader', '/User/Me/Documents/img.jpg')
 ```

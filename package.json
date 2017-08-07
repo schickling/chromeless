@@ -1,6 +1,6 @@
 {
   "name": "chromeless",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "🖥 Chrome automation made simple. Runs locally or headless on AWS Lambda.",
   "homepage": "https://github.com/graphcool/chromeless",
   "license": "MIT",
@@ -20,7 +20,7 @@
     "node": ">= 6.10.0"
   },
   "scripts": {
-    "ava": "tsc && nyc ava",
+    "ava": "tsc -d && nyc ava",
     "build": "npm run clean && tsc -d",
     "clean": "rimraf dist",
     "coverage": "npm run ava",
@@ -29,9 +29,10 @@
     "prettier": "prettier --no-semi --single-quote --trailing-comma all --write \"src/**/*.ts\"",
     "release": "np",
     "test": "npm run tslint && npm run ava",
+    "lint": "npm run tslint",
     "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**",
     "watch": "tsc -w",
-    "watch:test": "tsc -w & ava --watch"
+    "watch:test": "tsc -d -w & ava --watch"
   },
   "dependencies": {
     "aws-sdk": "^2.90.0",
@@ -59,7 +60,7 @@
   "lint-staged": {
     "*.{ts,js}": [
       "prettier --no-semi --single-quote --trailing-comma all --write",
-      "npm run lint",
+      "lint",
       "git add"
     ]
   }
