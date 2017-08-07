@@ -6,4 +6,4 @@ jobs:
       - checkout
       - run: docker run -d --rm --name chrome --shm-size 1024m -p 9222:9222 --cap-add SYS_ADMIN yukinying/chrome-headless-browser
       - run: npm install
-      - run: npm test
+      - run: CHROMELESS_CHROME_PORT=9222 npm test
