@@ -181,6 +181,14 @@ const chromeless = new Chromeless({
 2) Run `npm install`
 3) To build: `npm run build`
 
+**Unit testing:**
+1) Run `npm run launch:chrome` to start a fresh instance of Chrome
+2) Run `npm test` or `npm watch:test`
+3) Check the coverage report and make sure that's as close to 100% as possible
+
+**Debugging Note:** If you use one of Intellij's IDEs, you might need to use Node v7. For whatever reason, I could not get the debugger to hit break points with Node v8 and above.
+
+
 #### Linking this NPM repository
 
 1) Go to this repository locally
