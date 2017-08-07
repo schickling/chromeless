@@ -1,17 +1,6 @@
 // I moved this to constants in the hopes of better unit testing,
 // but still exprimenting with it. The problem is that TypeScript compiles,
 // and then jest adds istanbul comments
-
-const recursiveTrim = (objOrString: string | Object): string => {
-  if (typeof objOrString === 'string') {
-    return objOrString.trim()
-  }
-  return Object.keys(objOrString).reduce((str, k) => {
-    str += recursiveTrim(objOrString[k])
-    return str
-  }, '')
-}
-
 const _getClientRectJs = `
    function (selector) {
     var element = document.querySelector(selector)
