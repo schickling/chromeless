@@ -59,7 +59,10 @@ export async function setViewport(
       client,
       BROWSER_EXPRESSIONS.window.innerHeight,
     )
-    config.width = await evaluate(client, BROWSER_EXPRESSIONS.window.innerWidth)
+    config.width = await evaluate(
+      client,
+      BROWSER_EXPRESSIONS.window.innerWidth
+    )
   }
 
   await client.Emulation.setDeviceMetricsOverride(config)
@@ -308,6 +311,15 @@ export async function scrollTo(
   })
 }
 
+export async function scrollToElement(
+  client: Client,
+  selector: string,
+): Promise<void> {
+  const clientRect = await getClientRect(client, selector)
+
+  return scrollTo(client, clientRect.left, clientRect.top)
+}
+
 export async function setHtml(client: Client, html: string): Promise<void> {
   const { Page } = client
 
@@ -319,10 +331,6 @@ export async function getCookies(
   client: Client,
   nameOrQuery?: string | Cookie,
 ): Promise<any> {
-  if (nameOrQuery) {
-    throw new Error('Not yet implemented')
-  }
-
   const { Network } = client
 
   const url = (await evaluate(
@@ -331,7 +339,15 @@ export async function getCookies(
   )) as string
 
   const result = await Network.getCookies([url])
-  return result.cookies
+  const cookies = result.cookies
+
+  if (typeof nameOrQuery !== 'undefined' && typeof nameOrQuery === 'string') {
+    const filteredCookies: Cookie[] = cookies.filter(
+      cookie => cookie.name === nameOrQuery,
+    )
+    return filteredCookies
+  }
+  return cookies
 }
 
 export async function getAllCookies(client: Client): Promise<any> {
@@ -486,6 +502,20 @@ export async function clearInput(
       type: 'keyUp',
     })
   }
+}
+
+export async function setFileInput(
+  client: Client,
+  selector: string,
+  files: string[],
+): Promise<string> {
+  const { DOM } = client
+  const dom = await DOM.getDocument()
+  const node = await DOM.querySelector({
+    nodeId: dom.root.nodeId,
+    selector: selector,
+  })
+  return await DOM.setFileInputFiles({ files: files, nodeId: node.nodeId })
 }
 
 export function getDebugOption(): boolean {

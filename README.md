@@ -153,6 +153,7 @@ const chromeless = new Chromeless({
 - [`mousedown(selector: string)`](docs/api.md#api-mousedown)
 - [`mouseup(selector: string)`](docs/api.md#api-mouseup)
 - [`scrollTo(x: number, y: number)`](docs/api.md#api-scrollto)
+- [`scrollToElement(selector: string)`](docs/api.md#api-scrolltoelement)
 - [`setHtml(html: string)`](docs/api.md#api-sethtml)
 - [`setViewport(options: DeviceMetrics)`](docs/api.md#api-setviewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](docs/api.md#api-evaluate)
@@ -161,16 +162,17 @@ const chromeless = new Chromeless({
 - [`screenshot()`](docs/api.md#api-screenshot)
 - [`pdf(options?: PdfOptions)`](docs/api.md#api-pdf)
 - [`html()`](docs/api.md#api-html)
-- [`cookiesGet()`](docs/api.md#api-cookiesget)
-- [`cookiesGet(name: string)`](docs/api.md#api-cookiesget-name)
-- [`cookiesGet(query: CookieQuery)`](docs/api.md#api-cookiesget-query) - Not implemented yet
-- [`cookiesGetAll()`](docs/api.md#api-cookiesgetall)
-- [`cookiesSet(name: string, value: string)`](docs/api.md#api-cookiesset)
-- [`cookiesSet(cookie: Cookie)`](docs/api.md#api-cookiesset-one)
-- [`cookiesSet(cookies: Cookie[])`](docs/api.md#api-cookiesset-many)
+- [`cookies()`](docs/api.md#api-cookies)
+- [`cookies(name: string)`](docs/api.md#api-cookies-name)
+- [`cookies(query: CookieQuery)`](docs/api.md#api-cookies-query) - Not implemented yet
+- [`allCookies()`](docs/api.md#api-all-cookies)
+- [`setCookies(name: string, value: string)`](docs/api.md#api-setcookies)
+- [`setCookies(cookie: Cookie)`](docs/api.md#api-setcookies-one)
+- [`setCookies(cookies: Cookie[])`](docs/api.md#api-setcookies-many)
 - [`deleteCookies(name: string)`](docs/api.md#api-deletecookies)
 - [`clearCookies()`](docs/api.md#api-clearcookies)
 - [`clearInput(selector: string)`](docs/api.md#api-clearInput)
+- [`setFileInput(selector: string, files: string | string[])`](docs/api.md#api-set-file-input)
 
 ## Configuring Development Environment
 
