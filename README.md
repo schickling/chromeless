@@ -144,6 +144,7 @@ const chromeless = new Chromeless({
 - [`wait(selector: string)`](docs/api.md#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
 - [`clearCache()`](docs/api.md#api-clearcache)
+- [`clearStorage(origin: string, storageTypes: string)`](docs/api.md#api-clearstorage)
 - [`focus(selector: string)`](docs/api.md#api-focus)
 - [`press(keyCode: number, count?: number, modifiers?: any)`](docs/api.md#api-press)
 - [`type(input: string, selector?: string)`](docs/api.md#api-type)
