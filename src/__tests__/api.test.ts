@@ -35,5 +35,6 @@ test('not yet implemented pdf', async () => {
   } catch (err) {
     error = err
   }
+  expect(error).toBeInstanceOf(Error)
   expect(error.message).toContain('PrintToPDF is not implemented')
 })
