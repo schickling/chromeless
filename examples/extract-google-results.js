@@ -1,12 +1,7 @@
-const { Chromeless } = require('../dist/src')
+const { Chromeless } = require('chromeless')
 
 async function run () {
-  const chromeless = await new Chromeless({
-    launchChrome: false,
-    cdp: {
-      port: 4456
-    }
-  })
+  const chromeless = await new Chromeless()
 
   const links = chromeless
     .goto('https://www.google.com')

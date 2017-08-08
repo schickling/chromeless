@@ -23,6 +23,7 @@
     "build": "npm run clean && tsc -d",
     "clean": "rimraf dist",
     "coverage": "npm run jest",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
     "precommit": "lint-staged",
     "prepublishOnly": "npm test && npm run build",
     "prettier": "prettier --no-semi --single-quote --trailing-comma all --write \"src/**/*.ts\"",
