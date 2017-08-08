@@ -1,3 +1,4 @@
+jest.mock('aws-sdk')
 const AWS = require('aws-sdk')
 jest.mock('cuid', () => jest.fn(() => 'some-uid'))
 const Util = require('../../util')
@@ -45,6 +46,29 @@ describe('local-runtime', () => {
   })
 
   describe('run', () => {
+    test('goto() default user agent', async () => {
+      await localRuntime.run({
+        type: 'setUserAgent',
+        useragent: 'some ua',
+      })
+      expect(localRuntime['userAgentValue']).toBe('some ua')
+
+      await localRuntime.run({
+        type: 'goto',
+        url: 'http://blah.com/yay'
+      })
+      const { Network, Page } = client
+      expect(Network.enable).toHaveBeenCalledTimes(1)
+      expect(Page.enable).toHaveBeenCalledTimes(1)
+      expect(Network.setUserAgentOverride).toHaveBeenCalledWith({
+        userAgent: 'some ua',
+      })
+      expect(Page.navigate).toHaveBeenCalledWith({
+        url: 'http://blah.com/yay',
+      })
+      expect(Page.loadEventFired).toHaveBeenCalledTimes(1)
+    })
+
     test('setViewPort', async () => {
       await localRuntime.run({
         type: 'setViewport',
@@ -97,14 +121,6 @@ describe('local-runtime', () => {
         type: 'clearCache',
       })
       expect(client.Network.clearBrowserCache).not.toHaveBeenCalled()
-    })
-
-    test('setUserAgent', async () => {
-      await localRuntime.run({
-        type: 'setUserAgent',
-        useragent: 'some ua',
-      })
-      expect(localRuntime['userAgentValue']).toBe('some ua')
     })
 
     test('click - no scroll before click', async () => {
@@ -430,14 +446,7 @@ describe('local-runtime', () => {
       const originalBucketName = process.env['CHROMELESS_S3_BUCKET_NAME']
       const originalBucketUrl = process.env['CHROMELESS_S3_BUCKET_URL']
 
-      let putObjectStub
       beforeEach(() => {
-        putObjectStub = jest.fn().mockReturnValue({
-          promise: resolveValue(),
-        })
-        AWS.S3 = function () {
-          return { putObject: putObjectStub }
-        }
         process.env['CHROMELESS_S3_BUCKET_NAME'] = 'somebucket'
         process.env['CHROMELESS_S3_BUCKET_URL'] = 'some.amazone.url.com'
       })
@@ -453,7 +462,7 @@ describe('local-runtime', () => {
           options: {} as PdfOptions,
         })
         expect(Util.pdf).toHaveBeenCalledWith(client, {})
-        expect(putObjectStub).toHaveBeenCalledWith({
+        expect(AWS.__mocks.putObject).toHaveBeenCalledWith({
           Bucket: 'somebucket',
           Key: 'some-uid.pdf',
           ContentType: 'application/pdf',
@@ -468,7 +477,7 @@ describe('local-runtime', () => {
           type: 'returnScreenshot',
         })
         expect(Util.screenshot).toHaveBeenCalledWith(client)
-        expect(putObjectStub).toHaveBeenCalledWith({
+        expect(AWS.__mocks.putObject).toHaveBeenCalledWith({
           Bucket: 'somebucket',
           Key: 'some-uid.png',
           ContentType: 'image/png',

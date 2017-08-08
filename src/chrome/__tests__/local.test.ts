@@ -1,4 +1,3 @@
-import { TargetInfo } from '../../types'
 const CDP = require('chrome-remote-interface')
 import { Launcher } from 'chrome-launcher'
 import * as TestHelpers from '../../../utils/test_helper'
@@ -54,10 +53,5 @@ describe('LocalChrome', () => {
     expect(typeof closeArgs.id).toBe('string')
     expect(closeArgs.port).toBe(opts.cdp.port)
     expect(closeArgs.host).toBe(opts.cdp.host)
-    const targets = await CDP.List(opts)
-    const shouldBeNull = targets.find((target: TargetInfo) => {
-      return target.id === closeArgs.id
-    })
-    expect(shouldBeNull).toBeFalsy()
   })
 })

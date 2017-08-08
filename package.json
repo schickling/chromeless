@@ -32,7 +32,7 @@
     "watch": "tsc -w",
     "watch:test": "npm run jest:watch",
     "launch:chrome": "ts-node utils/launch_chrome.ts",
-    "jest": "tsc && jest --coverage --no-cache --forceExit",
+    "jest": "tsc && jest --coverage --forceExit --runInBand",
     "jest:watch": "jest --watch --no-cache",
     "lint": "npm run tslint",
     "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**"
@@ -72,17 +72,18 @@
     "coveragePathIgnorePatterns": ["<rootDir>/utils/"],
     "setupTestFrameworkScriptFile": "<rootDir>/utils/jest_setup.js",
     "mapCoverage": true,
+    "modulePathIgnorePatterns": ["<rootDir>/dist/"],
     "transformIgnorePatterns": [
       "<rootDir>/node_modules/(?!chrome-launcher)"
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "dist"
+      "/dist/"
     ],
     "transform": {
       ".ts": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts)$",
     "moduleFileExtensions": [
       "ts",
       "tsx",

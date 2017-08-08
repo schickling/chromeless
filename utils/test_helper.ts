@@ -27,12 +27,17 @@ export const cleanUpTabs = async (): Promise<void> => {
 
 export const mockClientFactory = (): Client => ({
   Network: {
+    enable: jest.fn(resolveValue()),
     canClearBrowserCookies: jest.fn(resolveValue(true)),
     clearBrowserCookies: jest.fn(resolveValue()),
     canClearBrowserCache: jest.fn(resolveValue(true)),
     clearBrowserCache: jest.fn(resolveValue()),
+    setUserAgentOverride: jest.fn(resolveValue()),
   },
   Page: {
+    enable: jest.fn(resolveValue()),
+    navigate: jest.fn(resolveValue()),
+    loadEventFired: jest.fn(resolveValue()),
     captureScreenshot: jest.fn(resolveValue({ data: 'some_blob' })),
     printToPDF: jest.fn(resolveValue({ data: 'pdf_blob' })),
   },
