@@ -172,45 +172,42 @@ export type Command =
       selector: string
     }
   | {
-      type: 'setFileInput'
-      selector: string
-      files: string[]
+    type: 'setFileInput'
+    selector: string
+    files: string[]
     }
+  | {
     type: 'clearInput'
     selector: string
-  }
+    }
   | {
-      type: 'requestWillBeSentEvent'
+      type: 'onRequestWillBeSent'
       func: void
     }
   | {
-      type: 'requestSentEvent'
-      func: void
-  }
-  | {
-      type: 'dataReceivedEvent'
+      type: 'onDataReceived'
       func: void
     }
   | {
-      type: 'requestServedFromCacheEvent'
+      type: 'onRequestServedFromCache'
       func: void
     }
   | {
-      type: 'loadingFinishedEvent'
+      type: 'onLoadingFinished'
       func: void
-  }
+    }
   | {
-      type: 'loadingFailedEvent'
+      type: 'onLoadingFailed'
       func: void
-  }
+    }
   | {
-      type: 'requestInterceptedEvent'
+      type: 'onRequestIntercepted'
       func: void
-  }
+    }
   | {
-      type: 'responseReceivedEvent'
+      type: 'onResponseReceived'
       func: void
-  }
+    }
 
 export interface Cookie {
   url?: string

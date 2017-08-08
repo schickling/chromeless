@@ -319,50 +319,44 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
-  requestWillBeSentEvent(func: void): Chromeless<T> {
-    this.queue.enqueue({type: 'requestWillBeSentEvent', func})
+  onRequestWillBeSent(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'onRequestWillBeSent', func})
 
     return this
   }
 
-  requestSentEvent(func: void): Chromeless<T> {
-    this.queue.enqueue({type: 'requestSentEvent', func})
+  onResponseReceived(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'onResponseReceived', func})
 
     return this
   }
 
-  responseReceivedEvent(func: void): Chromeless<T> {
-    this.queue.enqueue({type: 'responseReceivedEvent', func})
+  onRequestServedFromCache(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'onRequestServedFromCache', func})
 
     return this
   }
 
-  requestServedFromCacheEvent(func: void): Chromeless<T> {
-    this.queue.enqueue({type: 'requestServedFromCacheEvent', func})
+  onDataReceived(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'onDataReceived', func})
 
     return this
   }
 
-  dataReceivedEvent(func: void): Chromeless<T> {
-    this.queue.enqueue({type: 'dataReceivedEvent', func})
+  onLoadingFinished(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'onLoadingFinished', func})
 
     return this
   }
 
-  loadingFinishedEvent(func: void): Chromeless<T> {
-    this.queue.enqueue({type: 'loadingFinishedEvent', func})
+  onLoadingFailed(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'onLoadingFailed', func})
 
     return this
   }
 
-  loadingFailedEvent(func: void): Chromeless<T> {
-    this.queue.enqueue({type: 'loadingFailedEvent', func})
-
-    return this
-  }
-
-  requestInterceptedEvent(func: void): Chromeless<T> {
-    this.queue.enqueue({type: 'requestInterceptedEvent', func})
+  onRequestIntercepted(func: void): Chromeless<T> {
+    this.queue.enqueue({type: 'onRequestIntercepted', func})
 
     return this
   }
