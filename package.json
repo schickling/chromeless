@@ -31,7 +31,7 @@
     "watch": "tsc -w",
     "watch:test": "npm run jest:watch",
     "launch:chrome": "ts-node utils/launch_chrome.ts",
-    "jest": "tsc && jest --coverage --no-cache",
+    "jest": "tsc && jest --coverage --no-cache --forceExit",
     "jest:watch": "jest --watch --no-cache",
     "lint": "npm run tslint",
     "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**"
@@ -55,6 +55,7 @@
     "@types/shelljs": "^0.7.4",
     "babel-jest": "^20.0.3",
     "chalk": "^2.0.1",
+    "coveralls": "^2.13.1",
     "jest": "^20.0.4",
     "jest-cli": "^20.0.4",
     "lint-staged": "^4.0.2",
