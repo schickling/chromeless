@@ -4,7 +4,6 @@ import {
   ChromelessOptions,
   Client,
   ChromeInfo,
-  TargetInfo,
   DeviceMetrics,
 } from '../types'
 import * as CDP from 'chrome-remote-interface'
@@ -22,9 +21,8 @@ export default class LocalChrome implements Chrome {
   private runtimeClientPromise: Promise<RuntimeClient>
   private chromeInstance?: LaunchedChrome
 
-  constructor(options: ChromelessOptions = {}) {
+  constructor(options: ChromelessOptions) {
     this.options = options
-
     this.runtimeClientPromise = this.initRuntimeClient()
   }
 
@@ -62,18 +60,6 @@ export default class LocalChrome implements Chrome {
     })
   }
 
-  async listTargets(): Promise<Array<TargetInfo>> {
-    return CDP.List(this.options.cdp)
-  }
-
-  async closeTarget(id: string): Promise<void> {
-    return CDP.Close({
-      port: this.options.cdp.port,
-      host: this.options.cdp.host,
-      id,
-    })
-  }
-
   async getVersionInfo(): Promise<ChromeInfo> {
     return CDP.Version(this.options.cdp)
   }
@@ -88,13 +74,19 @@ export default class LocalChrome implements Chrome {
     const { client } = await this.runtimeClientPromise
 
     if (this.options.cdp.closeTab) {
-      CDP.Close({ id: client.target.id })
-    }
-
-    if (this.chromeInstance) {
-      this.chromeInstance.kill()
+      await CDP.Close({
+        id: client.target.id,
+        port: this.options.cdp.port,
+        host: this.options.cdp.host,
+      })
     }
 
     await client.close()
+
+    // Call this after so the client doesn't try to close
+    // on a killed instance
+    if (this.chromeInstance) {
+      await this.chromeInstance.kill()
+    }
   }
 }

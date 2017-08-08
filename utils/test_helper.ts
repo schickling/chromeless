@@ -5,16 +5,20 @@ const cdp: CDPOptions = {
   // using 4554 here to make sure we pass the port to all the correct spots
   port: parseInt(process.env['CHROMELESS_CHROME_PORT'], 10) || 4554,
 }
-export const defaultLaunConfig: ChromelessOptions = {
+export const defaultLaunchConfig: ChromelessOptions = {
   launchChrome: false,
   cdp
 }
 
 export const resolveValue = (reVal?: any) => (): Promise<any> => Promise.resolve(reVal)
 
-export const closeAllButOneTab = async (): Promise<void> => {
+// Just so we don't end up with a billion tabs, espeically when watching tests
+export const cleanUpTabs = async (): Promise<void> => {
   const tabs = await CDP.List(cdp)
-  await tabs.slice(10).forEach(async (t: TargetInfo) => {
+  if (tabs.length < 10) {
+    return
+  }
+  await tabs.slice(9).forEach(async (t: TargetInfo) => {
     try {
       await CDP.Close(Object.assign({ id: t.id }, cdp))
     } catch (err) {}
@@ -23,7 +27,10 @@ export const closeAllButOneTab = async (): Promise<void> => {
 
 export const mockClientFactory = (): Client => ({
   Network: {
+    canClearBrowserCookies: jest.fn(resolveValue(true)),
     clearBrowserCookies: jest.fn(resolveValue()),
+    canClearBrowserCache: jest.fn(resolveValue(true)),
+    clearBrowserCache: jest.fn(resolveValue()),
   },
   Page: {
     captureScreenshot: jest.fn(resolveValue({ data: 'some_blob' })),

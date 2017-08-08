@@ -69,6 +69,8 @@
     "typescript": "^2.4.2"
   },
   "jest": {
+    "coveragePathIgnorePatterns": ["<rootDir>/utils/"],
+    "setupTestFrameworkScriptFile": "<rootDir>/utils/jest_setup.js",
     "mapCoverage": true,
     "transformIgnorePatterns": [
       "<rootDir>/node_modules/(?!chrome-launcher)"
@@ -78,7 +80,7 @@
       "dist"
     ],
     "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      ".ts": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
     "moduleFileExtensions": [
