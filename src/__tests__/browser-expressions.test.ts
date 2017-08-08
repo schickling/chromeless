@@ -1,5 +1,6 @@
-import { resolveValue } from '../../utils/test_helper'
 import { BROWSER_EXPRESSIONS, getClientRect } from '../browser-expressions'
+import { resolveValue } from '../../utils/test_helper'
+
 
 test('window.innerHeight', () => {
   expect(BROWSER_EXPRESSIONS.window.innerHeight).toBe(
@@ -32,10 +33,10 @@ function (selector) {
 })
 
 test('location.href', () => {
-  expect(BROWSER_EXPRESSIONS.document.querySelector).toBe(
+  expect(BROWSER_EXPRESSIONS.location.href).toBe(
     `
-function (selector) {
-  return document.querySelector(selector);
+function () {
+  return location.href;
 }
   `.trim(),
   )

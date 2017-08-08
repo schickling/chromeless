@@ -6,7 +6,6 @@ const cdp: CDPOptions = {
   port: parseInt(process.env['CHROMELESS_CHROME_PORT'], 10) || 4554,
 }
 export const defaultLaunConfig: ChromelessOptions = {
-  debug: true,
   launchChrome: false,
   cdp
 }
@@ -16,7 +15,9 @@ export const resolveValue = (reVal?: any) => (): Promise<any> => Promise.resolve
 export const closeAllButOneTab = async (): Promise<void> => {
   const tabs = await CDP.List(cdp)
   await tabs.slice(10).forEach(async (t: TargetInfo) => {
-    await CDP.Close(Object.assign({ id: t.id }, cdp))
+    try {
+      await CDP.Close(Object.assign({ id: t.id }, cdp))
+    } catch (err) {}
   })
 }
 
@@ -26,7 +27,6 @@ export const mockClientFactory = (): Client => ({
   },
   Page: {
     captureScreenshot: jest.fn(resolveValue({ data: 'some_blob' })),
-    // is this not yet implemented by CDP??
     printToPDF: jest.fn(resolveValue({ data: 'pdf_blob' })),
   },
   DOM: {
