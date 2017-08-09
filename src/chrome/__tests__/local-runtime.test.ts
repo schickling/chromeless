@@ -3,6 +3,8 @@ const AWS = require('aws-sdk')
 jest.mock('cuid', () => jest.fn(() => 'some-uid'))
 const Util = require('../../util')
 jest.mock('../../util')
+import * as path from 'path'
+import * as os from 'os'
 import LocalRuntime from '../local-runtime'
 import { resolveValue, mockClientFactory } from '../../../utils/test_helper'
 import { ChromelessOptions, Client, DeviceMetrics, Cookie, Command, PdfOptions } from '../../types'
@@ -443,20 +445,46 @@ describe('local-runtime', () => {
     })
 
     describe('pdfs and screenshots uploaded to S3', () => {
-      const originalBucketName = process.env['CHROMELESS_S3_BUCKET_NAME']
-      const originalBucketUrl = process.env['CHROMELESS_S3_BUCKET_URL']
+      let writeFileSpy
 
       beforeEach(() => {
-        process.env['CHROMELESS_S3_BUCKET_NAME'] = 'somebucket'
-        process.env['CHROMELESS_S3_BUCKET_URL'] = 'some.amazone.url.com'
+        writeFileSpy = jest.spyOn(require('fs'), 'writeFileSync')
+          .mockReturnValue(undefined)
+      })
+      afterEach(() => {
+        writeFileSpy.mockRestore()
+        delete process.env['CHROMELESS_S3_BUCKET_NAME']
+        delete process.env['CHROMELESS_S3_BUCKET_URL']
       })
 
-      afterEach(() => {
-        process.env['CHROMELESS_S3_BUCKET_NAME'] = originalBucketName
-        process.env['CHROMELESS_S3_BUCKET_URL'] = originalBucketUrl
+      test('returnPdf to temp dir', async () => {
+        const fileName = await localRuntime.run({
+          type: 'returnPdf',
+          options: {} as PdfOptions,
+        })
+        const expFilePath = path.join(os.tmpdir(), 'some-uid.pdf')
+        expect(expFilePath).toBe(fileName)
+        expect(writeFileSpy).toHaveBeenCalledWith(
+          expFilePath,
+          expect.any(Buffer)
+        )
+      })
+
+      test('returnScreenshot to temp dir', async () => {
+        const fileName = await localRuntime.run({
+          type: 'returnScreenshot',
+        })
+        const expFilePath = path.join(os.tmpdir(), 'some-uid.png')
+        expect(expFilePath).toBe(fileName)
+        expect(writeFileSpy).toHaveBeenCalledWith(
+          expFilePath,
+          expect.any(Buffer)
+        )
       })
 
       test('returnPdf upload to s3', async () => {
+        process.env['CHROMELESS_S3_BUCKET_NAME'] = 'somebucket'
+        process.env['CHROMELESS_S3_BUCKET_URL'] = 'some.amazone.url.com'
         const url = await localRuntime.run({
           type: 'returnPdf',
           options: {} as PdfOptions,
@@ -473,6 +501,8 @@ describe('local-runtime', () => {
       })
 
       test('returnScreenshot upload to s3', async () => {
+        process.env['CHROMELESS_S3_BUCKET_NAME'] = 'somebucket'
+        process.env['CHROMELESS_S3_BUCKET_URL'] = 'some.amazone.url.com'
         const url = await localRuntime.run({
           type: 'returnScreenshot',
         })

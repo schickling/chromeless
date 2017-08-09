@@ -32,7 +32,7 @@
     "watch": "tsc -w",
     "watch:test": "npm run jest:watch",
     "launch:chrome": "ts-node utils/launch_chrome.ts",
-    "jest": "tsc && jest --coverage --forceExit --runInBand",
+    "jest": "tsc && jest --no-cache --coverage --forceExit --runInBand",
     "jest:watch": "jest --watch --no-cache",
     "lint": "npm run tslint",
     "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**"

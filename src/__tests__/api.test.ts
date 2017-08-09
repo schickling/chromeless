@@ -1,9 +1,36 @@
-import * as os from 'os'
 import * as CDP from 'chrome-remote-interface'
 import { Chromeless, Queue } from '../'
-
 import { defaultLaunchConfig, cleanUpTabs } from '../../utils/test_helper'
 import { CookieQuery, DeviceMetrics, Cookie } from '../types'
+
+describe('api constructor', () => {
+  const ChromeLocal = require('../chrome/local')
+  const ChromeRemote = require('../chrome/remote')
+
+  beforeEach(() => {
+    jest.spyOn(ChromeRemote, 'default').mockImplementation(() => {})
+    jest.spyOn(ChromeLocal, 'default').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    ChromeRemote.default.mockRestore()
+    ChromeLocal.default.mockRestore()
+  })
+
+  test('default options', () => {
+    new Chromeless()
+    expect(ChromeLocal.default).toHaveBeenCalledTimes(1)
+    expect(ChromeRemote.default).not.toHaveBeenCalled()
+  })
+
+  test('when remote', () => {
+    new Chromeless({
+      remote: true,
+    })
+    expect(ChromeRemote.default).toHaveBeenCalledTimes(1)
+    expect(ChromeLocal.default).not.toHaveBeenCalled()
+  })
+})
 
 describe('api', () => {
   let enqueuSpy
