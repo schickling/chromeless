@@ -49,10 +49,10 @@ export default class LocalRuntime {
       case 'goto':
         return this.goto(command.url)
       case 'wait': {
-        if (command.timeout) {
+        if (command.selector) {
+          return this.waitSelector(command.selector, command.timeout)
+        } else if (command.timeout) {
           return this.waitTimeout(command.timeout)
-        } else if (command.selector) {
-          return this.waitSelector(command.selector)
         } else {
           throw new Error('waitFn not yet implemented')
         }
@@ -122,9 +122,12 @@ export default class LocalRuntime {
     await wait(timeout)
   }
 
-  private async waitSelector(selector: string): Promise<void> {
-    this.log(`Waiting for ${selector}`)
-    await waitForNode(this.client, selector, this.chromelessOptions.waitTimeout)
+  private async waitSelector(
+    selector: string,
+    waitTimeout: number = this.chromelessOptions.waitTimeout
+  ): Promise<void> {
+    this.log(`Waiting for ${selector} ${waitTimeout}`)
+    await waitForNode(this.client, selector, waitTimeout)
     this.log(`Waited for ${selector}`)
   }
 

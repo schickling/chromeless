@@ -10,7 +10,7 @@ Chromeless provides TypeScript typings.
 - [`setUserAgent(useragent: string)`](#api-setuseragent)
 - [`click(selector: string)`](#api-click)
 - [`wait(timeout: number)`](#api-wait-timeout)
-- [`wait(selector: string)`](#api-wait-selector)
+- [`wait(selector: string, timeout?: number)`](#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
 - [`focus(selector: string)`](#api-focus)
 - [`press(keyCode: number, count?: number, modifiers?: any)`](#api-press)
@@ -126,17 +126,19 @@ await chromeless.wait(1000)
 
 <a name="api-wait-selector" />
 
-### wait(selector: string): Chromeless<T>
+### wait(selector: string, timeout?: number): Chromeless<T>
 
 Wait until something appears. Useful for waiting for things to render.
 
 __Arguments__
 - `selector` - DOM selector to wait for
+- `timeout` - How long to wait for element to appear (default is value of waitTimeout option)
 
 __Example__
 
 ```js
 await chromeless.wait('div#loaded')
+await chromeless.wait('div#loaded', 1000)
 ```
 
 ---------------------------------------
