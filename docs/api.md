@@ -299,13 +299,13 @@ await chromeless.mouseup('#placeholder')
 Scroll to somewhere in the document.
 
 __Arguments__
-- `x` - Offset from top of the document
-- `y` - Offset from the left of the document
+- `x` - Offset from the left of the document
+- `y` - Offset from the top of the document
 
 __Example__
 
 ```js
-await chromeless.scrollTo(500, 0)
+await chromeless.scrollTo(0, 500)
 ```
 
 ---------------------------------------
