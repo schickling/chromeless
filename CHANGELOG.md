@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Mistakes in `scrollTo` parameters API documentation [#220](https://github.com/graphcool/chromeless/pull/220) @okeeffed
-
+- Typo in mocha/chai example [#218](https://github.com/graphcool/chromeless/pull/218) @sul4bh
 
 ## [1.2.0] - 2017-08-06
 
