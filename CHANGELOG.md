@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 ### Fixed
-
+- Mistakes in `scrollTo` parameters API documentation [#220](https://github.com/graphcool/chromeless/pull/220) @okeeffed
 
 
 ## [1.2.0] - 2017-08-06
