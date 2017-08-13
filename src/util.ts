@@ -570,6 +570,10 @@ function getS3BucketUrl() {
   return process.env['CHROMELESS_S3_BUCKET_URL']
 }
 
+function getS3ObjectKeyPrefix() {
+  return process.env['CHROMELESS_S3_OBJECT_KEY_PREFIX'] || ''
+}
+
 export function isS3Configured() {
   return getS3BucketName() && getS3BucketUrl()
 }
@@ -588,7 +592,7 @@ export async function uploadToS3(data: string, contentType: string): Promise<str
   if (!s3ContentType) {
     throw new Error(`Unknown S3 Content type ${contentType}`)
   }
-  const s3Path = `${cuid()}.${s3ContentType.extension}`
+  const s3Path = `${getS3ObjectKeyPrefix()}${cuid()}.${s3ContentType.extension}`
   const s3 = new AWS.S3()
   await s3
         .putObject({

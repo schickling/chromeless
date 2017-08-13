@@ -91,7 +91,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
   }
 
   wait(timeout: number): Chromeless<T>
-  wait(selector: string): Chromeless<T>
+  wait(selector: string, timeout?: number): Chromeless<T>
   wait(fn: (...args: any[]) => boolean, ...args: any[]): Chromeless<T>
   wait(firstArg, ...args: any[]): Chromeless<T> {
     switch (typeof firstArg) {
@@ -100,7 +100,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
         break
       }
       case 'string': {
-        this.queue.enqueue({ type: 'wait', selector: firstArg })
+        this.queue.enqueue({ type: 'wait', selector: firstArg, timeout: args[0] })
         break
       }
       case 'function': {
