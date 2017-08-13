@@ -1,7 +1,6 @@
 import { BROWSER_EXPRESSIONS, getClientRect } from '../browser-expressions'
 import { resolveValue } from '../../utils/test_helper'
 
-
 test('window.innerHeight', () => {
   expect(BROWSER_EXPRESSIONS.window.innerHeight).toBe(
     `
@@ -65,12 +64,14 @@ function (selector) {
 test('getClientRect', async () => {
   const c = {
     Runtime: {
-      evaluate: jest.fn(() => Promise.resolve({
-        result: {
-          value: 1
-        }
-      }))
-    }
+      evaluate: jest.fn(() =>
+        Promise.resolve({
+          result: {
+            value: 1,
+          },
+        }),
+      ),
+    },
   }
 
   expect(await getClientRect(c, '#iidd')).toBe(1)
@@ -79,21 +80,23 @@ test('getClientRect', async () => {
 test('getClientRect exception', async () => {
   const c = {
     Runtime: {
-      evaluate: jest.fn(resolveValue({
-        result: { value: null }
-      }))
-    }
+      evaluate: jest.fn(
+        resolveValue({
+          result: { value: null },
+        }),
+      ),
+    },
   }
 
   const selector = '#idddddd'
   let err
   try {
     await getClientRect(c, selector)
-  } catch(e) {
+  } catch (e) {
     err = e
   }
   expect(c.Runtime.evaluate).toHaveBeenCalledWith({
-    expression: `(${BROWSER_EXPRESSIONS.client.coordinates})(\`${selector}\`)`
+    expression: `(${BROWSER_EXPRESSIONS.client.coordinates})(\`${selector}\`)`,
   })
   expect(err.message).toMatch(/No element found/)
 })

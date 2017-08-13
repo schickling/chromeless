@@ -7,7 +7,14 @@ import * as path from 'path'
 import * as os from 'os'
 import LocalRuntime from '../local-runtime'
 import { resolveValue, mockClientFactory } from '../../../utils/test_helper'
-import { ChromelessOptions, Client, DeviceMetrics, Cookie, Command, PdfOptions } from '../../types'
+import {
+  ChromelessOptions,
+  Client,
+  DeviceMetrics,
+  Cookie,
+  Command,
+  PdfOptions,
+} from '../../types'
 import { BROWSER_EXPRESSIONS } from '../../browser-expressions'
 
 describe('local-runtime', () => {
@@ -16,29 +23,36 @@ describe('local-runtime', () => {
   let localRuntimeNoWait: LocalRuntime
 
   beforeEach(() => {
-    Util.nodeExists
-      .mockImplementation((client, selector) => Promise.resolve(selector !== '#missing'))
+    Util.nodeExists.mockImplementation((client, selector) =>
+      Promise.resolve(selector !== '#missing'),
+    )
     client = mockClientFactory()
-    localRuntime = new LocalRuntime(client, {
-      waitTimeout: 2000,
-      implicitWait: true,
-      viewport: {
-        height: 500,
-        width: 600,
-        scale: 2,
-      }
-    } as ChromelessOptions)
+    localRuntime = new LocalRuntime(
+      client,
+      {
+        waitTimeout: 2000,
+        implicitWait: true,
+        viewport: {
+          height: 500,
+          width: 600,
+          scale: 2,
+        },
+      } as ChromelessOptions,
+    )
 
-    localRuntimeNoWait = new LocalRuntime(client, {
-      waitTimeout: 2000,
-      implicitWait: false,
-      scrollBeforeClick: true,
-      viewport: {
-        height: 500,
-        width: 600,
-        scale: 2,
-      }
-    } as ChromelessOptions)
+    localRuntimeNoWait = new LocalRuntime(
+      client,
+      {
+        waitTimeout: 2000,
+        implicitWait: false,
+        scrollBeforeClick: true,
+        viewport: {
+          height: 500,
+          width: 600,
+          scale: 2,
+        },
+      } as ChromelessOptions,
+    )
   })
 
   afterEach(() => {
@@ -57,7 +71,7 @@ describe('local-runtime', () => {
 
       await localRuntime.run({
         type: 'goto',
-        url: 'http://blah.com/yay'
+        url: 'http://blah.com/yay',
       })
       const { Network, Page } = client
       expect(Network.enable).toHaveBeenCalledTimes(1)
@@ -74,7 +88,7 @@ describe('local-runtime', () => {
     test('setViewPort', async () => {
       await localRuntime.run({
         type: 'setViewport',
-        options: {} as DeviceMetrics
+        options: {} as DeviceMetrics,
       })
       expect(Util.setViewport).toHaveBeenCalledWith(client, {})
     })
@@ -82,7 +96,7 @@ describe('local-runtime', () => {
     test('wait - timeout', async () => {
       await localRuntime.run({
         type: 'wait',
-        timeout: 1000
+        timeout: 1000,
       })
       expect(Util.wait).toHaveBeenCalledWith(1000)
     })
@@ -146,7 +160,9 @@ describe('local-runtime', () => {
       } catch (e) {
         err = e
       }
-      expect(err.message).toBe(`click(): node for selector #missing doesn't exist`)
+      expect(err.message).toBe(
+        `click(): node for selector #missing doesn't exist`,
+      )
       expect(Util.nodeExists).toHaveBeenCalledWith(client, '#missing')
     })
 
@@ -272,11 +288,17 @@ describe('local-runtime', () => {
         url: 'http://example.com',
       })
       expect(client.Network.canClearBrowserCookies).toHaveBeenCalledTimes(1)
-      expect(Util.deleteCookie).toHaveBeenCalledWith(client, 'aname', 'http://example.com')
+      expect(Util.deleteCookie).toHaveBeenCalledWith(
+        client,
+        'aname',
+        'http://example.com',
+      )
     })
 
     test('cannot delete cookies', async () => {
-      client.Network.canClearBrowserCookies.mockImplementationOnce(resolveValue(false))
+      client.Network.canClearBrowserCookies.mockImplementationOnce(
+        resolveValue(false),
+      )
       await localRuntime.run({
         type: 'deleteCookies',
         name: 'aname',
@@ -295,7 +317,9 @@ describe('local-runtime', () => {
     })
 
     test('cannot clear cookies', async () => {
-      client.Network.canClearBrowserCookies.mockImplementationOnce(resolveValue(false))
+      client.Network.canClearBrowserCookies.mockImplementationOnce(
+        resolveValue(false),
+      )
       await localRuntime.run({
         type: 'clearCookies',
       })
@@ -318,14 +342,21 @@ describe('local-runtime', () => {
     })
 
     test('setCookies by name, value', async () => {
-      Util.evaluate.mockImplementationOnce(resolveValue('http://website.tld/blah'))
+      Util.evaluate.mockImplementationOnce(
+        resolveValue('http://website.tld/blah'),
+      )
       await localRuntime.run({
         type: 'setCookies',
         nameOrCookies: 'aname',
-        value: 'avalue'
+        value: 'avalue',
       })
-      expect(Util.evaluate).toHaveBeenCalledWith(client, BROWSER_EXPRESSIONS.location.href)
-      expect(Util.setCookies).toHaveBeenCalledWith(client, [{name: 'aname', value: 'avalue', url: 'http://website.tld/blah'}])
+      expect(Util.evaluate).toHaveBeenCalledWith(
+        client,
+        BROWSER_EXPRESSIONS.location.href,
+      )
+      expect(Util.setCookies).toHaveBeenCalledWith(client, [
+        { name: 'aname', value: 'avalue', url: 'http://website.tld/blah' },
+      ])
     })
 
     test('setCookies throws exception', async () => {
@@ -334,7 +365,7 @@ describe('local-runtime', () => {
         await localRuntime.run({
           type: 'setCookies',
           nameOrCookies: {} as Cookie,
-          value: 'avalue'
+          value: 'avalue',
         })
       } catch (e) {
         err = e
@@ -346,7 +377,7 @@ describe('local-runtime', () => {
     test('setHtml', async () => {
       await localRuntime.run({
         type: 'setHtml',
-        html: '<div />'
+        html: '<div />',
       })
       expect(Util.setHtml).toHaveBeenCalledWith(client, '<div />')
     })
@@ -354,7 +385,7 @@ describe('local-runtime', () => {
     test('returnInputValue', async () => {
       await localRuntime.run({
         type: 'returnInputValue',
-        selector: 'input.class'
+        selector: 'input.class',
       })
       expect(Util.getValue).toHaveBeenCalledWith(client, 'input.class')
     })
@@ -364,21 +395,25 @@ describe('local-runtime', () => {
       const files = ['some/file.txt']
 
       test(`${cmd} - implicit wait`, async () => {
-        await localRuntime.run({
-          type: cmd,
-          selector: '#id',
-          files
-        } as Command)
+        await localRuntime.run(
+          {
+            type: cmd,
+            selector: '#id',
+            files,
+          } as Command,
+        )
         expect(Util.waitForNode).toHaveBeenCalledWith(client, '#id', 2000)
         expect(Util[cmd]).toHaveBeenCalledWith(client, '#id', files)
       })
 
       test(`${cmd} - no implicit wait`, async () => {
-        await localRuntimeNoWait.run({
-          type: cmd,
-          selector: '#id',
-          files,
-        } as Command)
+        await localRuntimeNoWait.run(
+          {
+            type: cmd,
+            selector: '#id',
+            files,
+          } as Command,
+        )
         expect(Util.waitForNode).not.toHaveBeenCalled()
         expect(Util[cmd]).toHaveBeenCalledWith(client, '#id', files)
       })
@@ -386,27 +421,32 @@ describe('local-runtime', () => {
       test(`${cmd} - element does not exist`, async () => {
         let err
         try {
-          await localRuntime.run({
-            type: cmd,
-            selector: '#missing',
-          } as Command)
+          await localRuntime.run(
+            {
+              type: cmd,
+              selector: '#missing',
+            } as Command,
+          )
         } catch (e) {
           err = e
         }
-        expect(err.message).toBe(`${cmd}(): node for selector #missing doesn't exist`)
+        expect(err.message).toBe(
+          `${cmd}(): node for selector #missing doesn't exist`,
+        )
         expect(Util.nodeExists).toHaveBeenCalledWith(client, '#missing')
       })
     })
-
 
     const commonFunctions = 'mouseup | mousedown | focus | clearInput'
     describe(commonFunctions, async () => {
       await commonFunctions.split(' | ').forEach(async (cmd: string) => {
         test(`${cmd} - implicit wait`, async () => {
-          await localRuntime.run({
-            type: cmd,
-            selector: '#id',
-          } as Command)
+          await localRuntime.run(
+            {
+              type: cmd,
+              selector: '#id',
+            } as Command,
+          )
           expect(Util.waitForNode).toHaveBeenCalledWith(client, '#id', 2000)
           if (cmd.includes('mouse')) {
             expect(Util[cmd]).toHaveBeenCalledWith(client, '#id', 2)
@@ -416,10 +456,12 @@ describe('local-runtime', () => {
         })
 
         test(`${cmd} - no implicit wait`, async () => {
-          await localRuntimeNoWait.run({
-            type: cmd,
-            selector: '#id',
-          } as Command)
+          await localRuntimeNoWait.run(
+            {
+              type: cmd,
+              selector: '#id',
+            } as Command,
+          )
           expect(Util.waitForNode).not.toHaveBeenCalled()
           if (cmd.includes('mouse')) {
             expect(Util[cmd]).toHaveBeenCalledWith(client, '#id', 2)
@@ -431,14 +473,18 @@ describe('local-runtime', () => {
         test(`${cmd} - element does not exist`, async () => {
           let err
           try {
-            await localRuntime.run({
-              type: cmd,
-              selector: '#missing',
-            } as Command)
+            await localRuntime.run(
+              {
+                type: cmd,
+                selector: '#missing',
+              } as Command,
+            )
           } catch (e) {
             err = e
           }
-          expect(err.message).toBe(`${cmd}(): node for selector #missing doesn't exist`)
+          expect(err.message).toBe(
+            `${cmd}(): node for selector #missing doesn't exist`,
+          )
           expect(Util.nodeExists).toHaveBeenCalledWith(client, '#missing')
         })
       })
@@ -448,7 +494,8 @@ describe('local-runtime', () => {
       let writeFileSpy
 
       beforeEach(() => {
-        writeFileSpy = jest.spyOn(require('fs'), 'writeFileSync')
+        writeFileSpy = jest
+          .spyOn(require('fs'), 'writeFileSync')
           .mockReturnValue(undefined)
       })
       afterEach(() => {
@@ -466,7 +513,7 @@ describe('local-runtime', () => {
         expect(expFilePath).toBe(fileName)
         expect(writeFileSpy).toHaveBeenCalledWith(
           expFilePath,
-          expect.any(Buffer)
+          expect.any(Buffer),
         )
       })
 
@@ -478,7 +525,7 @@ describe('local-runtime', () => {
         expect(expFilePath).toBe(fileName)
         expect(writeFileSpy).toHaveBeenCalledWith(
           expFilePath,
-          expect.any(Buffer)
+          expect.any(Buffer),
         )
       })
 

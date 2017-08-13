@@ -3,11 +3,11 @@ export const __mocks = {
     return {
       promise: () => Promise.resolve(),
     }
-  })
+  }),
 }
 
-export function S3 () {
+export function S3() {
   return {
-    putObject: __mocks.putObject
+    putObject: __mocks.putObject,
   }
 }

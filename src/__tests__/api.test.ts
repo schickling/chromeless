@@ -67,7 +67,10 @@ describe('api', () => {
 
   test('setUserAgent', async () => {
     await chromeless.setUserAgent('some ua')
-    expect(enqueuSpy).toHaveBeenCalledWith({ type: 'setUserAgent', useragent: 'some ua' })
+    expect(enqueuSpy).toHaveBeenCalledWith({
+      type: 'setUserAgent',
+      useragent: 'some ua',
+    })
   })
 
   describe('wait actions', () => {
@@ -90,7 +93,11 @@ describe('api', () => {
     test('wait - function with arg', async () => {
       const fn = () => !!document.body
       await chromeless.wait(fn, 'something')
-      expect(enqueuSpy).toHaveBeenCalledWith({ type: 'wait', fn, args: ['something'] })
+      expect(enqueuSpy).toHaveBeenCalledWith({
+        type: 'wait',
+        fn,
+        args: ['something'],
+      })
     })
 
     test('wait - with invalid', async () => {
@@ -114,7 +121,12 @@ describe('api', () => {
       const count = undefined
       const modifiers = undefined
       await chromeless.press(keyCode)
-      expect(enqueuSpy).toHaveBeenCalledWith({ type: 'press', keyCode, count, modifiers })
+      expect(enqueuSpy).toHaveBeenCalledWith({
+        type: 'press',
+        keyCode,
+        count,
+        modifiers,
+      })
     })
 
     test('press with count', async () => {
@@ -122,7 +134,12 @@ describe('api', () => {
       const count = 3333
       const modifiers = undefined
       await chromeless.press(keyCode, count)
-      expect(enqueuSpy).toHaveBeenCalledWith({ type: 'press', keyCode, count, modifiers })
+      expect(enqueuSpy).toHaveBeenCalledWith({
+        type: 'press',
+        keyCode,
+        count,
+        modifiers,
+      })
     })
 
     test('press with count and modifiers', async () => {
@@ -130,7 +147,12 @@ describe('api', () => {
       const count = 3333
       const modifiers = 'something'
       await chromeless.press(keyCode, count, modifiers)
-      expect(enqueuSpy).toHaveBeenCalledWith({ type: 'press', keyCode, count, modifiers })
+      expect(enqueuSpy).toHaveBeenCalledWith({
+        type: 'press',
+        keyCode,
+        count,
+        modifiers,
+      })
     })
 
     test('type - no selector', async () => {
@@ -156,14 +178,22 @@ describe('api', () => {
       const selector = 'input'
       const files = 'some/file.txt'
       await chromeless.setFileInput(selector, files)
-      expect(enqueuSpy).toHaveBeenCalledWith({ type: 'setFileInput', selector, files: [files] })
+      expect(enqueuSpy).toHaveBeenCalledWith({
+        type: 'setFileInput',
+        selector,
+        files: [files],
+      })
     })
 
     test('setFileInput with array of file names', async () => {
       const selector = 'input'
       const files = ['some/file.txt', 'another/file.txt']
       await chromeless.setFileInput(selector, files)
-      expect(enqueuSpy).toHaveBeenCalledWith({ type: 'setFileInput', selector, files })
+      expect(enqueuSpy).toHaveBeenCalledWith({
+        type: 'setFileInput',
+        selector,
+        files,
+      })
     })
   })
 
@@ -196,7 +226,10 @@ describe('api', () => {
     test('scrollToElement', async () => {
       const selector = 'span'
       await chromeless.scrollToElement(selector)
-      expect(enqueuSpy).toHaveBeenCalledWith({ type: 'scrollToElement', selector })
+      expect(enqueuSpy).toHaveBeenCalledWith({
+        type: 'scrollToElement',
+        selector,
+      })
     })
   })
 
@@ -222,7 +255,7 @@ describe('api', () => {
 
     test('Not Implemented: cookie by query', async () => {
       try {
-         await chromeless.cookies({} as CookieQuery)
+        await chromeless.cookies({} as CookieQuery)
       } catch (err) {
         expect(err.message).toBe('Querying cookies is not implemented yet')
       }
@@ -242,28 +275,44 @@ describe('api', () => {
       const nameOrCookies = 'aname'
       const value = 'avalue'
       await chromeless.setCookies(nameOrCookies, value)
-      expect(enqueuSpy).toHaveBeenCalledWith({ type: 'setCookies', nameOrCookies, value })
+      expect(enqueuSpy).toHaveBeenCalledWith({
+        type: 'setCookies',
+        nameOrCookies,
+        value,
+      })
     })
 
     test('setCookies Cookie interface', async () => {
       const nameOrCookies = {} as Cookie
       const value = undefined
       await chromeless.setCookies(nameOrCookies)
-      expect(enqueuSpy).toHaveBeenCalledWith({ type: 'setCookies', nameOrCookies, value })
+      expect(enqueuSpy).toHaveBeenCalledWith({
+        type: 'setCookies',
+        nameOrCookies,
+        value,
+      })
     })
 
     test('setCookies Cookie[] interface', async () => {
       const nameOrCookies: Cookie[] = [{} as Cookie, {} as Cookie]
       const value = undefined
       await chromeless.setCookies(nameOrCookies)
-      expect(enqueuSpy).toHaveBeenCalledWith({ type: 'setCookies', nameOrCookies, value })
+      expect(enqueuSpy).toHaveBeenCalledWith({
+        type: 'setCookies',
+        nameOrCookies,
+        value,
+      })
     })
 
     test('deleteCookies', async () => {
       const name = 'aname'
       const url = 'http://example.com'
       await chromeless.deleteCookies(name, url)
-      expect(enqueuSpy).toHaveBeenCalledWith({ type: 'deleteCookies', name, url })
+      expect(enqueuSpy).toHaveBeenCalledWith({
+        type: 'deleteCookies',
+        name,
+        url,
+      })
     })
 
     test('deleteCookies exceptions', async () => {
@@ -324,7 +373,7 @@ describe('api', () => {
       // meaning it would output a URL instead the file
       // expect(filePath).toContain(os.tmpdir())
       expect(filePath.endsWith('.pdf')).toBe(true)
-    } else  {
+    } else {
       expect(filePath).toBeUndefined()
       expect(error).toBeInstanceOf(Error)
       expect(error.message).toContain('PrintToPDF is not implemented')
@@ -334,7 +383,7 @@ describe('api', () => {
   test('setViewport', async () => {
     const options: DeviceMetrics = {
       width: 1000,
-      height: 3000
+      height: 3000,
     }
     await chromeless.setViewport(options)
     expect(enqueuSpy).toHaveBeenCalledWith({ type: 'setViewport', options })
@@ -389,14 +438,17 @@ describe('api', () => {
     test('3 character in google title', async () => {
       const title = await chromeless
         .goto('https://www.google.com')
-        .evaluate((nthChar) => document.title[nthChar], 3)
+        .evaluate(nthChar => document.title[nthChar], 3)
       expect(title).toBe('g')
     })
   })
 
   test('end()', async () => {
     const qEndSpy = jest.spyOn(Queue.prototype, 'end')
-    const c: Chromeless<any> = new Chromeless({}, chromeless.goto('http://example.com'))
+    const c: Chromeless<any> = new Chromeless(
+      {},
+      chromeless.goto('http://example.com'),
+    )
     expect(c['queue']).toBe(chromeless['queue'])
     expect(c['lastReturnPromise']).toBe(chromeless['lastReturnPromise'])
     const loc = await c.evaluate(() => location.hostname).end()

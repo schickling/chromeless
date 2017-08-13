@@ -8,14 +8,16 @@ describe('util', () => {
   let client: Client
   beforeEach(() => {
     client = mockClientFactory()
-    jest.spyOn(BrowserExpressions, 'getClientRect').mockImplementation(resolveValue({
-      left: 1,
-      top: 2,
-      right: 3,
-      bottom: 4,
-      height: 5,
-      width: 6,
-    }))
+    jest.spyOn(BrowserExpressions, 'getClientRect').mockImplementation(
+      resolveValue({
+        left: 1,
+        top: 2,
+        right: 3,
+        bottom: 4,
+        height: 5,
+        width: 6,
+      }),
+    )
   })
 
   test('version', () => {
@@ -120,7 +122,9 @@ describe('util', () => {
       const client: Client = mockClientFactory()
       client.Runtime.evaluate
         .mockImplementationOnce(resolveValue({ result: { value: null } }))
-        .mockImplementationOnce(resolveValue({ result: { value: 'something' } }))
+        .mockImplementationOnce(
+          resolveValue({ result: { value: 'something' } }),
+        )
 
       const prom = Utils.waitForNode(client, 'div', 10000)
       expect(await prom).toBeUndefined()
@@ -384,11 +388,10 @@ describe('util', () => {
     client.Runtime.evaluate = jest.fn(resolveValue())
     await Utils.scrollToElement(client, '#an-id')
     expect(client.Runtime.evaluate).toHaveBeenCalledWith({
-      expression:
-        `(${BrowserExpressions.BROWSER_EXPRESSIONS.window.scrollTo})(1, 2)`,
+      expression: `(${BrowserExpressions.BROWSER_EXPRESSIONS.window
+        .scrollTo})(1, 2)`,
     })
   })
-
 
   test('setHtml()', async () => {
     client.Page.getResourceTree = jest.fn(
@@ -563,7 +566,9 @@ describe('util', () => {
   test('screenshot()', async () => {
     const s = await Utils.screenshot(client)
     expect(s).toBe('some_blob')
-    expect(client.Page.captureScreenshot).toHaveBeenCalledWith({ format: 'png' })
+    expect(client.Page.captureScreenshot).toHaveBeenCalledWith({
+      format: 'png',
+    })
   })
 
   test('pdf()', async () => {
@@ -594,7 +599,9 @@ describe('util', () => {
     window.setTimeout = jest.fn(cb => cb())
     const { Input } = client
     // getValue
-    client.Runtime.evaluate = jest.fn(resolveValue({ result: { value: 'abc' } }))
+    client.Runtime.evaluate = jest.fn(
+      resolveValue({ result: { value: 'abc' } }),
+    )
     await Utils.clearInput(client, '#id')
     // wait(500)
     expect(window.setTimeout).toHaveBeenCalledWith(expect.any(Function), 500)
@@ -634,19 +641,20 @@ describe('util', () => {
   })
 
   test('setFileInput()', async () => {
-    client.DOM.getDocument = jest.fn(resolveValue({
-      root: { nodeId: 'id' }
-    }))
+    client.DOM.getDocument = jest.fn(
+      resolveValue({
+        root: { nodeId: 'id' },
+      }),
+    )
     client.DOM.setFileInput = jest.fn(resolveValue())
     await Utils.setFileInput(client, 'div', ['files'])
     expect(client.DOM.getDocument).toHaveBeenCalledTimes(1)
     expect(client.DOM.querySelector).toHaveBeenCalledWith({
       nodeId: 'id',
-      selector: 'div'
+      selector: 'div',
     })
     expect(client.DOM.setFileInputFiles).toHaveBeenCalledWith({
-      files: ['files']
+      files: ['files'],
     })
   })
-
 })

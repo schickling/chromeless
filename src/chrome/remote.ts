@@ -1,6 +1,5 @@
 import { Chrome, ChromelessOptions, Command, RemoteOptions } from '../types'
 import { connect as mqtt, MqttClient } from 'mqtt'
-import * as cuid from 'cuid'
 import * as got from 'got'
 
 interface RemoteResult {

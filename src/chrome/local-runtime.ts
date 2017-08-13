@@ -307,7 +307,10 @@ export default class LocalRuntime {
     }
 
     if (typeof nameOrCookies === 'string' && typeof value === 'string') {
-      const url = (await evaluate(this.client, BROWSER_EXPRESSIONS.location.href)) as string
+      const url = (await evaluate(
+        this.client,
+        BROWSER_EXPRESSIONS.location.href,
+      )) as string
       const cookie: Cookie = {
         url,
         name: nameOrCookies,
@@ -437,7 +440,7 @@ export default class LocalRuntime {
     const exists = await nodeExists(this.client, selector)
     if (!exists) {
       throw new Error(
-        `clearInput(): node for selector ${selector} doesn't exist`
+        `clearInput(): node for selector ${selector} doesn't exist`,
       )
     }
     await clearInput(this.client, selector)
@@ -457,7 +460,7 @@ export default class LocalRuntime {
     const exists = await nodeExists(this.client, selector)
     if (!exists) {
       throw new Error(
-        `setFileInput(): node for selector ${selector} doesn't exist`
+        `setFileInput(): node for selector ${selector} doesn't exist`,
       )
     }
 

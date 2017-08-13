@@ -65,14 +65,15 @@ function (selector) {
       `.trim(),
   },
   client: {
-    coordinates: _getClientRectJs
-  }
+    coordinates: _getClientRectJs,
+  },
 }
 
 export async function getClientRect(client, selector): Promise<ClientRect> {
   const { Runtime } = client
 
-  const expression = `(${BROWSER_EXPRESSIONS.client.coordinates})(\`${selector}\`)`
+  const expression = `(${BROWSER_EXPRESSIONS.client
+    .coordinates})(\`${selector}\`)`
   const result = await Runtime.evaluate({ expression })
 
   if (!result.result.value) {

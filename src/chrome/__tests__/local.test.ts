@@ -45,7 +45,7 @@ describe('LocalChrome', () => {
 
     const c = new LocalChrome(opts)
 
-    await c.process({ type: 'goto', url: 'http://example.com'})
+    await c.process({ type: 'goto', url: 'http://example.com' })
     await c.close()
 
     expect(closeSpy).toHaveBeenCalledTimes(1)

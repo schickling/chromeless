@@ -1,4 +1,4 @@
-import { resolveValue} from '../../utils/test_helper'
+import { resolveValue } from '../../utils/test_helper'
 
 export const setViewport = jest.fn(resolveValue())
 export const wait = jest.fn(resolveValue())

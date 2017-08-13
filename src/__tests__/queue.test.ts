@@ -6,7 +6,7 @@ test('process with lastWaitAll', async () => {
   const c = {
     // just need a slight async in order to get .lastWaitAll to be set
     process: jest.fn(() => new Promise(resolve => setTimeout(resolve, 10))),
-    close: jest.fn(resolveValue())
+    close: jest.fn(resolveValue()),
   } as Chrome
 
   const q = new Queue(c)
