@@ -45,7 +45,10 @@ export default class LocalChrome implements Chrome {
       logLevel: this.options.debug ? 'info' : 'silent',
       port: this.options.cdp.port,
     })
-    return await CDP({ port: this.chromeInstance.port })
+    const target = await CDP.New({
+      port: this.chromeInstance.port,
+    })
+    return await CDP({ target })
   }
 
   private async connectToChrome(): Promise<Client> {
