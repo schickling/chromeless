@@ -1,4 +1,4 @@
-# Chromeless [![npm version](https://badge.fury.io/js/chromeless.svg)](https://badge.fury.io/js/chromeless) [![CircleCI](https://circleci.com/gh/graphcool/chromeless.svg?style=svg)](https://circleci.com/gh/graphcool/chromeless)
+# Chromeless [![npm version](https://badge.fury.io/js/chromeless.svg)](https://badge.fury.io/js/chromeless) [![CircleCI](https://circleci.com/gh/graphcool/chromeless.svg?style=svg)](https://circleci.com/gh/graphcool/chromeless) [![Coverage Status](https://coveralls.io/repos/github/geoffdutton/chromeless/badge.svg?branch=jest-tests)](https://coveralls.io/github/geoffdutton/chromeless?branch=jest-tests)
 
 Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[See Demo](https://chromeless.netlify.com/)**)
 
@@ -182,6 +182,14 @@ const chromeless = new Chromeless({
 1) Clone this repository
 2) Run `npm install`
 3) To build: `npm run build`
+
+**Unit testing:**
+1) Run `npm run launch:chrome` to start a fresh instance of Chrome
+2) Run `npm test` or `npm watch:test`
+3) Check the coverage report and make sure that's as close to 100% as possible
+
+**Debugging Note:** If you use one of Intellij's IDEs, you might need to use Node v7. For whatever reason, I could not get the debugger to hit break points with Node v8 and above.
+
 
 #### Linking this NPM repository
 

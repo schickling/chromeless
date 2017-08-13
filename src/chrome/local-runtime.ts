@@ -6,6 +6,7 @@ import {
   Cookie,
   CookieQuery,
   PdfOptions,
+  ChromeInfo,
 } from '../types'
 import * as cuid from 'cuid'
 import * as fs from 'fs'
@@ -39,6 +40,8 @@ import {
   clearInput,
   setFileInput,
 } from '../util'
+
+import { BROWSER_EXPRESSIONS } from '../browser-expressions'
 
 export default class LocalRuntime {
   private client: Client
@@ -106,13 +109,14 @@ export default class LocalRuntime {
       case 'mousedown':
         return this.mousedown(command.selector)
       case 'mouseup':
-        return this.mousup(command.selector)
+        return this.mouseup(command.selector)
       case 'focus':
         return this.focus(command.selector)
       case 'clearInput':
         return this.clearInput(command.selector)
       case 'setFileInput':
         return this.setFileInput(command.selector, command.files)
+      /* istanbul ignore next: TypeScript should catch this */
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -130,7 +134,7 @@ export default class LocalRuntime {
 
   private async clearCache(): Promise<void> {
     const { Network } = this.client
-    const canClearCache = await Network.canClearBrowserCache
+    const canClearCache = await Network.canClearBrowserCache()
     if (canClearCache) {
       await Network.clearBrowserCache()
       this.log(`Cache is cleared`)
@@ -223,7 +227,7 @@ export default class LocalRuntime {
     this.log(`Mousedown on ${selector}`)
   }
 
-  private async mousup(selector: string): Promise<void> {
+  private async mouseup(selector: string): Promise<void> {
     if (this.chromelessOptions.implicitWait) {
       this.log(`mouseup(): Waiting for ${selector}`)
       await waitForNode(
@@ -306,8 +310,10 @@ export default class LocalRuntime {
     }
 
     if (typeof nameOrCookies === 'string' && typeof value === 'string') {
-      const fn = () => location.href
-      const url = (await evaluate(this.client, `${fn}`)) as string
+      const url = (await evaluate(
+        this.client,
+        BROWSER_EXPRESSIONS.location.href,
+      )) as string
       const cookie: Cookie = {
         url,
         name: nameOrCookies,
@@ -426,22 +432,20 @@ export default class LocalRuntime {
   }
 
   async clearInput(selector: string): Promise<void> {
-    if (selector) {
-      if (this.chromelessOptions.implicitWait) {
-        this.log(`clearInput(): Waiting for ${selector}`)
-        await waitForNode(
-          this.client,
-          selector,
-          this.chromelessOptions.waitTimeout,
-        )
-      }
+    if (this.chromelessOptions.implicitWait) {
+      this.log(`clearInput(): Waiting for ${selector}`)
+      await waitForNode(
+        this.client,
+        selector,
+        this.chromelessOptions.waitTimeout,
+      )
+    }
 
-      const exists = await nodeExists(this.client, selector)
-      if (!exists) {
-        throw new Error(
-          `clearInput(): Node not found for selector: ${selector}`,
-        )
-      }
+    const exists = await nodeExists(this.client, selector)
+    if (!exists) {
+      throw new Error(
+        `clearInput(): node for selector ${selector} doesn't exist`,
+      )
     }
     await clearInput(this.client, selector)
     this.log(`${selector} cleared`)
@@ -469,6 +473,7 @@ export default class LocalRuntime {
   }
 
   private log(msg: string): void {
+    /* istanbul ignore if */
     if (this.chromelessOptions.debug) {
       console.log(msg)
     }

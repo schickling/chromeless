@@ -1,9 +1,9 @@
 const { Chromeless } = require('chromeless')
 
-async function run() {
-  const chromeless = new Chromeless({ remote: true })
+async function run () {
+  const chromeless = await new Chromeless()
 
-  const links = await chromeless
+  const links = chromeless
     .goto('https://www.google.com')
     .type('chromeless', 'input[name="q"]')
     .press(13)

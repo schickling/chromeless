@@ -5,10 +5,30 @@ export interface Client {
   Input: any
   Runtime: any
   Emulation: any
+  Target: any
+  ChromeInfo: ChromeInfo
+  port: number
+  host: string
   close: () => void
   target: {
     id: string
   }
+}
+
+export interface TargetInfo {
+  attached: boolean
+  id: string
+  title: string
+  type: string
+  url: string
+}
+
+export interface ChromeInfo {
+  Browser?: string
+  'Protocol-Version'?: string
+  'User-Agent': string
+  'V8-Version'?: string
+  'WebKit-Version'?: string
 }
 
 export interface DeviceMetrics {
@@ -150,6 +170,9 @@ export type Command =
     }
   | {
       type: 'allCookies'
+    }
+  | {
+      type: 'returnVersionInfo'
     }
   | {
       type: 'cookies'

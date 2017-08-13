@@ -1,9 +1,11 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { Client, Cookie, DeviceMetrics, PdfOptions } from './types'
-import * as CDP from 'chrome-remote-interface'
+
+import { BROWSER_EXPRESSIONS, getClientRect } from './browser-expressions'
 
 export const version: string = ((): string => {
+  /* istanbul ignore else */
   if (fs.existsSync(path.join(__dirname, '../package.json'))) {
     // development (look in /src)
     return require('../package.json').version
@@ -24,7 +26,7 @@ export async function setViewport(
     fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
   }
 
-  const versionResult = await CDP.Version()
+  const versionResult = client.ChromeInfo
   const isHeadless = versionResult['User-Agent'].includes('Headless')
 
   if (viewport.height && viewport.width) {
@@ -37,9 +39,9 @@ export async function setViewport(
   } else {
     config.height = await evaluate(
       client,
-      (() => window.innerHeight).toString(),
+      BROWSER_EXPRESSIONS.window.innerHeight,
     )
-    config.width = await evaluate(client, (() => window.innerWidth).toString())
+    config.width = await evaluate(client, BROWSER_EXPRESSIONS.window.innerWidth)
   }
 
   await client.Emulation.setDeviceMetricsOverride(config)
@@ -47,7 +49,6 @@ export async function setViewport(
     width: config.width,
     height: config.height,
   })
-  return
 }
 
 export async function waitForNode(
@@ -56,12 +57,11 @@ export async function waitForNode(
   waitTimeout: number,
 ): Promise<void> {
   const { Runtime } = client
-  const getNode = selector => {
-    return document.querySelector(selector)
-  }
 
+  const selectorExpress = `(${BROWSER_EXPRESSIONS.document
+    .querySelector})(\`${selector}\`)`
   const result = await Runtime.evaluate({
-    expression: `(${getNode})(\`${selector}\`)`,
+    expression: selectorExpress,
   })
 
   if (result.result.value === null) {
@@ -76,7 +76,7 @@ export async function waitForNode(
         }
 
         const result = await Runtime.evaluate({
-          expression: `(${getNode})(\`${selector}\`)`,
+          expression: selectorExpress,
         })
 
         if (result.result.value !== null) {
@@ -85,9 +85,9 @@ export async function waitForNode(
         }
       }, 500)
     })
-  } else {
-    return
   }
+
+  return
 }
 
 export async function wait(timeout: number): Promise<void> {
@@ -99,47 +99,14 @@ export async function nodeExists(
   selector: string,
 ): Promise<boolean> {
   const { Runtime } = client
-  const exists = selector => {
-    return !!document.querySelector(selector)
-  }
 
-  const expression = `(${exists})(\`${selector}\`)`
+  const expression = `(${BROWSER_EXPRESSIONS.element.exists})(\`${selector}\`)`
 
   const result = await Runtime.evaluate({
     expression,
   })
 
   return result.result.value
-}
-
-export async function getClientRect(client, selector): Promise<ClientRect> {
-  const { Runtime } = client
-
-  const code = selector => {
-    const element = document.querySelector(selector)
-    if (!element) {
-      return undefined
-    }
-
-    const rect = element.getBoundingClientRect()
-    return JSON.stringify({
-      left: rect.left,
-      top: rect.top,
-      right: rect.right,
-      bottom: rect.bottom,
-      height: rect.height,
-      width: rect.width,
-    })
-  }
-
-  const expression = `(${code})(\`${selector}\`)`
-  const result = await Runtime.evaluate({ expression })
-
-  if (!result.result.value) {
-    throw new Error(`No element found for selector: ${selector}`)
-  }
-
-  return JSON.parse(result.result.value) as ClientRect
 }
 
 export async function click(client: Client, selector: string, scale: number) {
@@ -178,13 +145,12 @@ export async function evaluate<T>(
   fn: string,
   ...args: any[]
 ): Promise<T> {
-  const { Runtime } = client
   const jsonArgs = JSON.stringify(args)
   const argStr = jsonArgs.substr(1, jsonArgs.length - 2)
 
   const expression = `
     (() => {
-      const expressionResult = (${fn})(${argStr});
+      const expressionResult = (${fn.toString()})(${argStr});
       if (expressionResult && expressionResult.then) {
         expressionResult.catch((error) => { throw new Error(error); });
         return expressionResult;
@@ -193,7 +159,7 @@ export async function evaluate<T>(
     })();
   `
 
-  const result = await Runtime.evaluate({
+  const result = await client.Runtime.evaluate({
     expression,
     returnByValue: true,
     awaitPromise: true,
@@ -274,10 +240,7 @@ export async function getValue(
   selector: string,
 ): Promise<string> {
   const { Runtime } = client
-  const browserCode = selector => {
-    return document.querySelector(selector).value
-  }
-  const expression = `(${browserCode})(\`${selector}\`)`
+  const expression = `(${BROWSER_EXPRESSIONS.element.value})(\`${selector}\`)`
   const result = await Runtime.evaluate({
     expression,
   })
@@ -291,10 +254,7 @@ export async function scrollTo(
   y: number,
 ): Promise<void> {
   const { Runtime } = client
-  const browserCode = (x, y) => {
-    return window.scrollTo(x, y)
-  }
-  const expression = `(${browserCode})(${x}, ${y})`
+  const expression = `(${BROWSER_EXPRESSIONS.window.scrollTo})(${x}, ${y})`
   await Runtime.evaluate({
     expression,
   })
@@ -322,9 +282,10 @@ export async function getCookies(
 ): Promise<any> {
   const { Network } = client
 
-  const fn = () => location.href
-
-  const url = (await evaluate(client, `${fn}`)) as string
+  const url = (await evaluate(
+    client,
+    BROWSER_EXPRESSIONS.location.href,
+  )) as string
 
   const result = await Network.getCookies([url])
   const cookies = result.cookies
@@ -398,7 +359,13 @@ export async function mouseup(client: Client, selector: string, scale: number) {
 }
 
 function getUrlFromCookie(cookie: Cookie) {
-  const domain = cookie.domain.slice(1, cookie.domain.length)
+  if (!cookie.domain) {
+    return undefined
+  }
+  const domain =
+    cookie.domain[0] === '.'
+      ? cookie.domain.slice(1, cookie.domain.length)
+      : cookie.domain
   return `https://${domain}`
 }
 
