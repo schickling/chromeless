@@ -62,6 +62,7 @@ functions:
             - "-"
             - Ref: AWS::Region
             - -chromeless
+      CHROMELESS_S3_OBJECT_KEY_PREFIX: ""
       CHROMELESS_S3_BUCKET_URL:
         Fn::GetAtt:
           - Bucket
