@@ -28,10 +28,13 @@ function getEndpoint(remoteOptions: RemoteOptions | boolean): RemoteOptions {
 }
 
 export default class RemoteChrome implements Chrome {
+  private connectionTimeoutId: any
   private options: ChromelessOptions
   private channelId: string
+  private websockUrl: string
   private channel: MqttClient
   private connectionPromise: Promise<void>
+  private connectionResolver: Function
   private TOPIC_NEW_SESSION: string
   private TOPIC_CONNECTED: string
   private TOPIC_REQUEST: string
@@ -43,9 +46,97 @@ export default class RemoteChrome implements Chrome {
     this.connectionPromise = this.initConnection()
   }
 
+  async onMessage (topic, buffer?: Buffer) {
+    if (this.TOPIC_CONNECTED === topic) {
+      clearTimeout(this.connectionTimeoutId)
+      this.connectionResolver()
+    }
+
+    if (this.TOPIC_END === topic) {
+      const message = buffer.toString()
+      const data = JSON.parse(message)
+
+      if (data.outOfTime) {
+        console.warn(
+          `Chromeless Proxy disconnected because it reached it's execution time limit (5 minutes).`,
+        )
+      } else if (data.inactivity) {
+        console.warn(
+          'Chromeless Proxy disconnected due to inactivity (no commands sent for 30 seconds).',
+        )
+      } else {
+        console.warn(
+          `Chromeless Proxy disconnected (we don't know why).`,
+          data,
+        )
+      }
+
+      await this.close()
+    }
+  }
+
+  onConnect () {
+    const channel = this.channel
+    const channelId = this.channelId
+
+    if (this.options.debug) {
+      console.log('Connected to message broker.')
+    }
+
+    channel.subscribe(this.TOPIC_CONNECTED, { qos: 1 }, () => {
+      channel.on('message', this.onMessage.bind(this))
+      channel.publish(
+        this.TOPIC_NEW_SESSION,
+        JSON.stringify({ channelId, options: this.options }),
+        { qos: 1 },
+      )
+    })
+
+    channel.subscribe(this.TOPIC_END)
+  }
+
+  getConnectionInfo () {
+    const { endpointUrl, apiKey } = getEndpoint(this.options.remote)
+    return got(endpointUrl, {
+      headers: apiKey
+        ? {
+          'x-api-key': apiKey,
+        }
+        : undefined,
+      json: true,
+    })
+  }
+
+  initChannel () {
+    const channelId = this.channelId
+
+    this.TOPIC_NEW_SESSION = 'chrome/new-session'
+    this.TOPIC_CONNECTED = `chrome/${channelId}/connected`
+    this.TOPIC_REQUEST = `chrome/${channelId}/request`
+    this.TOPIC_RESPONSE = `chrome/${channelId}/response`
+    this.TOPIC_END = `chrome/${channelId}/end`
+
+    const channel = mqtt(this.websockUrl, {
+      will: {
+        topic: 'chrome/last-will',
+        payload: JSON.stringify({ channelId }),
+        qos: 1,
+        retain: false,
+      },
+    })
+
+    this.channel = channel
+
+    if (this.options.debug) {
+      channel.on('error', error => console.log('WebSocket error', error))
+      channel.on('offline', () => console.log('WebSocket offline'))
+    }
+  }
+
   private async initConnection(): Promise<void> {
     await new Promise(async (resolve, reject) => {
-      const timeout = setTimeout(() => {
+      this.connectionResolver = resolve
+      this.connectionTimeoutId = setTimeout(() => {
         if (this.channel) {
           this.channel.end()
         }
@@ -58,86 +149,13 @@ export default class RemoteChrome implements Chrome {
       }, 30000)
 
       try {
-        const { endpointUrl, apiKey } = getEndpoint(this.options.remote)
-        const { body: { url, channelId } } = await got(endpointUrl, {
-          headers: apiKey
-            ? {
-                'x-api-key': apiKey,
-              }
-            : undefined,
-          json: true,
-        })
-
+        const { body: { url, channelId } } = await this.getConnectionInfo()
         this.channelId = channelId
+        this.websockUrl = url
 
-        this.TOPIC_NEW_SESSION = 'chrome/new-session'
-        this.TOPIC_CONNECTED = `chrome/${channelId}/connected`
-        this.TOPIC_REQUEST = `chrome/${channelId}/request`
-        this.TOPIC_RESPONSE = `chrome/${channelId}/response`
-        this.TOPIC_END = `chrome/${channelId}/end`
+        this.initChannel()
 
-        const channel = mqtt(url, {
-          will: {
-            topic: 'chrome/last-will',
-            payload: JSON.stringify({ channelId }),
-            qos: 1,
-            retain: false,
-          },
-        })
-
-        this.channel = channel
-
-        if (this.options.debug) {
-          channel.on('error', error => console.log('WebSocket error', error))
-          channel.on('offline', () => console.log('WebSocket offline'))
-        }
-
-        channel.on('connect', () => {
-          if (this.options.debug) {
-            console.log('Connected to message broker.')
-          }
-
-          channel.subscribe(this.TOPIC_CONNECTED, { qos: 1 }, () => {
-            channel.on('message', async topic => {
-              if (this.TOPIC_CONNECTED === topic) {
-                clearTimeout(timeout)
-                resolve()
-              }
-            })
-
-            channel.publish(
-              this.TOPIC_NEW_SESSION,
-              JSON.stringify({ channelId, options: this.options }),
-              { qos: 1 },
-            )
-          })
-
-          channel.subscribe(this.TOPIC_END, () => {
-            channel.on('message', async (topic, buffer) => {
-              if (this.TOPIC_END === topic) {
-                const message = buffer.toString()
-                const data = JSON.parse(message)
-
-                if (data.outOfTime) {
-                  console.warn(
-                    `Chromeless Proxy disconnected because it reached it's execution time limit (5 minutes).`,
-                  )
-                } else if (data.inactivity) {
-                  console.warn(
-                    'Chromeless Proxy disconnected due to inactivity (no commands sent for 30 seconds).',
-                  )
-                } else {
-                  console.warn(
-                    `Chromeless Proxy disconnected (we don't know why).`,
-                    data,
-                  )
-                }
-
-                await this.close()
-              }
-            })
-          })
-        })
+        this.channel.on('connect', this.onConnect.bind(this))
       } catch (error) {
         console.error(error)
 

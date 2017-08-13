@@ -1,11 +1,26 @@
 /**
  * Wanted to have a consistent launcher for tests
  */
+
+const unhandledRejection = require('unhandled-rejection')
 const chalk = require('chalk')
 const { launch } = require('chrome-launcher')
-const { defaultLaunConfig } = require('./test_helper')
+const { defaultLaunchConfig } = require('./test_helper')
 
-const launcher = async (opts = defaultLaunConfig.cdp) => {
+const rejectionEmitter = unhandledRejection({
+  timeout: 20
+})
+
+rejectionEmitter.on('unhandledRejection', (error, promise) => {
+  console.log('Promise:', promise)
+  throw error
+})
+
+rejectionEmitter.on('rejectionHandled', (error, promise) => {
+  console.error(error, promise)
+})
+
+const launcher = async (opts = defaultLaunchConfig.cdp) => {
   const mergedOpts = Object.assign({},
     {
       // (optional) remote debugging port number to use. If provided port is already busy, launch() will reject
@@ -58,7 +73,7 @@ const launcher = async (opts = defaultLaunConfig.cdp) => {
 module.exports.launcher = launcher
 
 if (module === require.main) {
-  ;(async () => {
+  (async () => {
     const chrome = await launcher()
     console.log(chalk.bold.green(`Chrome running: ${JSON.stringify(chrome)}`))
     return chrome

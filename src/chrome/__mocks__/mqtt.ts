@@ -1,8 +1,15 @@
 const chalk = require('chalk')
-const log = console.log
+const log = console.log.bind(console)
 
-export const __mock = {
+export let __mock = {
   channelId: null,
+  verbose: false,
+  shouldConnect: true,
+}
+const origMock = Object.assign({}, __mock);
+
+export function __reset() {
+  __mock = Object.assign({}, origMock)
 }
 
 const colormap = {
@@ -20,10 +27,13 @@ const counters = {
   factory: function (key) {
     const color = colormap[key] || chalk.bold.red
     return (...args) => {
-      log(chalk[color](`${key}() @ ${this.incr(key)}:\n${JSON.stringify(args, null, 2)}`))
+      if (__mock.verbose) {
+        log(chalk[color](`${key}() @ ${this.incr(key)}:\n${JSON.stringify(args, null, 2)}`))
+      }
     }
   }
 }
+
 export const connect = jest.fn(function () {
   this.TOPIC_NEW_SESSION = 'chrome/new-session'
   this.TOPIC_CONNECTED = `chrome/${__mock.channelId}/connected`
@@ -38,8 +48,10 @@ export const connect = jest.fn(function () {
     subscribers.set(topic, now)
   }
 
+  const onMessagesCallbacks = new Set()
+
   return {
-    subscribe: jest.fn((event, opts, callback) => {
+    subscribe: jest.fn((topic, opts, callback) => {
       if (typeof opts === 'function') {
         callback = opts
         opts = null
@@ -47,26 +59,24 @@ export const connect = jest.fn(function () {
 
       counters.factory('subscribe')(opts)
       if (typeof callback !== 'function') {
-        throw new Error('We need a callback.')
+        callback = function () {}
       }
-      subscriberAdd(event, callback)
-      if (event === this.TOPIC_CONNECTED) {
+      subscriberAdd(topic, callback)
+      if (topic === this.TOPIC_CONNECTED) {
         return callback()
-      } else if (event === this.TOPIC_END) {
+      } else if (topic === this.TOPIC_END) {
         return callback()
-      } else if (event === this.TOPIC_RESPONSE) {
+      } else if (topic === this.TOPIC_RESPONSE) {
         return callback()
       }
-      throw new Error(`Unknown topic: ${event}\n\s\s${JSON.stringify(this, null, 2)}`)
+      throw new Error(`Unknown topic: ${topic}\n\s\s${JSON.stringify(this, null, 2)}`)
     }),
     on: jest.fn((event, callback) => {
       counters.factory('on')(event)
-      if (event === 'connect') {
+      if (event === 'connect' && __mock.shouldConnect) {
         callback()
-      }
-
-      if (event === 'message') {
-        callback(this.TOPIC_CONNECTED)
+      } else {
+        onMessagesCallbacks.add(callback)
       }
     }),
     publish: jest.fn((...args) => {
@@ -78,12 +88,32 @@ export const connect = jest.fn(function () {
 
       const subs = subscribers.get(topic) || new Set([])
       counters.factory('publish')(`Subscribers: ${subs.size}`)
-     subs.forEach(fn => {
+      subs.forEach(fn => {
         return fn()
+      })
+
+      onMessagesCallbacks.forEach(fn => {
+        if (topic === this.TOPIC_NEW_SESSION && __mock.shouldConnect) {
+          fn(this.TOPIC_CONNECTED)
+        }
+
+        if (topic === this.TOPIC_REQUEST) {
+          const cmd = JSON.parse(payload)
+          const result: any = {}
+          if (cmd.type === 'returnHtml') {
+            result.value = '<div>html</div>'
+          }
+
+          if (cmd.type === 'returnScreenshot') {
+            result.error = 'something went wrong'
+          }
+          const buf = new Buffer(JSON.stringify(result))
+          fn(this.TOPIC_RESPONSE, buf)
+        }
       })
     }),
     end: jest.fn(() => {
-      counters.factory('end')(event)
+      counters.factory('end')()
     })
   }
 })
