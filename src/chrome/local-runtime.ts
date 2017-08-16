@@ -34,6 +34,7 @@ import {
   getAllCookies,
   version,
   mousedown,
+  mouseover,
   mouseup,
   focus,
   clearInput,
@@ -106,7 +107,7 @@ export default class LocalRuntime {
       case 'mousedown':
         return this.mousedown(command.selector)
       case 'mouseover':
-        return this.mousedown(command.selector)
+        return this.mouseover(command.selector)
       case 'mouseup':
         return this.mousup(command.selector)
       case 'focus':
@@ -243,7 +244,7 @@ export default class LocalRuntime {
     }
 
     const { scale } = this.chromelessOptions.viewport
-    await mousedown(this.client, selector, scale)
+    await mouseover(this.client, selector, scale)
     this.log(`Mouseover on ${selector}`)
   }
 
