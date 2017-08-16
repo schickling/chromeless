@@ -34,6 +34,7 @@ import {
   getAllCookies,
   version,
   mousedown,
+  mouseover,
   mouseup,
   focus,
   clearInput,
@@ -105,6 +106,8 @@ export default class LocalRuntime {
         return this.setCookies(command.nameOrCookies, command.value)
       case 'mousedown':
         return this.mousedown(command.selector)
+      case 'mouseover':
+        return this.mouseover(command.selector)
       case 'mouseup':
         return this.mousup(command.selector)
       case 'focus':
@@ -222,6 +225,29 @@ export default class LocalRuntime {
     await mousedown(this.client, selector, scale)
     this.log(`Mousedown on ${selector}`)
   }
+
+  private async mouseover(selector: string): Promise<void> {
+    if (this.chromelessOptions.implicitWait) {
+      this.log(`mouseover(): Waiting for ${selector}`)
+      await waitForNode(
+        this.client,
+        selector,
+        this.chromelessOptions.waitTimeout,
+      )
+    }
+
+    const exists = await nodeExists(this.client, selector)
+    if (!exists) {
+      throw new Error(
+        `mouseover(): node for selector ${selector} doesn't exist`,
+      )
+    }
+
+    const { scale } = this.chromelessOptions.viewport
+    await mouseover(this.client, selector, scale)
+    this.log(`Mouseover on ${selector}`)
+  }
+
 
   private async mousup(selector: string): Promise<void> {
     if (this.chromelessOptions.implicitWait) {

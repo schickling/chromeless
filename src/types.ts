@@ -156,6 +156,10 @@ export type Command =
       nameOrQuery?: string | CookieQuery
     }
   | {
+      type: 'mouseover'
+      selector: string
+    }
+  | {
       type: 'mousedown'
       selector: string
     }

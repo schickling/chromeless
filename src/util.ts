@@ -359,6 +359,25 @@ export async function setCookies(
   }
 }
 
+export async function mouseover(
+  client: Client,
+  selector: string,
+  scale: number,
+) {
+  const clientRect = await getClientRect(client, selector)
+  const { Input } = client
+
+  const options = {
+    x: Math.round((clientRect.left + clientRect.width / 2) * scale),
+    y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+  }
+
+  await Input.dispatchMouseEvent({
+    ...options,
+    type: 'mouseMoved',
+  })
+}
+
 export async function mousedown(
   client: Client,
   selector: string,
