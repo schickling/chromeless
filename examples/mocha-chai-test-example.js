@@ -35,7 +35,7 @@ describe('When clicking on the image of the demo playground', function () {
       .wait('#root')
 
 
-    const url = awaitchromeless.evaluate(url => window.location.href)
+    const url = await chromeless.evaluate(url => window.location.href)
 
 
     expect(url).to.match(/^https\:\/\/chromeless\.netlify\.com/)

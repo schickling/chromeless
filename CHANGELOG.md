@@ -8,12 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added
+- It's now possible to specify an S3 object key prefix in with a `CHROMELESS_S3_OBJECT_KEY_PREFIX` environment variable [#224](https://github.com/graphcool/chromeless/pull/224) @pklingem
+- A parameter to specify `waitTimeout` when waiting for a seletor with `wait(selector, waitTimeout)` [#212](https://github.com/graphcool/chromeless/pull/212), [#208](https://github.com/graphcool/chromeless/issues/208) @janza
 
 ### Changed
 
 ### Fixed
-
-
+- Mistakes in `scrollTo` parameters API documentation [#220](https://github.com/graphcool/chromeless/pull/220) @okeeffed
+- Typo in mocha/chai example [#218](https://github.com/graphcool/chromeless/pull/218) @sul4bh
+- Fixed unhandled promise rejection error in `chromeless.end()` [#213](https://github.com/graphcool/chromeless/pull/213), [#187](https://github.com/graphcool/chromeless/issues/187) @janza
 
 ## [1.2.0] - 2017-08-06
 
@@ -23,7 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `setFileInput()` API method [#100](https://github.com/graphcool/chromeless/issues/100), [#170](https://github.com/graphcool/chromeless/pull/170) @criticalbh
 - `clearCache()` API method [#122](https://github.com/graphcool/chromeless/pull/122) @joeyvandijk
 - `scrollToElement()` command and `scrollBeforeClick` constructor option [#15](https://github.com/graphcool/chromeless/issues/15), [#167](https://github.com/graphcool/chromeless/pull/167) @janza
-- `cookies(name: string)` API method [#183](https://github.com/graphcool/chromeless/pull/183/files) @criticalbh
+- `cookies(name: string)` API method [#183](https://github.com/graphcool/chromeless/pull/183) @criticalbh
 - Mocha E2E tests [example](examples/mocha-chai-test-example.js) [#164](https://github.com/graphcool/chromeless/pull/164) @FabioAntunes
 
 ### Changed
