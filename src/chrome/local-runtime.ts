@@ -106,7 +106,7 @@ export default class LocalRuntime {
       case 'mousedown':
         return this.mousedown(command.selector)
       case 'mouseup':
-        return this.mousup(command.selector)
+        return this.mouseup(command.selector)
       case 'focus':
         return this.focus(command.selector)
       case 'clearInput':
@@ -220,7 +220,7 @@ export default class LocalRuntime {
     this.log(`Mousedown on ${selector}`)
   }
 
-  private async mousup(selector: string): Promise<void> {
+  private async mouseup(selector: string): Promise<void> {
     if (this.chromelessOptions.implicitWait) {
       this.log(`mouseup(): Waiting for ${selector}`)
       await waitForNode(
