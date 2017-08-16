@@ -146,7 +146,7 @@ await chromeless.wait('div#loaded')
 
 Not implemented yet
 
-Wait until a function returns.
+Wait until a function returns. You can also return some Promise that will be resolved at some point.
 
 __Arguments__
 - `fn` - Function to wait for
@@ -156,12 +156,10 @@ __Example__
 
 ```js
 await chromeless.wait(() => { 
-  var someVar; 
-  // ...
-  // do stuff, and chromeless will wait 
-  // ...
-  
-  return someVar; // will continue after this
+  return new Promise((resolve, reject) => {
+    // do something async, setTimeout...
+    resolve();
+  });
 })
 ```
 
