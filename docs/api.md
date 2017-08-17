@@ -30,6 +30,7 @@ Chromeless provides TypeScript typings.
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](#api-evaluate)
 - [`inputValue(selector: string)`](#api-inputvalue)
 - [`exists(selector: string)`](#api-exists)
+- [`existsArrayElement(selector: string, arrayNumber: number)`](#api-existsarrayelement)
 - [`screenshot()`](#api-screenshot)
 - [`pdf(options?: PdfOptions)`](#api-pdf)
 - [`html()`](#api-html)
