@@ -90,6 +90,48 @@ export async function waitForNode(
   }
 }
 
+export async function waitForNodeArrayElements(
+  client: Client,
+  selector: string,
+  arrayNumber: number,
+  waitTimeout: number,
+): Promise<void> {
+  debugger
+  const { Runtime } = client
+  const getNode = (selector, arrayNumber) => {
+    return document.querySelectorAll(selector)[arrayNumber]
+  }
+
+  const result = await Runtime.evaluate({
+    expression: `(${getNode})(\`${selector}\`)`,
+  })
+
+  if (result.result.value === null) {
+    const start = new Date().getTime()
+    return new Promise<void>((resolve, reject) => {
+      const interval = setInterval(async () => {
+        if (new Date().getTime() - start > waitTimeout) {
+          clearInterval(interval)
+          reject(
+            new Error(`wait("${selector}") timed out after ${waitTimeout}ms`),
+          )
+        }
+
+        const result = await Runtime.evaluate({
+          expression: `(${getNode})(\`${selector}\`)`,
+        })
+
+        if (result.result.value !== null) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 500)
+    })
+  } else {
+    return
+  }
+}
+
 export async function wait(timeout: number): Promise<void> {
   return new Promise<void>((resolve, reject) => setTimeout(resolve, timeout))
 }
@@ -108,7 +150,24 @@ export async function nodeExists(
   const result = await Runtime.evaluate({
     expression,
   })
+  return result.result.value
+}
 
+export async function nodeArrayElementsExists(
+  client: Client,
+  selector: string,
+  arrayNumber: number
+): Promise<boolean> {
+  const { Runtime } = client
+  const exists = (selector,arrayNumber) => {
+    return !!(document.querySelectorAll(selector)[arrayNumber])
+  }
+
+  const expression = `(${exists})(\`${selector}\`,${arrayNumber})`
+  console.log('expression', expression)
+  const result = await Runtime.evaluate({
+    expression,
+  })
   return result.result.value
 }
 
@@ -142,8 +201,64 @@ export async function getClientRect(client, selector): Promise<ClientRect> {
   return JSON.parse(result.result.value) as ClientRect
 }
 
+export async function getClientRectArrayElements(client, selector, arrayNumber): Promise<ClientRect> {
+  const { Runtime } = client
+
+  const code = (selector, arrayNumber) => {
+    const elements = document.querySelectorAll(selector)
+    if (elements.length < arrayNumber) {
+      return undefined
+    }
+
+    const element = elements[arrayNumber]
+
+    if (!element) {
+      return undefined
+    }
+
+    const rect = element.getBoundingClientRect()
+    return JSON.stringify({
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      height: rect.height,
+      width: rect.width,
+    })
+  }
+  const expression = `(${code})(\`${selector}\`,${arrayNumber})`
+  const result = await Runtime.evaluate({ expression })
+
+  if (!result.result.value) {
+    throw new Error(`No element found for selector: ${selector}`)
+  }
+
+  return JSON.parse(result.result.value) as ClientRect
+}
+
 export async function click(client: Client, selector: string, scale: number) {
   const clientRect = await getClientRect(client, selector)
+  const { Input } = client
+
+  const options = {
+    x: Math.round((clientRect.left + clientRect.width / 2) * scale),
+    y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+    button: 'left',
+    clickCount: 1,
+  }
+
+  await Input.dispatchMouseEvent({
+    ...options,
+    type: 'mousePressed',
+  })
+  await Input.dispatchMouseEvent({
+    ...options,
+    type: 'mouseReleased',
+  })
+}
+
+export async function clickArrayElements(client: Client, selector: string, arrayNumber: number, scale: number) {
+  const clientRect = await getClientRectArrayElements(client, selector, arrayNumber)
   const { Input } = client
 
   const options = {
@@ -181,7 +296,6 @@ export async function evaluate<T>(
   const { Runtime } = client
   const jsonArgs = JSON.stringify(args)
   const argStr = jsonArgs.substr(1, jsonArgs.length - 2)
-
   const expression = `
     (() => {
       const expressionResult = (${fn})(${argStr});
@@ -305,6 +419,16 @@ export async function scrollToElement(
   selector: string,
 ): Promise<void> {
   const clientRect = await getClientRect(client, selector)
+
+  return scrollTo(client, clientRect.left, clientRect.top)
+}
+
+export async function scrollToElementArrayElements(
+  client: Client,
+  selector: string,
+  arrayNumber: number,
+): Promise<void> {
+  const clientRect = await getClientRectArrayElements(client, selector, arrayNumber)
 
   return scrollTo(client, clientRect.left, clientRect.top)
 }

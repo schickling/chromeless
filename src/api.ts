@@ -89,8 +89,14 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
+  clickArrayElements(selector: string, arrayNumber: number): Chromeless<T> {
+    this.queue.enqueue({ type: 'clickArrayElements', selector, arrayNumber })
+
+    return this
+  }
+
   wait(timeout: number): Chromeless<T>
-  wait(selector: string): Chromeless<T>
+  wait(selector: string, timeout?: number): Chromeless<T>
   wait(fn: (...args: any[]) => boolean, ...args: any[]): Chromeless<T>
   wait(firstArg, ...args: any[]): Chromeless<T> {
     switch (typeof firstArg) {
@@ -99,7 +105,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
         break
       }
       case 'string': {
-        this.queue.enqueue({ type: 'wait', selector: firstArg })
+        this.queue.enqueue({ type: 'wait', selector: firstArg, timeout: args[0] })
         break
       }
       case 'function': {
@@ -174,6 +180,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
+  scrollToElementArrayElements(selector: string, arrayNumber: number): Chromeless<T> {
+    this.queue.enqueue({ type: 'scrollToElementArrayElements', selector, arrayNumber })
+
+    return this
+  }
+
   setViewport(options: DeviceMetrics): Chromeless<T> {
     this.queue.enqueue({ type: 'setViewport', options })
 
@@ -212,6 +224,16 @@ export default class Chromeless<T extends any> implements Promise<T> {
     this.lastReturnPromise = this.queue.process<boolean>({
       type: 'returnExists',
       selector,
+    })
+
+    return new Chromeless<boolean>({}, this)
+  }
+
+  existsArrayElement(selector: string, arrayNumber: number): Chromeless<boolean> {
+    this.lastReturnPromise = this.queue.process<boolean>({
+      type: 'returnArrayElementExists',
+      selector,
+      arrayNumber
     })
 
     return new Chromeless<boolean>({}, this)

@@ -9,8 +9,9 @@ Chromeless provides TypeScript typings.
 - [`goto(url: string)`](#api-goto)
 - [`setUserAgent(useragent: string)`](#api-setuseragent)
 - [`click(selector: string)`](#api-click)
+- [`clickArrayElements(selector: string, arrayNumber: number)`](#api-clickarrayelements)
 - [`wait(timeout: number)`](#api-wait-timeout)
-- [`wait(selector: string)`](#api-wait-selector)
+- [`wait(selector: string, timeout?: number)`](#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
 - [`clearCache()`](docs/api.md#api-clearcache)
 - [`focus(selector: string)`](#api-focus)
@@ -23,6 +24,7 @@ Chromeless provides TypeScript typings.
 - [`mouseup(selector: string)`](#api-mouseup)
 - [`scrollTo(x: number, y: number)`](#api-scrollto)
 - [`scrollToElement(selector: string)`](#api-scrolltoelement)
+- [`scrollToElementArrayElements(selector: string, arrayNumber: number)`](#api-scrolltoelementarrayelements)
 - [`setHtml(html: string)`](#api-sethtml)
 - [`setViewport(options: DeviceMetrics)`](#api-setviewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](#api-evaluate)
@@ -108,6 +110,24 @@ await chromeless.click('#button')
 
 ---------------------------------------
 
+<a name="api-clickarrayelements" />
+
+### click(selector: string): Chromeless<T>
+
+Click on something in the DOM.
+
+__Arguments__
+- `selector` - DOM selector for element to click
+- `arrayNumber` - Get the element in a certain position to click
+
+__Example__
+
+```js
+await chromeless.clickArrayElements('button', 19)
+```
+
+---------------------------------------
+
 <a name="api-wait-timeout" />
 
 ### wait(timeout: number): Chromeless<T>
@@ -127,17 +147,19 @@ await chromeless.wait(1000)
 
 <a name="api-wait-selector" />
 
-### wait(selector: string): Chromeless<T>
+### wait(selector: string, timeout?: number): Chromeless<T>
 
 Wait until something appears. Useful for waiting for things to render.
 
 __Arguments__
 - `selector` - DOM selector to wait for
+- `timeout` - How long to wait for element to appear (default is value of waitTimeout option)
 
 __Example__
 
 ```js
 await chromeless.wait('div#loaded')
+await chromeless.wait('div#loaded', 1000)
 ```
 
 ---------------------------------------
@@ -299,13 +321,13 @@ await chromeless.mouseup('#placeholder')
 Scroll to somewhere in the document.
 
 __Arguments__
-- `x` - Offset from top of the document
-- `y` - Offset from the left of the document
+- `x` - Offset from the left of the document
+- `y` - Offset from the top of the document
 
 __Example__
 
 ```js
-await chromeless.scrollTo(500, 0)
+await chromeless.scrollTo(0, 500)
 ```
 
 ---------------------------------------
@@ -323,6 +345,23 @@ __Example__
 
   ```js
 await chromeless.scrollToElement('.button')
+  ```
+---------------------------------------
+
+<a name="api-scrolltoelementarrayelements" />
+
+### scrollToElementArrayElements(selector: string, arrayNumber: number): Chromeless<T>
+
+Scroll to location of element. Behavior is simiar to `<a href="#fragment"></a>` — target element will be at the top of viewport
+
+__Arguments__
+- `selector` - DOM selector for element to scroll to
+- `arrayNumber` - Position of the element in array selector
+
+__Example__
+
+  ```js
+await chromeless.scrollToElementArrayElements('button', 18)
   ```
 
   ---------------------------------------
