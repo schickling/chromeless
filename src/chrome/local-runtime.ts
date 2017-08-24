@@ -19,6 +19,7 @@ import {
   evaluate,
   screenshot,
   html,
+  htmlUrl,
   pdf,
   type,
   getValue,
@@ -79,6 +80,8 @@ export default class LocalRuntime {
         return this.returnScreenshot()
       case 'returnHtml':
         return this.returnHtml()
+      case 'returnHtmlUrl':
+        return this.returnHtmlUrl()
       case 'returnPdf':
         return this.returnPdf(command.options)
       case 'returnInputValue':
@@ -392,6 +395,36 @@ export default class LocalRuntime {
 
   async returnHtml(): Promise<string> {
     return await html(this.client)
+  }
+
+  async returnHtmlUrl(): Promise<string> {
+    const data = await html(this.client)
+
+    // check if S3 configured
+    if (
+      process.env['CHROMELESS_S3_BUCKET_NAME'] &&
+      process.env['CHROMELESS_S3_BUCKET_URL']
+    ) {
+      const s3Path = `${cuid()}.html`
+      const s3 = new AWS.S3()
+      await s3
+        .putObject({
+          Bucket: process.env['CHROMELESS_S3_BUCKET_NAME'],
+          Key: s3Path,
+          ContentType: 'text/html',
+          ACL: 'public-read',
+          Body: new Buffer(data, 'base64'),
+        })
+        .promise()
+
+      return `https://${process.env['CHROMELESS_S3_BUCKET_URL']}/${s3Path}`
+    } else {
+      // write to `${os.tmpdir()}` instead
+      const filePath = path.join(os.tmpdir(), `${cuid()}.html`)
+      fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
+
+      return filePath
+    }
   }
 
   // Returns the S3 url or local file path
