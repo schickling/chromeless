@@ -27,7 +27,8 @@ export async function setViewport(
     fitWindow: false, // as we cannot resize the window, `fitWindow: false` is needed in order for the viewport to be resizable
   }
 
-  const versionResult = await CDP.Version()
+  const { host, port } = client
+  const versionResult = await CDP.Version({ host, port })
   const isHeadless = versionResult['User-Agent'].includes('Headless')
 
   if (viewport.height && viewport.width) {
