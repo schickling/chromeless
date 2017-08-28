@@ -413,7 +413,7 @@ export default class LocalRuntime {
           Key: s3Path,
           ContentType: 'text/html',
           ACL: 'public-read',
-          Body: new Buffer(data, 'base64'),
+          Body: new Buffer(data, 'utf-8'),
         })
         .promise()
 
@@ -421,7 +421,7 @@ export default class LocalRuntime {
     } else {
       // write to `${os.tmpdir()}` instead
       const filePath = path.join(os.tmpdir(), `${cuid()}.html`)
-      fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
+      fs.writeFileSync(filePath, Buffer.from(data, 'utf-8'))
 
       return filePath
     }
