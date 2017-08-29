@@ -403,7 +403,8 @@ export default class LocalRuntime {
       process.env['CHROMELESS_S3_BUCKET_NAME'] &&
       process.env['CHROMELESS_S3_BUCKET_URL']
     ) {
-      const s3Path = `${cuid()}.pdf`
+      const prefix = process.env['CHROMELESS_S3_OBJECT_KEY_PREFIX'] || ''
+      const s3Path = `${prefix}${cuid()}.pdf`
       const s3 = new AWS.S3()
       await s3
         .putObject({
