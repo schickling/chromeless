@@ -9,6 +9,7 @@ Chromeless provides TypeScript typings.
 - [`goto(url: string)`](#api-goto)
 - [`setUserAgent(useragent: string)`](#api-setuseragent)
 - [`click(selector: string)`](#api-click)
+- [`clickArrayElements(selector: string, arrayNumber: number)`](#api-clickarrayelements)
 - [`wait(timeout: number)`](#api-wait-timeout)
 - [`wait(selector: string, timeout?: number)`](#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
@@ -23,11 +24,13 @@ Chromeless provides TypeScript typings.
 - [`mouseup(selector: string)`](#api-mouseup)
 - [`scrollTo(x: number, y: number)`](#api-scrollto)
 - [`scrollToElement(selector: string)`](#api-scrolltoelement)
+- [`scrollToElementArrayElements(selector: string, arrayNumber: number)`](#api-scrolltoelementarrayelements)
 - [`setHtml(html: string)`](#api-sethtml)
 - [`setViewport(options: DeviceMetrics)`](#api-setviewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](#api-evaluate)
 - [`inputValue(selector: string)`](#api-inputvalue)
 - [`exists(selector: string)`](#api-exists)
+- [`existsArrayElement(selector: string, arrayNumber: number)`](#api-existsarrayelement)
 - [`screenshot()`](#api-screenshot)
 - [`pdf(options?: PdfOptions)`](#api-pdf)
 - [`html()`](#api-html)
@@ -104,6 +107,24 @@ __Example__
 
 ```js
 await chromeless.click('#button')
+```
+
+---------------------------------------
+
+<a name="api-clickarrayelements" />
+
+### click(selector: string): Chromeless<T>
+
+Click on something in the DOM.
+
+__Arguments__
+- `selector` - DOM selector for element to click
+- `arrayNumber` - Get the element in a certain position to click
+
+__Example__
+
+```js
+await chromeless.clickArrayElements('button', 19)
 ```
 
 ---------------------------------------
@@ -325,6 +346,23 @@ __Example__
 
   ```js
 await chromeless.scrollToElement('.button')
+  ```
+---------------------------------------
+
+<a name="api-scrolltoelementarrayelements" />
+
+### scrollToElementArrayElements(selector: string, arrayNumber: number): Chromeless<T>
+
+Scroll to location of element. Behavior is simiar to `<a href="#fragment"></a>` — target element will be at the top of viewport
+
+__Arguments__
+- `selector` - DOM selector for element to scroll to
+- `arrayNumber` - Position of the element in array selector
+
+__Example__
+
+  ```js
+await chromeless.scrollToElementArrayElements('button', 18)
   ```
 
   ---------------------------------------

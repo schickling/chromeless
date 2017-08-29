@@ -13,9 +13,12 @@ import * as os from 'os'
 import * as path from 'path'
 import {
   nodeExists,
+  nodeArrayElementsExists,
   wait,
   waitForNode,
+  waitForNodeArrayElements,
   click,
+  clickArrayElements,
   evaluate,
   screenshot,
   html,
@@ -24,6 +27,7 @@ import {
   getValue,
   scrollTo,
   scrollToElement,
+  scrollToElementArrayElements,
   setHtml,
   press,
   setViewport,
@@ -71,10 +75,14 @@ export default class LocalRuntime {
         return this.setUserAgent(command.useragent)
       case 'click':
         return this.click(command.selector)
+      case 'clickArrayElements':
+        return this.clickArrayElements(command.selector, command.arrayNumber)
       case 'returnCode':
         return this.returnCode(command.fn, ...command.args)
       case 'returnExists':
         return this.returnExists(command.selector)
+      case 'returnArrayElementExists':
+        return this.returnArrayElementExists(command.selector, command.arrayNumber)
       case 'returnScreenshot':
         return this.returnScreenshot()
       case 'returnHtml':
@@ -91,6 +99,8 @@ export default class LocalRuntime {
         return this.scrollTo(command.x, command.y)
       case 'scrollToElement':
         return this.scrollToElement(command.selector)
+      case 'scrollToElementArrayElements':
+        return this.scrollToElementArrayElements(command.selector, command.arrayNumber)
       case 'deleteCookies':
         return this.deleteCookies(command.name, command.url)
       case 'clearCookies':
@@ -181,6 +191,30 @@ export default class LocalRuntime {
     this.log(`Clicked on ${selector}`)
   }
 
+  private async clickArrayElements(selector: string, arrayNumber: number): Promise<void> {
+    if (this.chromelessOptions.implicitWait) {
+      this.log(`clickArrayElements(): Waiting for ${selector}`)
+      await waitForNodeArrayElements(
+        this.client,
+        selector,
+        arrayNumber,
+        this.chromelessOptions.waitTimeout,
+      )
+    }
+
+    const exists = await nodeArrayElementsExists(this.client, selector, arrayNumber)
+    if (!exists) {
+      throw new Error(`clickArrayElements(): node for selector ${selector} doesn't exist`)
+    }
+
+    const { scale } = this.chromelessOptions.viewport
+    if (this.chromelessOptions.scrollBeforeClick) {
+      await scrollToElementArrayElements(this.client, selector, arrayNumber)
+    }
+    await clickArrayElements(this.client, selector, arrayNumber, scale)
+    this.log(`Clicked on ${selector}`)
+  }
+
   private async returnCode<T>(fn: string, ...args: any[]): Promise<T> {
     return (await evaluate(this.client, fn, ...args)) as T
   }
@@ -199,6 +233,19 @@ export default class LocalRuntime {
       )
     }
     return scrollToElement(this.client, selector)
+  }
+
+  private async scrollToElementArrayElements<T>(selector: string, arrayNumber: number): Promise<void> {
+    if (this.chromelessOptions.implicitWait) {
+      this.log(`scrollToElementArrayElements(): Waiting for ${selector}`)
+      await waitForNodeArrayElements(
+        this.client,
+        selector,
+        arrayNumber,
+        this.chromelessOptions.waitTimeout,
+      )
+    }
+    return scrollToElementArrayElements(this.client, selector, arrayNumber)
   }
 
   private async mousedown(selector: string): Promise<void> {
@@ -348,6 +395,10 @@ export default class LocalRuntime {
 
   async returnExists(selector: string): Promise<boolean> {
     return await nodeExists(this.client, selector)
+  }
+
+  async returnArrayElementExists(selector: string, arrayNumber: number): Promise<boolean> {
+    return await nodeArrayElementsExists(this.client, selector, arrayNumber)
   }
 
   async returnInputValue(selector: string): Promise<string> {

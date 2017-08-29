@@ -85,6 +85,11 @@ export type Command =
       selector: string
     }
   | {
+      type: 'clickArrayElements'
+      selector: string,
+      arrayNumber: number
+    }
+  | {
       type: 'returnCode'
       fn: string
       args?: any[]
@@ -96,6 +101,11 @@ export type Command =
   | {
       type: 'returnExists'
       selector: string
+    }
+  | {
+      type: 'returnArrayElementExists'
+      selector: string,
+      arrayNumber: number
     }
   | {
       type: 'returnValue'
@@ -119,6 +129,11 @@ export type Command =
   | {
       type: 'scrollToElement'
       selector: string
+    }
+  | {
+      type: 'scrollToElementArrayElements'
+      selector: string,
+      arrayNumber: number
     }
   | {
       type: 'setHtml'

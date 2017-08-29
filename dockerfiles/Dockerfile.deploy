@@ -1,0 +1,30 @@
+FROM node:latest
+
+USER root
+# replace shell with bash so we can source files
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# update the repository sources list
+# and install dependencies
+RUN apt-get update \
+    && apt-get install -y curl \
+    && apt-get install -y git-all \
+    && apt-get install git \
+    && apt-get install -y python python-dev python-pip python-virtualenv \
+    && apt-get -y autoclean
+RUN pip install awscli==1.11.131
+
+# Get chromeless code and install all the containing packages
+
+WORKDIR /opt/app
+# Get github code
+RUN git clone https://github.com/graphcool/chromeless.git
+WORKDIR /opt/app/chromeless/serverless
+RUN npm install
+
+# We replace our aws account default region and iot endpoint with the one in github code
+ARG IOT_ENDPOINT
+ARG REGION
+RUN sed -i 's/eu-west-1/'"$REGION"'/g' serverless.yml
+RUN sed -i 's/${env:AWS_IOT_HOST}/'"$IOT_ENDPOINT"'/g' serverless.yml
+ENTRYPOINT ["npm", "run", "deploy"]
