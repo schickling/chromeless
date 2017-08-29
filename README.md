@@ -116,6 +116,20 @@ cd "C:\Program Files (x86)\Google\Chrome\Application"
 chrome --remote-debugging-port=9222 --disable-gpu --headless
 ```
 
+### Local Parallel Chrome usage
+
+Also you can run N instances of chromeless in prallel locally. This is specially usefull when you need to run integration tests in parallel that doesn't depends of each other.
+To do that, you can specify a port in chromeless constructor a port to create a new instance of chromeless. Exemple below show how to create 10, totally independent instances, of chromeless:
+
+```js
+const { Chromeless } = require('chromeless');
+
+chromelessInstances = [];
+for(var portNumber = 9000; portNumber < 9010; portNumber++){
+  chromelessInstances.push(new Chromeless({ cdp: { port: portNumber } }));
+}
+```
+
 ### Proxy Usage
 
 Follow the setup instructions [here](serverless#installation).
