@@ -13,9 +13,7 @@
   },
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "engines": {
     "node": ">= 6.10.0"
   },
