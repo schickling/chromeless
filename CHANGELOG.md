@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added
+- Extend screenshot with specific file path locally & screenshot element by selector [#137](https://github.com/graphcool/chromeless/pull/137), [#83](https://github.com/graphcool/chromeless/issues/83), [#41](https://github.com/graphcool/chromeless/issues/41), [#113](https://github.com/graphcool/chromeless/issues/113) @elisherer
 
 ### Changed
 
