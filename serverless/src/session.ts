@@ -7,7 +7,6 @@ export default async (event, context, callback): Promise<void> => {
   const channelId = cuid()
 
   // Warmup check
-  console.log(JSON.stringify(event))
   if (event && event.warmup) {
     console.log('Invoking Lambda for Warmup')
     return callback(null, 'Lambda is warm')
