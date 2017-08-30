@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - It's now possible to specify an S3 object key prefix in with a `CHROMELESS_S3_OBJECT_KEY_PREFIX` environment variable [#224](https://github.com/graphcool/chromeless/pull/224) @pklingem
-- A parameter to specify `waitTimeout` when waiting for a seletor with `wait(selector, waitTimeout)` [#212](https://github.com/graphcool/chromeless/pull/212), [#208](https://github.com/graphcool/chromeless/issues/208) @janza
+- A parameter to specify `waitTimeout` when waiting for a selector with `wait(selector, waitTimeout)` [#212](https://github.com/graphcool/chromeless/pull/212), [#208](https://github.com/graphcool/chromeless/issues/208) @janza
 
 ### Fixed
 - Mistakes in `scrollTo` parameters API documentation [#220](https://github.com/graphcool/chromeless/pull/220) @okeeffed

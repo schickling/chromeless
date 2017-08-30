@@ -28,7 +28,7 @@ Chromeless provides TypeScript typings.
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](#api-evaluate)
 - [`inputValue(selector: string)`](#api-inputvalue)
 - [`exists(selector: string)`](#api-exists)
-- [`screenshot()`](#api-screenshot)
+- [`screenshot(selector: string, options: ScreenshotOptions)`](#api-screenshot)
 - [`pdf(options?: PdfOptions)`](#api-pdf)
 - [`html()`](#api-html)
 - [`cookies()`](#api-cookies)
@@ -424,18 +424,39 @@ await chromeless.exists('div#ready')
 
 <a name="api-screenshot" />
 
-### screenshot(): Chromeless<string>
+### screenshot(selector: string, options: ScreenshotOptions): Chromeless<string>
 
-Take a screenshot of the document as framed by the viewport.
+Take a screenshot of the document as framed by the viewport or of a specific element (by a selector).
 When running Chromeless locally this returns the local file path to the screenshot image.
 When run over the Chromeless Proxy service, a URL to the screenshot on S3 is returned.
 
-__Example__
+__Arguments__
+- `selector` - DOM element to take a screenshot of,
+- `options` - An options object with the following props
+- `options.filePath` - A file path override in case of working locally
+
+__Examples__
 
 ```js
 const screenshot = await chromeless
   .goto('https://google.com/')
   .screenshot()
+
+console.log(screenshot) // prints local file path or S3 URL
+```
+
+```js
+const screenshot = await chromeless
+  .goto('https://google.com/')
+  .screenshot('#hplogo', { filePath: path.join(__dirname, 'google-logo.png') })
+
+console.log(screenshot) // prints local file path or S3 URL
+```
+
+```js
+const screenshot = await chromeless
+  .goto('https://google.com/')
+  .screenshot({ filePath: path.join(__dirname, 'google-search.png') })
 
 console.log(screenshot) // prints local file path or S3 URL
 ```

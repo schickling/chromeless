@@ -1,7 +1,10 @@
 import * as fs from 'fs'
+import * as os from 'os'
 import * as path from 'path'
-import { Client, Cookie, DeviceMetrics, PdfOptions } from './types'
+import * as cuid from 'cuid'
+import { Client, Cookie, DeviceMetrics, PdfOptions, BoxModel, Viewport } from './types'
 import * as CDP from 'chrome-remote-interface'
+import * as AWS from 'aws-sdk'
 
 export const version: string = ((): string => {
   if (fs.existsSync(path.join(__dirname, '../package.json'))) {
@@ -56,9 +59,9 @@ export async function waitForNode(
   waitTimeout: number,
 ): Promise<void> {
   const { Runtime } = client
-  const getNode = selector => {
+  const getNode = `selector => {
     return document.querySelector(selector)
-  }
+  }`
 
   const result = await Runtime.evaluate({
     expression: `(${getNode})(\`${selector}\`)`,
@@ -99,9 +102,9 @@ export async function nodeExists(
   selector: string,
 ): Promise<boolean> {
   const { Runtime } = client
-  const exists = selector => {
+  const exists = `selector => {
     return !!document.querySelector(selector)
-  }
+  }`
 
   const expression = `(${exists})(\`${selector}\`)`
 
@@ -115,7 +118,7 @@ export async function nodeExists(
 export async function getClientRect(client, selector): Promise<ClientRect> {
   const { Runtime } = client
 
-  const code = selector => {
+  const code = `selector => {
     const element = document.querySelector(selector)
     if (!element) {
       return undefined
@@ -130,7 +133,7 @@ export async function getClientRect(client, selector): Promise<ClientRect> {
       height: rect.height,
       width: rect.width,
     })
-  }
+  }`
 
   const expression = `(${code})(\`${selector}\`)`
   const result = await Runtime.evaluate({ expression })
@@ -274,9 +277,9 @@ export async function getValue(
   selector: string,
 ): Promise<string> {
   const { Runtime } = client
-  const browserCode = selector => {
+  const browserCode = `selector => {
     return document.querySelector(selector).value
-  }
+  }`
   const expression = `(${browserCode})(\`${selector}\`)`
   const result = await Runtime.evaluate({
     expression,
@@ -291,9 +294,9 @@ export async function scrollTo(
   y: number,
 ): Promise<void> {
   const { Runtime } = client
-  const browserCode = (x, y) => {
+  const browserCode = `(x, y) => {
     return window.scrollTo(x, y)
-  }
+  }`
   const expression = `(${browserCode})(${x}, ${y})`
   await Runtime.evaluate({
     expression,
@@ -418,10 +421,50 @@ export async function clearCookies(client: Client): Promise<void> {
   await Network.clearBrowserCookies()
 }
 
-export async function screenshot(client: Client): Promise<string> {
+export async function getBoxModel(
+  client: Client,
+  selector: string,
+): Promise<BoxModel> {
+  const { DOM } = client
+  const { root: { nodeId: documentNodeId } } = await DOM.getDocument()
+  const { nodeId } = await DOM.querySelector({
+    selector: selector,
+    nodeId: documentNodeId,
+  })
+
+  const { model } = await DOM.getBoxModel({ nodeId })
+
+  return model
+}
+
+export function boxModelToViewPort(model: BoxModel, scale: number): Viewport {
+  return {
+    x: model.content[0],
+    y: model.content[1],
+    width: model.width,
+    height: model.height,
+    scale,
+  }
+}
+
+export async function screenshot(
+  client: Client,
+  selector: string,
+): Promise<string> {
   const { Page } = client
 
-  const screenshot = await Page.captureScreenshot({ format: 'png' })
+  const captureScreenshotOptions = {
+    format: 'png',
+    fromSurface: true,
+    clip: undefined,
+  }
+
+  if (selector) {
+    const model = await getBoxModel(client, selector)
+    captureScreenshotOptions.clip = boxModelToViewPort(model, 1)
+  }
+
+  const screenshot = await Page.captureScreenshot(captureScreenshotOptions)
 
   return screenshot.data
 }
@@ -511,4 +554,55 @@ export function getDebugOption(): boolean {
   }
 
   return false
+}
+
+export function writeToFile(data: string, extension: string, filePathOverride: string): string {
+  const filePath = filePathOverride || path.join(os.tmpdir(), `${cuid()}.${extension}`)
+  fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
+  return filePath
+}
+
+function getS3BucketName() {
+  return process.env['CHROMELESS_S3_BUCKET_NAME']
+}
+
+function getS3BucketUrl() {
+  return process.env['CHROMELESS_S3_BUCKET_URL']
+}
+
+function getS3ObjectKeyPrefix() {
+  return process.env['CHROMELESS_S3_OBJECT_KEY_PREFIX'] || ''
+}
+
+export function isS3Configured() {
+  return getS3BucketName() && getS3BucketUrl()
+}
+
+const s3ContentTypes = {
+  'image/png': {
+    extension: 'png'
+  },
+  'application/pdf': {
+    extension: 'pdf'
+  },
+}
+
+export async function uploadToS3(data: string, contentType: string): Promise<string> {
+  const s3ContentType = s3ContentTypes[contentType]
+  if (!s3ContentType) {
+    throw new Error(`Unknown S3 Content type ${contentType}`)
+  }
+  const s3Path = `${getS3ObjectKeyPrefix()}${cuid()}.${s3ContentType.extension}`
+  const s3 = new AWS.S3()
+  await s3
+        .putObject({
+          Bucket: getS3BucketName(),
+          Key: s3Path,
+          ContentType: contentType,
+          ACL: 'public-read',
+          Body: Buffer.from(data, 'base64'),
+        })
+        .promise()
+
+  return `https://${getS3BucketUrl()}/${s3Path}`
 }
