@@ -2,6 +2,19 @@
 
 Chromeless provides TypeScript typings.
 
+**Chromeless constructor options**
+
+`new Chromeless(options: ChromelessOptions)`
+
+- `debug: boolean` Show debug output — Default: `false`
+- `remote: boolean` Use remote chrome process — Default: `false`
+- `implicitWait: boolean` Wait for element to exist before executing commands — Default: `false`
+- `waitTimeout: number` Time in ms to wait for element to appear — Default: `10000`
+- `scrollBeforeClick: boolean` Scroll to element before clicking, usefull if element is outside of viewport — Default: `false`
+- `viewport: any` Viewport dimensions — Default: `{width: 1440, height: 900, scale: 1}`
+- `launchChrome: boolean` Auto-launch chrome (local) — Default: `true`
+- `cdp: CDPOptions` Chome Debugging Protocol Options — Default: `{host: 'localhost', port: 9222, secure: false, closeTab: true}`
+
 **Chromeless methods**
 - [`end()`](#api-end)
 
