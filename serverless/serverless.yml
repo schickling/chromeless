@@ -12,7 +12,7 @@ provider:
   name: aws
   runtime: nodejs6.10
   stage: ${self:custom.stage}
-  region: eu-west-1
+  region: ap-southeast-2
   environment:
     DEBUG: ${self:custom.debug}
     AWS_IOT_HOST: ${self:custom.awsIotHost}
