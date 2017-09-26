@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import * as cuid from 'cuid'
-import { Client, Cookie, DeviceMetrics, PdfOptions, BoxModel, Viewport } from './types'
+import { Client, Cookie, DeviceMetrics, PdfOptions, BoxModel, Viewport, S3UploadOptions } from './types'
 import * as CDP from 'chrome-remote-interface'
 import * as AWS from 'aws-sdk'
 
@@ -594,7 +594,16 @@ const s3ContentTypes = {
   },
 }
 
-export async function uploadToS3(data: string, contentType: string): Promise<string> {
+function getSignedUrl(bucket, key, period = 120) {
+  const s3Bucket = new AWS.S3({params: {Bucket: bucket}});
+  return s3Bucket.getSignedUrl('getObject', {
+          Bucket: bucket,
+          Key: key,
+          Expires: period
+      })
+}
+
+export async function uploadToS3(data: string, contentType: string, uploadOptions: S3UploadOptions = {}): Promise<string> {
   const s3ContentType = s3ContentTypes[contentType]
   if (!s3ContentType) {
     throw new Error(`Unknown S3 Content type ${contentType}`)
@@ -606,10 +615,12 @@ export async function uploadToS3(data: string, contentType: string): Promise<str
           Bucket: getS3BucketName(),
           Key: s3Path,
           ContentType: contentType,
-          ACL: 'public-read',
+          ACL: uploadOptions.public ? 'public-read' : null,
           Body: Buffer.from(data, 'base64'),
         })
         .promise()
-
+  if (!uploadOptions.public && uploadOptions.signedPeriod){
+    return getSignedUrl(getS3BucketName(),s3Path,uploadOptions.signedPeriod );
+  }
   return `https://${getS3BucketUrl()}/${s3Path}`
 }

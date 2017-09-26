@@ -222,10 +222,12 @@ export interface PdfOptions {
   pageRanges?: string
   ignoreInvalidPageRanges?: boolean
   filePath?: string // for internal use
+  s3Options?: S3UploadOptions
 }
 
 export interface ScreenshotOptions {
   filePath?: string
+  s3Options?: S3UploadOptions
 }
 
 export type Quad = Array<number>
@@ -252,4 +254,9 @@ export interface Viewport {
   width: number
   height: number
   scale: number
+}
+
+export interface S3UploadOptions{
+  public?: boolean
+  signedPeriod? : number
 }
