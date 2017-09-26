@@ -53,6 +53,13 @@ export async function setViewport(
   return
 }
 
+export async function setEmulateMedia(
+    client: Client,
+    mediaType: "screen" | "print" | null
+): Promise<void> {
+    await client.Emulation.setEmulatedMedia({ media: mediaType || "" });
+}
+
 export async function waitForNode(
   client: Client,
   selector: string,

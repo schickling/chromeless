@@ -58,6 +58,10 @@ export interface Chrome {
 }
 
 export type Command =
+  |{
+    type:'setEmulatedMedia'
+    mediaType : 'screen' | 'print' | null
+  }
   | {
       type: 'goto'
       url: string

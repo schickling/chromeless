@@ -23,6 +23,7 @@ import {
   setHtml,
   press,
   setViewport,
+  setEmulateMedia,
   clearCookies,
   deleteCookie,
   getCookies,
@@ -55,6 +56,8 @@ export default class LocalRuntime {
         return this.goto(command.url)
       case 'setViewport':
         return setViewport(this.client, command.options)
+      case 'setEmulatedMedia':
+        return setEmulateMedia(this.client, command.mediaType)
       case 'wait': {
         if (command.selector) {
           return this.waitSelector(command.selector, command.timeout)
