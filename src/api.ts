@@ -92,7 +92,8 @@ export default class Chromeless<T extends any> implements Promise<T> {
 
   wait(timeout: number): Chromeless<T>
   wait(selector: string, timeout?: number): Chromeless<T>
-  wait(fn: (...args: any[]) => boolean, ...args: any[]): Chromeless<T>
+  wait(selectors: string[], timeout?: number): Chromeless<T>
+  wait(fn: (...args: any[]) => boolean,  ...args: any[]): Chromeless<T>
   wait(firstArg, ...args: any[]): Chromeless<T> {
     switch (typeof firstArg) {
       case 'number': {
@@ -100,12 +101,26 @@ export default class Chromeless<T extends any> implements Promise<T> {
         break
       }
       case 'string': {
-        this.queue.enqueue({ type: 'wait', selector: firstArg, timeout: args[0] })
+        this.queue.enqueue({
+          type: 'wait',
+          selector: firstArg,
+          timeout: args[0],
+        })
         break
       }
       case 'function': {
         this.queue.enqueue({ type: 'wait', fn: firstArg, args })
         break
+      }
+      case 'object': {
+        if (Array.isArray(firstArg) && firstArg.length) {
+          this.queue.enqueue({
+            type: 'wait',
+            selectors: firstArg,
+            timeout: args[0],
+          })
+          break
+        }
       }
       default:
         throw new Error(`Invalid wait arguments: ${firstArg} ${args}`)

@@ -77,6 +77,7 @@ export type Command =
       type: 'wait'
       timeout?: number
       selector?: string
+      selectors?: string[]
       fn?: string
       args?: any[]
     }
