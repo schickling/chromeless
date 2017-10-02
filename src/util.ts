@@ -93,6 +93,105 @@ export async function waitForNode(
   }
 }
 
+export async function waitForNodes(
+  client: Client,
+  selectors: string[],
+  waitTimeout: number,
+): Promise<void> {
+  const { Runtime } = client
+
+  let argStr: string='';
+
+  if(selectors && selectors.length) {
+    const jsonArgs = JSON.stringify(selectors)
+    argStr = jsonArgs.substr(1, jsonArgs.length - 2)
+  }
+  const argsArrStr = `[${argStr}]`
+
+  const getNodes = `selectors => {
+    return JSON.parse(selectors).some(el => {
+      return !!document.querySelector(el)
+    });
+  }`
+
+  const result = await Runtime.evaluate({
+    expression: `(${getNodes})(\`${argsArrStr}\`)`,
+  })
+
+  if (!result.result.value) {
+    const start = new Date().getTime()
+    return new Promise<void>((resolve, reject) => {
+      const interval = setInterval(async () => {
+        if (new Date().getTime() - start > waitTimeout) {
+          clearInterval(interval)
+          reject(
+            new Error(`wait("${argsArrStr}") timed out after ${waitTimeout}ms`),
+          )
+        }
+
+        const result = await Runtime.evaluate({
+          expression: `(${getNodes})(\`${argsArrStr}\`)`,
+        })
+
+        if (result.result.value) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 500)
+    })
+  } else {
+    return
+  }
+}
+
+export async function waitFunction(
+  client: Client,
+  fn: string,
+  args: any[],
+  waitTimeout: number,
+): Promise<void> {
+  const { Runtime } = client
+
+  let argStr = '';
+
+  if(args && args.length) {
+    const jsonArgs = JSON.stringify(args)
+    argStr = jsonArgs.substr(1, jsonArgs.length - 2)
+  }
+
+  const expression = `
+    (${fn})(${argStr});
+  `
+  const result = await Runtime.evaluate({
+    expression,
+  })
+
+  if (!result.result.value) {
+    const start = new Date().getTime()
+    return new Promise<void>((resolve, reject) => {
+      const interval = setInterval(async () => {
+        if (new Date().getTime() - start > waitTimeout) {
+          clearInterval(interval)
+          reject(
+            new Error(`waitFunction timed out after ${waitTimeout}ms`),
+          )
+        }
+
+        const result = await Runtime.evaluate({
+          expression,
+        })
+
+        if (result.result.value) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 500)
+    })
+  } else {
+    return
+  }
+}
+
 export async function wait(timeout: number): Promise<void> {
   return new Promise<void>((resolve, reject) => setTimeout(resolve, timeout))
 }

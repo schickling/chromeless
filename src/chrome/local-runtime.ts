@@ -11,6 +11,8 @@ import {
   nodeExists,
   wait,
   waitForNode,
+  waitForNodes,
+  waitFunction,
   click,
   evaluate,
   screenshot,
@@ -58,10 +60,12 @@ export default class LocalRuntime {
       case 'wait': {
         if (command.selector) {
           return this.waitSelector(command.selector, command.timeout)
+        } else if (command.selectors) {
+          return this.waitSelectors(command.selectors, command.timeout)
         } else if (command.timeout) {
           return this.waitTimeout(command.timeout)
         } else {
-          throw new Error('waitFn not yet implemented')
+          return this.waitFunction(command.fn, command.args)
         }
       }
       case 'clearCache':
@@ -150,11 +154,30 @@ export default class LocalRuntime {
 
   private async waitSelector(
     selector: string,
-    waitTimeout: number = this.chromelessOptions.waitTimeout
+    waitTimeout: number = this.chromelessOptions.waitTimeout,
   ): Promise<void> {
     this.log(`Waiting for ${selector} ${waitTimeout}`)
     await waitForNode(this.client, selector, waitTimeout)
     this.log(`Waited for ${selector}`)
+  }
+
+  private async waitSelectors(
+    selectors: string[],
+    waitTimeout: number = this.chromelessOptions.waitTimeout,
+  ): Promise<void> {
+    this.log(`Waiting for ${selectors} ${waitTimeout}`)
+    await waitForNodes(this.client, selectors, waitTimeout)
+    this.log(`Waited for ${selectors}`)
+  }
+
+  private async waitFunction(
+    fn: string,
+    args: any[],
+    waitTimeout: number = this.chromelessOptions.waitTimeout,
+  ): Promise<void> {
+    this.log(`Waiting for function`)
+    await waitFunction(this.client, fn, args, waitTimeout)
+    this.log(`Waited for function`)
   }
 
   private async click(selector: string): Promise<void> {
@@ -395,10 +418,7 @@ export default class LocalRuntime {
 
   // Returns the S3 url or local file path
   async returnPdf(options?: PdfOptions): Promise<string> {
-    const {
-      filePath,
-      ...cdpOptions
-    } = options || { filePath: undefined }
+    const { filePath, ...cdpOptions } = options || { filePath: undefined }
     const data = await pdf(this.client, cdpOptions)
 
     if (isS3Configured()) {

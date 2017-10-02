@@ -24,7 +24,8 @@ Chromeless provides TypeScript typings.
 - [`click(selector: string)`](#api-click)
 - [`wait(timeout: number)`](#api-wait-timeout)
 - [`wait(selector: string, timeout?: number)`](#api-wait-selector)
-- [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
+- [`wait(selectors: string[], timeout?: number)`](#api-wait-selectors)
+- [`wait(fn: (...args: any[]) => boolean, ...args: any[])`](#api-wait-function)
 - [`clearCache()`](docs/api.md#api-clearcache)
 - [`focus(selector: string)`](#api-focus)
 - [`press(keyCode: number, count?: number, modifiers?: any)`](#api-press)
@@ -157,13 +158,30 @@ await chromeless.wait('div#loaded', 1000)
 
 ---------------------------------------
 
-<a name="api-wait-fn" />
+<a name="api-wait-selectors" />
+
+### wait(selectors: string[], timeout?: number): Chromeless<T>
+
+Wait until one of the elements appears.
+
+__Arguments__
+- `selectors` - Array of DOM selectors to wait for
+- `timeout` - How long to wait for any of the element to appear (default is value of waitTimeout option)
+
+__Example__
+
+```js
+await chromeless.wait(['div#error', 'div#success'])
+await chromeless.wait(['div#error', 'div#success'], 1000)
+```
+
+---------------------------------------
+
+<a name="api-wait-function" />
 
 ### wait(fn: (...args: any[]) => boolean, ...args: any[]): Chromeless<T>
 
-Not implemented yet
-
-Wait until a function returns.
+Wait until a function returns truthy value. Note that the function is run in headless browser.
 
 __Arguments__
 - `fn` - Function to wait for
@@ -172,7 +190,9 @@ __Arguments__
 __Example__
 
 ```js
-await chromeless.wait(() => { return console.log('@TODO: put a better example here') })
+await chromeless.wait((divId) => {
+  return !!document.getElementById(divId)
+}, 'div#loaded')
 ```
 
 ---------------------------------------
