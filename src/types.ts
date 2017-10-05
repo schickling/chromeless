@@ -52,6 +52,7 @@ export interface ChromelessOptions {
   remote?: RemoteOptions | boolean
   chromeFlags?: Array<string> // ['--headless']
   chromePath?: string
+  userDataDir?: string
 }
 
 export interface Chrome {
