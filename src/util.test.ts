@@ -63,3 +63,19 @@ test('screenshot by selector', async t => {
     t.is(png.width, versionMajor > 60 ? 512 : 1440)
     t.is(png.height, versionMajor > 60 ? 512 : 900)
 })
+
+test('queue allows actions after an error', async t => {
+  const chromeless = new Chromeless({ launchChrome: false })
+  const error = await chromeless
+    .goto(testUrl)
+    .wait('.non-existant-selector', 100)
+    .screenshot()
+    .catch(error => error)
+
+  await error
+
+  const screenshot = await chromeless.screenshot();
+  
+  const regex = new RegExp(os.tmpdir().replace(/\\/g, '\\\\'))
+  t.regex(screenshot, regex)
+})
