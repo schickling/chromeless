@@ -30,6 +30,8 @@ export default class Chromeless<T extends any> implements Promise<T> {
       implicitWait: true,
       scrollBeforeClick: false,
       launchChrome: true,
+      chromeFlags: [],
+      userDataDir: undefined,
 
       ...options,
 
@@ -45,8 +47,6 @@ export default class Chromeless<T extends any> implements Promise<T> {
         closeTab: true,
         ...options.cdp,
       },
-      chromeFlags: [],
-      userDataDir: undefined
     }
 
     const chrome = mergedOptions.remote
