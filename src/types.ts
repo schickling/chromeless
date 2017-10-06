@@ -9,6 +9,8 @@ export interface Client {
   target: {
     id: string
   }
+  port: any
+  host: any
 }
 
 export interface DeviceMetrics {
@@ -50,6 +52,9 @@ export interface ChromelessOptions {
   launchChrome?: boolean // auto-launch chrome (local) `true`
   cdp?: CDPOptions
   remote?: RemoteOptions | boolean
+  chromeFlags?: Array<string> // ['--headless']
+  chromePath?: string
+  userDataDir?: string
 }
 
 export interface Chrome {
