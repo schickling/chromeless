@@ -447,6 +447,9 @@ __Arguments__
 - `selector` - DOM element to take a screenshot of,
 - `options` - An options object with the following props
 - `options.filePath` - A file path override in case of working locally
+- `options.format` - Image compression format (defaults to png). Allowed values: jpeg, png 
+- `options.quality` - Compression quality from range [0..100] (jpeg only)
+- `options.base64` - Whether to return a base64 string (defaults to returning a URL or local file path to the screenshot image)
 
 __Examples__
 
@@ -472,6 +475,18 @@ const screenshot = await chromeless
   .screenshot({ filePath: path.join(__dirname, 'google-search.png') })
 
 console.log(screenshot) // prints local file path or S3 URL
+```
+
+```js
+const screenshot = await chromeless
+  .goto('https://google.com/')
+  .screenshot({
+    format: 'jpeg',
+    quality: 40,
+    base64: true
+  })
+
+console.log(screenshot) // prints a base64 string for a jpeg image with compression quality set to 40
 ```
 
 ---------------------------------------
