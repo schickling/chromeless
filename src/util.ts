@@ -2,7 +2,15 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import * as cuid from 'cuid'
-import { Client, Cookie, DeviceMetrics, PdfOptions, BoxModel, Viewport } from './types'
+import {
+  Client,
+  Cookie,
+  DeviceMetrics,
+  PdfOptions,
+  BoxModel,
+  Viewport,
+  ScreenshotOptions,
+} from './types'
 import * as CDP from 'chrome-remote-interface'
 import * as AWS from 'aws-sdk'
 
@@ -450,13 +458,25 @@ export function boxModelToViewPort(model: BoxModel, scale: number): Viewport {
 export async function screenshot(
   client: Client,
   selector: string,
+  options: ScreenshotOptions,
 ): Promise<string> {
   const { Page } = client
 
-  const captureScreenshotOptions = {
-    format: 'png',
+  const captureScreenshotOptions: {
+    format: string
+    fromSurface: boolean
+    clip?: Object
+    quality?: number
+  } = {
+    format: 'png' || options.format,
     fromSurface: true,
     clip: undefined,
+    quality: undefined,
+  }
+
+  if (options && options.quality !== undefined) {
+    captureScreenshotOptions.format = 'jpeg'
+    captureScreenshotOptions.quality = typeof options.quality === 'string' ? parseInt(options.quality, 10) : options.quality
   }
 
   if (selector) {
