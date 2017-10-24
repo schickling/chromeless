@@ -50,6 +50,7 @@ export interface ChromelessOptions {
   launchChrome?: boolean // auto-launch chrome (local) `true`
   cdp?: CDPOptions
   remote?: RemoteOptions | boolean
+  chromeFlags? : string[]
 }
 
 export interface Chrome {
@@ -58,6 +59,10 @@ export interface Chrome {
 }
 
 export type Command =
+  |{
+    type:'setEmulatedMedia'
+    mediaType : 'screen' | 'print' | null
+  }
   | {
       type: 'goto'
       url: string
@@ -217,10 +222,12 @@ export interface PdfOptions {
   pageRanges?: string
   ignoreInvalidPageRanges?: boolean
   filePath?: string // for internal use
+  s3Options?: S3UploadOptions
 }
 
 export interface ScreenshotOptions {
   filePath?: string
+  s3Options?: S3UploadOptions
 }
 
 export type Quad = Array<number>
@@ -247,4 +254,10 @@ export interface Viewport {
   width: number
   height: number
   scale: number
+}
+
+export interface S3UploadOptions{
+  public?: boolean
+  signedPeriod? : number
+  fileName?:string
 }

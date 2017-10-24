@@ -181,6 +181,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
+  setEmulatedMedia(mediaType : 'screen' | 'print' | null): Chromeless<T> {
+    this.queue.enqueue({ type: 'setEmulatedMedia', mediaType })
+
+    return this
+  }
+
   setHtml(html: string): Chromeless<T> {
     this.queue.enqueue({ type: 'setHtml', html })
 

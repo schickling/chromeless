@@ -23,6 +23,7 @@ import {
   setHtml,
   press,
   setViewport,
+  setEmulateMedia,
   clearCookies,
   deleteCookie,
   getCookies,
@@ -55,6 +56,8 @@ export default class LocalRuntime {
         return this.goto(command.url)
       case 'setViewport':
         return setViewport(this.client, command.options)
+      case 'setEmulatedMedia':
+        return setEmulateMedia(this.client, command.mediaType)
       case 'wait': {
         if (command.selector) {
           return this.waitSelector(command.selector, command.timeout)
@@ -383,7 +386,7 @@ export default class LocalRuntime {
     const data = await screenshot(this.client, selector)
 
     if (isS3Configured()) {
-      return await uploadToS3(data, 'image/png')
+      return await uploadToS3(data, 'image/png', options ? options.s3Options : {})
     } else {
       return writeToFile(data, 'png', options && options.filePath)
     }
@@ -402,7 +405,7 @@ export default class LocalRuntime {
     const data = await pdf(this.client, cdpOptions)
 
     if (isS3Configured()) {
-      return await uploadToS3(data, 'application/pdf')
+      return await uploadToS3(data, 'application/pdf', options.s3Options)
     } else {
       return writeToFile(data, 'pdf', filePath)
     }
