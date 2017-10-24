@@ -259,4 +259,5 @@ export interface Viewport {
 export interface S3UploadOptions{
   public?: boolean
   signedPeriod? : number
+  fileName?:string
 }

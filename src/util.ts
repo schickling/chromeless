@@ -608,7 +608,7 @@ export async function uploadToS3(data: string, contentType: string, uploadOption
   if (!s3ContentType) {
     throw new Error(`Unknown S3 Content type ${contentType}`)
   }
-  const s3Path = `${getS3ObjectKeyPrefix()}${cuid()}.${s3ContentType.extension}`
+  const s3Path = `${getS3ObjectKeyPrefix()}${cuid()}${uploadOptions.fileName ? `/${uploadOptions.fileName}` : ""}.${s3ContentType.extension}`
   const s3 = new AWS.S3()
   await s3
         .putObject({
