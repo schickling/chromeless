@@ -126,8 +126,8 @@ const chromeless = new Chromeless({
 ```js
 const chromeless = new Chromeless({
   remote: {
-    endpointUrl: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev'
-    apiKey: 'your-api-key-here'
+    endpointUrl: 'https://XXXXXXXXXX.execute-api.eu-west-1.amazonaws.com/dev',
+    apiKey: 'your-api-key-here',
   },
 })
 ```
