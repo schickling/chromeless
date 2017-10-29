@@ -156,6 +156,7 @@ const chromeless = new Chromeless({
 - [`scrollTo(x: number, y: number)`](docs/api.md#api-scrollto)
 - [`scrollToElement(selector: string)`](docs/api.md#api-scrolltoelement)
 - [`setHtml(html: string)`](docs/api.md#api-sethtml)
+- [`setExtraHTTPHeaders(headers: Headers)`](docs/api.md#api-setextrahttpheaders)
 - [`setViewport(options: DeviceMetrics)`](docs/api.md#api-setviewport)
 - [`evaluate<U extends any>(fn: (...args: any[]) => void, ...args: any[])`](docs/api.md#api-evaluate)
 - [`inputValue(selector: string)`](docs/api.md#api-inputvalue)

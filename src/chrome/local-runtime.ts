@@ -2,6 +2,7 @@ import {
   Client,
   Command,
   ChromelessOptions,
+  Headers,
   Cookie,
   CookieQuery,
   PdfOptions,
@@ -21,6 +22,7 @@ import {
   scrollTo,
   scrollToElement,
   setHtml,
+  setExtraHTTPHeaders,
   press,
   setViewport,
   clearCookies,
@@ -96,6 +98,8 @@ export default class LocalRuntime {
         return this.clearCookies()
       case 'setHtml':
         return this.setHtml(command.html)
+      case 'setExtraHTTPHeaders':
+        return this.setExtraHTTPHeaders(command.headers)
       case 'cookies':
         return this.cookies(command.nameOrQuery)
       case 'allCookies':
@@ -291,6 +295,10 @@ export default class LocalRuntime {
 
   async allCookies(): Promise<Cookie[]> {
     return await getAllCookies(this.client)
+  }
+
+  async setExtraHTTPHeaders(headers: Headers): Promise<void> {
+    return await setExtraHTTPHeaders(this.client, headers)
   }
 
   async setCookies(

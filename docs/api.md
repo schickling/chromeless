@@ -357,6 +357,26 @@ __Example__
 await chromeless.setHtml('<h1>Hello world!</h1>')
 ```
 
+  ---------------------------------------
+
+<a name="api-setextrahttpheaders" />
+
+### setExtraHTTPHeaders(headers: Headers): Chromeless<T>
+
+Sets extra HTTP headers.
+
+__Arguments__
+- `headers` - headers as keys / values of JSON object
+
+__Example__
+
+```js
+await chromeless.setExtraHTTPHeaders({
+  'accept-language': 'en-US,en;q=0.8'
+})
+```
+
+
 ---------------------------------------
 
 <a name="api-setviewport" />
