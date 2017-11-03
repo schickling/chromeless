@@ -3,6 +3,7 @@ import ChromeRemote from './chrome/remote'
 import Queue from './queue'
 import {
   ChromelessOptions,
+  Headers,
   Cookie,
   CookieQuery,
   PdfOptions,
@@ -183,6 +184,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
 
   setHtml(html: string): Chromeless<T> {
     this.queue.enqueue({ type: 'setHtml', html })
+
+    return this
+  }
+
+  setExtraHTTPHeaders(headers: Headers): Chromeless<T> {
+    this.queue.enqueue({ type: 'setExtraHTTPHeaders', headers })
 
     return this
   }
