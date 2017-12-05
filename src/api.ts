@@ -229,10 +229,14 @@ export default class Chromeless<T extends any> implements Promise<T> {
     selector?: string,
     options?: ScreenshotOptions,
   ): Chromeless<string> {
-    if (typeof selector === 'object') {
-      options = selector
-      selector = undefined
-    }
+    // I am not sure why this code was here; it seems to be causing a bug
+    // where options can not be passed correctly (any options passed will be 
+    // seen as a selector)
+    //
+    //if (typeof selector === 'object') {
+    //  options = selector
+    //  selector = undefined
+    //}
     this.lastReturnPromise = this.queue.process<string>({
       type: 'returnScreenshot',
       selector,

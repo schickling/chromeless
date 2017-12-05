@@ -227,6 +227,7 @@ export interface PdfOptions {
 
 export interface ScreenshotOptions {
   filePath?: string
+  s3ObjectKeyPrefixOverride?: string //string to use as key when saving screenshots to s3
 }
 
 export type Quad = Array<number>
