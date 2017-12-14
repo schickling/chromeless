@@ -1,6 +1,6 @@
 {
   "name": "chromeless",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "🖥 Chrome automation made simple. Runs locally or headless on AWS Lambda.",
   "homepage": "https://github.com/graphcool/chromeless",
   "license": "MIT",
@@ -13,7 +13,9 @@
   },
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">= 6.10.0"
   },

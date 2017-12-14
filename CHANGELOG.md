@@ -8,13 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added
-- It's now possible to set custom HTTP headers for all requests wiht [`setExtraHTTPHeaders()`](docs/api.md#api-setextrahttpheaders), which is useful for authentication [#325](https://github.com/graphcool/chromeless/pull/325) [#31](https://github.com/graphcool/chromeless/issues/31) [#29](https://github.com/graphcool/chromeless/issues/29)
-- Extend screenshot with specific file path locally & screenshot element by selector [#137](https://github.com/graphcool/chromeless/pull/137), [#83](https://github.com/graphcool/chromeless/issues/83), [#41](https://github.com/graphcool/chromeless/issues/41), [#113](https://github.com/graphcool/chromeless/issues/113) @elisherer
-- Documentation for Chromeless constructor options [#243](https://github.com/graphcool/chromeless/pull/243), [#54](https://github.com/graphcool/chromeless/issues/54) @janza
+
+### Fixed
 
 ### Changed
 
-### Fixed
+## [1.4.0] - 2017-12-14
+
+### Added
+- It's now possible to set custom HTTP headers for all requests wiht [`setExtraHTTPHeaders()`](docs/api.md#api-setextrahttpheaders), which is useful for authentication [#325](https://github.com/graphcool/chromeless/pull/325) [#31](https://github.com/graphcool/chromeless/issues/31) [#29](https://github.com/graphcool/chromeless/issues/29)
+- Extend screenshot with specific file path locally & screenshot element by selector [#137](https://github.com/graphcool/chromeless/pull/137), [#83](https://github.com/graphcool/chromeless/issues/83), [#41](https://github.com/graphcool/chromeless/issues/41), [#113](https://github.com/graphcool/chromeless/issues/113) @elisherer
+- Documentation for Chromeless constructor options [#243](https://github.com/graphcool/chromeless/pull/243), [#54](https://github.com/graphcool/chromeless/issues/54) @janza
 
 
 ## [1.3.0] - 2017-08-29
