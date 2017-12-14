@@ -2,7 +2,15 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import * as cuid from 'cuid'
-import { Client, Cookie, DeviceMetrics, PdfOptions, BoxModel, Viewport, Headers } from './types'
+import {
+  Client,
+  Cookie,
+  DeviceMetrics,
+  PdfOptions,
+  BoxModel,
+  Viewport,
+  Headers,
+} from './types'
 import * as CDP from 'chrome-remote-interface'
 import * as AWS from 'aws-sdk'
 
@@ -564,8 +572,13 @@ export function getDebugOption(): boolean {
   return false
 }
 
-export function writeToFile(data: string, extension: string, filePathOverride: string): string {
-  const filePath = filePathOverride || path.join(os.tmpdir(), `${cuid()}.${extension}`)
+export function writeToFile(
+  data: string,
+  extension: string,
+  filePathOverride: string,
+): string {
+  const filePath =
+    filePathOverride || path.join(os.tmpdir(), `${cuid()}.${extension}`)
   fs.writeFileSync(filePath, Buffer.from(data, 'base64'))
   return filePath
 }
@@ -588,14 +601,17 @@ export function isS3Configured() {
 
 const s3ContentTypes = {
   'image/png': {
-    extension: 'png'
+    extension: 'png',
   },
   'application/pdf': {
-    extension: 'pdf'
+    extension: 'pdf',
   },
 }
 
-export async function uploadToS3(data: string, contentType: string): Promise<string> {
+export async function uploadToS3(
+  data: string,
+  contentType: string,
+): Promise<string> {
   const s3ContentType = s3ContentTypes[contentType]
   if (!s3ContentType) {
     throw new Error(`Unknown S3 Content type ${contentType}`)
@@ -603,14 +619,14 @@ export async function uploadToS3(data: string, contentType: string): Promise<str
   const s3Path = `${getS3ObjectKeyPrefix()}${cuid()}.${s3ContentType.extension}`
   const s3 = new AWS.S3()
   await s3
-        .putObject({
-          Bucket: getS3BucketName(),
-          Key: s3Path,
-          ContentType: contentType,
-          ACL: 'public-read',
-          Body: Buffer.from(data, 'base64'),
-        })
-        .promise()
+    .putObject({
+      Bucket: getS3BucketName(),
+      Key: s3Path,
+      ContentType: contentType,
+      ACL: 'public-read',
+      Body: Buffer.from(data, 'base64'),
+    })
+    .promise()
 
   return `https://${getS3BucketUrl()}/${s3Path}`
 }

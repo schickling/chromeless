@@ -154,7 +154,7 @@ export default class LocalRuntime {
 
   private async waitSelector(
     selector: string,
-    waitTimeout: number = this.chromelessOptions.waitTimeout
+    waitTimeout: number = this.chromelessOptions.waitTimeout,
   ): Promise<void> {
     this.log(`Waiting for ${selector} ${waitTimeout}`)
     await waitForNode(this.client, selector, waitTimeout)
@@ -403,10 +403,7 @@ export default class LocalRuntime {
 
   // Returns the S3 url or local file path
   async returnPdf(options?: PdfOptions): Promise<string> {
-    const {
-      filePath,
-      ...cdpOptions
-    } = options || { filePath: undefined }
+    const { filePath, ...cdpOptions } = options || { filePath: undefined }
     const data = await pdf(this.client, cdpOptions)
 
     if (isS3Configured()) {
