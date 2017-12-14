@@ -1,9 +1,49 @@
 version: 2
+
+workflows:
+  version: 2
+  chromeless:
+    jobs:
+      - build
+      - release:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+
 jobs:
+  # Build, lint, run tests
   build:
-    machine: true
+    working_directory: ~/chromeless
+    docker:
+      - image: circleci/node:8
+      - image: yukinying/chrome-headless-browser
     steps:
       - checkout
-      - run: docker run -d --rm --name chrome --shm-size 1024m -p 9222:9222 --cap-add SYS_ADMIN yukinying/chrome-headless-browser
+      - restore_cache:
+          keys:
+            - npm-cache-{{ checksum "package-lock.json" }}
       - run: npm install
+      - save_cache:
+          key: npm-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
       - run: npm test
+  # On master and if tests passed, parse the commit history to see if a new release should happen
+  # If yes, publish to npm and tag a release on GitHub
+  release:
+    working_directory: ~/chromeless
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - npm-cache-{{ checksum "package-lock.json" }}
+      - run: npm install
+      - save_cache:
+          key: npm-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+      - run: npm run semantic-release

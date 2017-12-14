@@ -1,5 +1,8 @@
 # Chromeless
-[![npm version](https://badge.fury.io/js/chromeless.svg)](https://badge.fury.io/js/chromeless) [![CircleCI](https://circleci.com/gh/graphcool/chromeless.svg?style=shield)](https://circleci.com/gh/graphcool/chromeless) [![Greenkeeper badge](https://badges.greenkeeper.io/graphcool/chromeless.svg)](https://greenkeeper.io/)
+[![npm version](https://badge.fury.io/js/chromeless.svg)](https://badge.fury.io/js/chromeless)
+[![CircleCI](https://circleci.com/gh/graphcool/chromeless.svg?style=shield)](https://circleci.com/gh/graphcool/chromeless)
+[![Greenkeeper badge](https://badges.greenkeeper.io/graphcool/chromeless.svg)](https://greenkeeper.io/)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[See Demo](https://chromeless.netlify.com/)**)
 
