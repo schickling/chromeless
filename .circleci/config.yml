@@ -4,32 +4,55 @@ workflows:
   version: 2
   chromeless:
     jobs:
-      - build
+      - build_node_6
+      - build_node_8
       - release:
           requires:
-            - build
+            - build_node_6
+            - build_node_8
           filters:
             branches:
               only: master
 
+restore_cache: &restore_cache
+  restore_cache:
+    keys:
+      - npm-cache-{{ checksum "package-lock.json" }}
+
+save_cache: &save_cache
+  save_cache:
+    key: npm-cache-{{ checksum "package-lock.json" }}
+    paths:
+      - ~/.npm
+
 jobs:
   # Build, lint, run tests
-  build:
+  build_node_6:
     working_directory: ~/chromeless
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:6
       - image: yukinying/chrome-headless-browser
     steps:
+      - run: sudo npm install -g npm@5 --quiet --no-progress --depth 0
+      - run: node -v; npm -v
       - checkout
-      - restore_cache:
-          keys:
-            - npm-cache-{{ checksum "package-lock.json" }}
+      - *restore_cache
       - run: npm install
-      - save_cache:
-          key: npm-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - ~/.npm
+      - *save_cache
       - run: npm test
+  build_node_8:
+    working_directory: ~/chromeless
+    docker:
+      - image: circleci/node:6
+      - image: yukinying/chrome-headless-browser
+    steps:
+      - run: node -v; npm -v
+      - checkout
+      - *restore_cache
+      - run: npm install
+      - *save_cache
+      - run: npm test
+
   # On master and if tests passed, parse the commit history to see if a new release should happen
   # If yes, publish to npm and tag a release on GitHub
   release:
@@ -37,13 +60,9 @@ jobs:
     docker:
       - image: circleci/node:8
     steps:
+      - run: node -v; npm -v
       - checkout
-      - restore_cache:
-          keys:
-            - npm-cache-{{ checksum "package-lock.json" }}
+      - *restore_cache
       - run: npm install
-      - save_cache:
-          key: npm-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - ~/.npm
+      - *save_cache
       - run: npm run semantic-release
