@@ -49,7 +49,7 @@ jobs:
   build_node_8:
     working_directory: ~/chromeless
     docker:
-      - image: circleci/node:6
+      - image: circleci/node:8
       - image: yukinying/chrome-headless-browser
     steps:
       - run: node -v; npm -v
