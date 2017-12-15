@@ -3,6 +3,7 @@
 [![npm](https://img.shields.io/npm/v/chromeless.svg)](https://npmjs.com/package/chromeless)
 [![downloads](https://img.shields.io/npm/dm/chromeless.svg)](https://npmjs.com/package/chromeless)
 [![circleci](https://circleci.com/gh/graphcool/chromeless.svg?style=shield)](https://circleci.com/gh/graphcool/workflows/chromeless/tree/master)
+[![codecov](https://codecov.io/gh/graphcool/chromeless/branch/master/graph/badge.svg)](https://codecov.io/gh/graphcool/chromeless)
 [![dependencies](https://david-dm.org/graphcool/chromeless/status.svg)](https://david-dm.org/graphcool/chromeless)
 [![node](https://img.shields.io/node/v/chromeless.svg)]()
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
