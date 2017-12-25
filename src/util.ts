@@ -363,10 +363,7 @@ export async function setCookies(
   const { Network } = client
 
   for (const cookie of cookies) {
-    await Network.setCookie({
-      ...cookie,
-      url: getUrlFromCookie(cookie),
-    })
+    await Network.setCookie(cookie)
   }
 }
 
@@ -414,11 +411,6 @@ export async function mouseup(client: Client, selector: string, scale: number) {
     ...options,
     type: 'mouseReleased',
   })
-}
-
-function getUrlFromCookie(cookie: Cookie) {
-  const domain = cookie.domain.slice(1, cookie.domain.length)
-  return `https://${domain}`
 }
 
 export async function deleteCookie(
