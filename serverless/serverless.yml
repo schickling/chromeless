@@ -46,6 +46,9 @@ plugins:
   - serverless-plugin-chrome
   - serverless-offline
 
+package:
+  excludeDevDependencies: true
+
 functions:
   run:
     memorySize: 1536

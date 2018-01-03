@@ -27,7 +27,7 @@
     "precommit": "lint-staged",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "prepublishOnly": "npm test && npm run build",
-    "prettier": "prettier --list-different --write \"**/*.{ts,json}\"",
+    "prettier": "prettier --list-different --write \"**/*.{ts,js,json}\"",
     "test": "npm run lint && npm run ava",
     "lint": "npm run prettier && npm run tslint",
     "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**",
@@ -74,12 +74,12 @@
   },
   "lint-staged": {
     "*.{ts}": [
-      "prettier --parser typescript --no-semi --single-quote --trailing-comma all --write",
+      "prettier",
       "tslint",
       "git add"
     ],
     "*.{js}": [
-      "prettier --no-semi --single-quote --trailing-comma all --write",
+      "prettier",
       "lint",
       "git add"
     ]
