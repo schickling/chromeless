@@ -17,7 +17,7 @@ As a contributor, you represent that the code you submit is your original work o
 
 0. [Fork][fork] and clone the repository
 0. Create a new branch: `git checkout -b feature/my-new-feature-name`
-0. Run `npm install` or `yarn install` to make sure you've got the latest dependencies.
+0. Run `npm install` to make sure you've got the latest dependencies.
 0. Make your change
 0. Run the unit tests and make sure they pass and have 100% coverage. (`npm test`)
 0. Push to your fork and [submit a pull request][pr]
@@ -26,7 +26,7 @@ As a contributor, you represent that the code you submit is your original work o
 Here are a few things you can do that will increase the likelihood of your pull request being accepted:
 
 - Keep your change as focused as possible. If there are multiple changes you would like to make that are not dependent upon each other, consider submitting them as separate pull requests.
-- Write a [good commit message](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
+- Make your commit message follow [Conventional Commits](https://conventionalcommits.org/).
 - In your pull request description, provide as much detail as possible. This context helps the reviewer to understand the motivation for and impact of the change.
 - Make sure that all the unit tests still pass. PRs with failing tests won't be merged.
 

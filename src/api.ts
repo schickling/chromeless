@@ -101,7 +101,11 @@ export default class Chromeless<T extends any> implements Promise<T> {
         break
       }
       case 'string': {
-        this.queue.enqueue({ type: 'wait', selector: firstArg, timeout: args[0] })
+        this.queue.enqueue({
+          type: 'wait',
+          selector: firstArg,
+          timeout: args[0],
+        })
         break
       }
       case 'function': {
