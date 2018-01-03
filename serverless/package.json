@@ -22,7 +22,7 @@
     "@types/node": "^8.5.2",
     "serverless": "^1.25.0",
     "serverless-offline": "^3.16.0",
-    "serverless-plugin-chrome": "^1.0.0-32",
+    "serverless-plugin-chrome": "^1.0.0-33",
     "serverless-plugin-typescript": "^1.1.5"
   }
 }
