@@ -9,21 +9,20 @@ const testUrl = `data:text/html,${testHtml}`
 
 const getPngMetaData = async (filePath): Promise<any> => {
   const fd = fs.openSync(filePath, 'r')
-  return await new Promise((resolve) => {
-    fs.read(fd, Buffer.alloc(24), 0, 24, 0,
-     (err, bytesRead, buffer) => resolve({
-       width: buffer.readUInt32BE(16),
-       height: buffer.readUInt32BE(20)
-     }))
+  return await new Promise(resolve => {
+    fs.read(fd, Buffer.alloc(24), 0, 24, 0, (err, bytesRead, buffer) =>
+      resolve({
+        width: buffer.readUInt32BE(16),
+        height: buffer.readUInt32BE(20),
+      }),
+    )
   })
 }
 
 // POC
 test('evaluate (document.title)', async t => {
   const chromeless = new Chromeless({ launchChrome: false })
-  const title = await chromeless
-    .goto(testUrl)
-    .evaluate(() => document.title)
+  const title = await chromeless.goto(testUrl).evaluate(() => document.title)
 
   await chromeless.end()
 
@@ -32,12 +31,8 @@ test('evaluate (document.title)', async t => {
 
 test('screenshot and pdf path', async t => {
   const chromeless = new Chromeless({ launchChrome: false })
-  const screenshot = await chromeless
-    .goto(testUrl)
-    .screenshot()
-  const pdf = await chromeless
-    .goto(testUrl)
-    .pdf()
+  const screenshot = await chromeless.goto(testUrl).screenshot()
+  const pdf = await chromeless.goto(testUrl).pdf()
 
   await chromeless.end()
 
@@ -48,18 +43,16 @@ test('screenshot and pdf path', async t => {
 })
 
 test('screenshot by selector', async t => {
-    const version = await CDP.Version()
-    const versionMajor = parseInt(/Chrome\/(\d+)/.exec(version['User-Agent'])[1])
-    // clipping will only work on chrome 61+
+  const version = await CDP.Version()
+  const versionMajor = parseInt(/Chrome\/(\d+)/.exec(version['User-Agent'])[1])
+  // clipping will only work on chrome 61+
 
-    const chromeless = new Chromeless({ launchChrome: false })
-    const screenshot = await chromeless
-        .goto(testUrl)
-        .screenshot('img')
+  const chromeless = new Chromeless({ launchChrome: false })
+  const screenshot = await chromeless.goto(testUrl).screenshot('img')
 
-    await chromeless.end()
+  await chromeless.end()
 
-    const png = await getPngMetaData(screenshot)
-    t.is(png.width, versionMajor > 60 ? 512 : 1440)
-    t.is(png.height, versionMajor > 60 ? 512 : 900)
+  const png = await getPngMetaData(screenshot)
+  t.is(png.width, versionMajor > 60 ? 512 : 1440)
+  t.is(png.height, versionMajor > 60 ? 512 : 900)
 })
