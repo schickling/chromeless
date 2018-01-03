@@ -595,6 +595,10 @@ function getS3ObjectKeyPrefix() {
   return process.env['CHROMELESS_S3_OBJECT_KEY_PREFIX'] || ''
 }
 
+function getS3FilesPermissions() {
+  return process.env['CHROMELESS_S3_FILES_PERMISSIONS'] || 'public-read'
+}
+
 export function isS3Configured() {
   return getS3BucketName() && getS3BucketUrl()
 }
@@ -623,7 +627,7 @@ export async function uploadToS3(
       Bucket: getS3BucketName(),
       Key: s3Path,
       ContentType: contentType,
-      ACL: 'public-read',
+      ACL: getS3FilesPermissions(),
       Body: Buffer.from(data, 'base64'),
     })
     .promise()
