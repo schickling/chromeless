@@ -494,6 +494,15 @@ export async function html(client: Client): Promise<string> {
   return outerHTML
 }
 
+export async function htmlUrl(client: Client): Promise<string> {
+  const { DOM } = client
+
+  const { root: { nodeId } } = await DOM.getDocument()
+  const { outerHTML } = await DOM.getOuterHTML({ nodeId })
+  return outerHTML
+}
+
+
 export async function pdf(
   client: Client,
   options?: PdfOptions,
