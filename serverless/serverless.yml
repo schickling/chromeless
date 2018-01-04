@@ -3,7 +3,9 @@ service: chromeless-serverless
 custom:
   stage: dev
   debug: "*"
-  awsIotHost: ${env:AWS_IOT_HOST}
+  aws:
+    iotHost: ${env:AWS_IOT_HOST}
+    region: ${env:AWS_REGION}
   chrome:
     functions:
       - run
@@ -12,10 +14,10 @@ provider:
   name: aws
   runtime: nodejs6.10
   stage: ${self:custom.stage}
-  region: eu-west-1
+  region: ${self:custom.aws.region}
   environment:
     DEBUG: ${self:custom.debug}
-    AWS_IOT_HOST: ${self:custom.awsIotHost}
+    AWS_IOT_HOST: ${self:custom.aws.iotHost}
   apiKeys:
     - ${self:custom.stage}-chromeless-session-key
   iamRoleStatements:
@@ -45,6 +47,9 @@ plugins:
   - serverless-plugin-typescript
   - serverless-plugin-chrome
   - serverless-offline
+
+package:
+  excludeDevDependencies: true
 
 functions:
   run:

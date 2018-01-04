@@ -6,7 +6,7 @@ const iotData = new AWS.IotData({ endpoint: process.env.AWS_IOT_HOST })
 export default async ({ channelId }, context, callback): Promise<void> => {
   debug('Disconnect on', channelId)
 
-  let params = {
+  const params = {
     topic: `chrome/${channelId}/end`,
     payload: JSON.stringify({ channelId, client: true, disconnected: true }),
     qos: 1,

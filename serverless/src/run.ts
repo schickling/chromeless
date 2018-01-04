@@ -3,16 +3,34 @@ import { LocalChrome, Queue, ChromelessOptions } from 'chromeless'
 import { connect as mqtt, MqttClient } from 'mqtt'
 import { createPresignedURL, debug } from './utils'
 
+let isLambdaColdStart = true
+
+if (process.env.DEBUG) {
+  process.on('unhandledRejection', error =>
+    console.warn('There was an unhandledRejection', error),
+  )
+  process.on('uncaughtException', error =>
+    console.error('There was an uncaughtException', error),
+  )
+}
+
 export default async (
   { channelId, options },
   context,
   callback,
-  chromeInstance
+  chromeInstance,
 ): Promise<void> => {
   // used to block requests from being processed while we're exiting
   let endingInvocation = false
   let timeout
   let executionCheckInterval
+
+  if (isLambdaColdStart) {
+    debug('Coldstart Lambda container')
+    isLambdaColdStart = false
+  } else {
+    debug('Warm Lambda container')
+  }
 
   debug('Invoked with data: ', channelId, options)
 
@@ -30,6 +48,7 @@ export default async (
   const TOPIC_RESPONSE = `chrome/${channelId}/response`
   const TOPIC_END = `chrome/${channelId}/end`
 
+  // @TODO: might make sense to switch to https://github.com/mqttjs/async-mqtt
   const channel = mqtt(createPresignedURL())
 
   if (process.env.DEBUG) {
@@ -42,25 +61,49 @@ export default async (
     Importantly we publish a message that we're disconnecting, and then
     we kill the running Chrome instance.
   */
-  const end = (topic_end_data = {}) => {
+  const end = async (topic_end_data = {}) => {
+    debug('Ending invocation..')
+
     if (!endingInvocation) {
       endingInvocation = true
       clearInterval(executionCheckInterval)
       clearTimeout(timeout)
 
-      channel.unsubscribe(TOPIC_END, () => {
-        channel.publish(TOPIC_END, JSON.stringify({ channelId, chrome: true, ...topic_end_data }), {
-          qos: 0,
-        }, async () => {
-          channel.end()
+      try {
+        await new Promise(resolve => {
+          channel.unsubscribe(TOPIC_END, () => {
+            debug(`Unsubscribed from ${TOPIC_END}`)
 
-          await chrome.close()
-          await chromeInstance.kill()
+            channel.publish(
+              TOPIC_END,
+              JSON.stringify({ channelId, chrome: true, ...topic_end_data }),
+              {
+                qos: 0,
+              },
+              async () => {
+                await new Promise(resolve => channel.end(false, resolve))
 
-          callback()
+                await queue.end()
+                debug('Closed chromeless queue instance')
+
+                await chromeInstance.kill()
+                debug('Killed Chrome')
+
+                resolve()
+              },
+            )
+          })
         })
-      })
+      } catch (error) {
+        debug('Something went wrong while trying to end the session', error)
+        throw new Error(error)
+      }
+
+      debug('Chromeless Proxy session concluded.')
+      return callback(null, 'success')
     }
+
+    return Promise.resolve()
   }
 
   const newTimeout = () =>
@@ -120,7 +163,7 @@ export default async (
             channel.publish(TOPIC_RESPONSE, remoteResult, { qos: 1 })
           } catch (error) {
             const remoteResult = JSON.stringify({
-              error: error.toString(),
+              error: error.toString(), // @TODO: handle this in ChromelessRemote
             })
 
             debug('Chrome error', error)
@@ -138,8 +181,8 @@ export default async (
       Either the client purposfully ended the session, or the client
       connection was abruptly ended resulting in a last-will message
       being dispatched by the IoT MQTT broker.
-      */
-    channel.subscribe(TOPIC_END, async () => {
+    */
+    channel.subscribe(TOPIC_END, () => {
       channel.on('message', async (topic, buffer) => {
         if (TOPIC_END === topic) {
           const message = buffer.toString()
@@ -147,7 +190,7 @@ export default async (
 
           debug(`Message from ${TOPIC_END}`, message)
           debug(
-            `Client ${data.disconnected ? 'disconnected' : 'ended session'}.`
+            `Client ${data.disconnected ? 'disconnected' : 'ended session'}.`,
           )
 
           await end()

@@ -1,7 +1,7 @@
 const { Chromeless } = require('chromeless')
 
-const twitterUsername = "xxx"
-const twitterPassword = "xxx"
+const twitterUsername = 'xxx'
+const twitterPassword = 'xxx'
 
 async function run() {
   const chromeless = new Chromeless()
@@ -18,4 +18,3 @@ async function run() {
 }
 
 run().catch(console.error.bind(console))
-
