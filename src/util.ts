@@ -153,15 +153,29 @@ export async function getClientRect(client, selector): Promise<ClientRect> {
   return JSON.parse(result.result.value) as ClientRect
 }
 
-export async function click(client: Client, selector: string, scale: number) {
-  const clientRect = await getClientRect(client, selector)
-  const { Input } = client
+export async function click(client: Client, selector: string, scale: number)
+export async function click(client: Client, x: number, y: number)
+export async function click(firstArg, secondArg, thirdArg, ...args: any[]) {
 
-  const options = {
-    x: Math.round((clientRect.left + clientRect.width / 2) * scale),
-    y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+  const {Input} = firstArg
+
+  let options = {
     button: 'left',
     clickCount: 1,
+    x: 0,
+    y: 0
+  }
+
+  switch (typeof secondArg) {
+    case 'string': {
+      const clientRect = await getClientRect(firstArg, secondArg)
+      options.x = Math.round((clientRect.left + clientRect.width / 2) * thirdArg)
+      options.y = Math.round((clientRect.left + clientRect.height / 2) * thirdArg)
+    }
+    case 'number': {
+      options.x = secondArg;
+      options.y = thirdArg;
+    }
   }
 
   await Input.dispatchMouseEvent({
@@ -172,6 +186,7 @@ export async function click(client: Client, selector: string, scale: number) {
     ...options,
     type: 'mouseReleased',
   })
+
 }
 
 export async function focus(client: Client, selector: string): Promise<void> {
