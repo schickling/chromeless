@@ -420,33 +420,13 @@ export default class LocalRuntime {
     return await html(this.client)
   }
 
-  async returnHtmlUrl(): Promise<string> {
+  async returnHtmlUrl(options?: { filePath?: string }): Promise<string> {
     const data = await html(this.client)
 
-    // check if S3 configured
-    if (
-      process.env['CHROMELESS_S3_BUCKET_NAME'] &&
-      process.env['CHROMELESS_S3_BUCKET_URL']
-    ) {
-      const s3Path = `${cuid()}.html`
-      const s3 = new AWS.S3()
-      await s3
-        .putObject({
-          Bucket: process.env['CHROMELESS_S3_BUCKET_NAME'],
-          Key: s3Path,
-          ContentType: 'text/html',
-          ACL: 'public-read',
-          Body: new Buffer(data, 'utf-8'),
-        })
-        .promise()
-
-      return `https://${process.env['CHROMELESS_S3_BUCKET_URL']}/${s3Path}`
+    if (isS3Configured()) {
+      return await uploadToS3(data, 'text/html')
     } else {
-      // write to `${os.tmpdir()}` instead
-      const filePath = path.join(os.tmpdir(), `${cuid()}.html`)
-      fs.writeFileSync(filePath, Buffer.from(data, 'utf-8'))
-
-      return filePath
+      return writeToFile(data, 'html', options && options.filePath)
     }
   }
 
