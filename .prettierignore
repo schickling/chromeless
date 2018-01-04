@@ -1,0 +1,6 @@
+.nyc_output/
+*.md
+dist/
+package.json
+package-lock.json
+serverless/

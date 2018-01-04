@@ -5,10 +5,13 @@ export interface Client {
   Input: any
   Runtime: any
   Emulation: any
+  Storage: any
   close: () => void
   target: {
     id: string
   }
+  port: any
+  host: any
 }
 
 export interface DeviceMetrics {
@@ -127,6 +130,10 @@ export type Command =
       html: string
     }
   | {
+      type: 'setExtraHTTPHeaders'
+      headers: Headers
+    }
+  | {
       type: 'press'
       keyCode: number
       count?: number
@@ -139,6 +146,11 @@ export type Command =
     }
   | {
       type: 'clearCookies'
+    }
+  | {
+      type: 'clearStorage'
+      origin: string
+      storageTypes: string
     }
   | {
       type: 'deleteCookies'
@@ -178,6 +190,8 @@ export type Command =
       selector: string
       files: string[]
     }
+
+export type Headers = Record<string, string>
 
 export interface Cookie {
   url?: string

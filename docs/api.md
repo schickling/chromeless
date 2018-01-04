@@ -26,6 +26,7 @@ Chromeless provides TypeScript typings.
 - [`wait(selector: string, timeout?: number)`](#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
 - [`clearCache()`](#api-clearcache)
+- [`clearStorage(origin: string, storageTypes: string)`](docs/api.md#api-clearstorage)
 - [`focus(selector: string)`](#api-focus)
 - [`press(keyCode: number, count?: number, modifiers?: any)`](#api-press)
 - [`type(input: string, selector?: string)`](#api-type)
@@ -163,7 +164,7 @@ await chromeless.wait('div#loaded', 1000)
 
 Not implemented yet
 
-Wait until a function returns.
+Wait until a function returns. You can also return some Promise that will be resolved at some point.
 
 __Arguments__
 - `fn` - Function to wait for
@@ -172,7 +173,12 @@ __Arguments__
 __Example__
 
 ```js
-await chromeless.wait(() => { return console.log('@TODO: put a better example here') })
+await chromeless.wait(() => { 
+  return new Promise((resolve, reject) => {
+    // do something async, setTimeout...
+    resolve();
+  });
+})
 ```
 
 ---------------------------------------
@@ -189,6 +195,27 @@ __Example__
 
 ```js
 await chromeless.clearCache()
+```
+
+---------------------------------------
+
+<a name="api-clearstorage" />
+
+### clearStorage(origin: string, storageTypes: string): Chromeless<T>
+
+Clears browser storage.
+
+__Arguments__
+- `origin` - Security origin for the storage type we wish to clear
+
+- `storageTypes` - A string comma separated list of chrome storage types. Allowed values include: appcache, cookies, file_systems, indexeddb, local_storage, shader_cache, websql, service_workers, cache_storage, all, other. More information at the [Chrome Devtools Protocol website](https://chromedevtools.github.io/devtools-protocol/tot/Storage/).
+
+__Example__
+
+```js
+await chromeless.clearStorage('http://localhost', 'local_storage, websql')
+
+await chromeless.clearStorage('*', 'all')
 ```
 
 ---------------------------------------
@@ -356,6 +383,26 @@ __Example__
 ```js
 await chromeless.setHtml('<h1>Hello world!</h1>')
 ```
+
+  ---------------------------------------
+
+<a name="api-setextrahttpheaders" />
+
+### setExtraHTTPHeaders(headers: Headers): Chromeless<T>
+
+Sets extra HTTP headers.
+
+__Arguments__
+- `headers` - headers as keys / values of JSON object
+
+__Example__
+
+```js
+await chromeless.setExtraHTTPHeaders({
+  'accept-language': 'en-US,en;q=0.8'
+})
+```
+
 
 ---------------------------------------
 

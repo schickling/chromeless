@@ -1,26 +1,16 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es5",
-		"moduleResolution": "node",
-		"sourceMap": true,
-		"outDir": "dist",
-		"lib": [
-			"es6",
-			"dom"
-		],
-		"strictNullChecks": false,
-		"pretty": true,
-		"rootDir": ".",
-		"forceConsistentCasingInFileNames": true
-	},
-	"exclude": [
-		"node_modules",
-		"node_modules/**",
-		"dist"
-	],
-	"include": [
-		"./src/**/*.ts",
-		"./examples/**/*.ts"
-	]
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "lib": ["es6", "dom"],
+    "strictNullChecks": false,
+    "pretty": true,
+    "rootDir": ".",
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": ["node_modules", "node_modules/**", "dist"],
+  "include": ["./src/**/*.ts", "./examples/**/*.ts"]
 }
