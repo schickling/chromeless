@@ -53,7 +53,7 @@
     "ava": "^0.24.0",
     "commitlint": "^5.2.5",
     "husky": "^0.14.3",
-    "lint-staged": "^4.0.2",
+    "lint-staged": "^6.0.0",
     "nyc": "^11.1.0",
     "prettier": "1.9.2",
     "rimraf": "^2.6.1",
