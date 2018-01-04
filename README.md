@@ -141,6 +141,9 @@ const chromeless = new Chromeless({
 
 ## API Documentation
 
+**Chromeless constructor options**
+- [`new Chromeless(options: ChromelessOptions)`](docs/api.md#chromeless-constructor-options)
+
 **Chromeless methods**
 - [`end()`](docs/api.md#api-end)
 

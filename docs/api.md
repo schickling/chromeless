@@ -2,7 +2,7 @@
 
 Chromeless provides TypeScript typings.
 
-**Chromeless constructor options**
+### Chromeless constructor options
 
 `new Chromeless(options: ChromelessOptions)`
 
@@ -15,10 +15,10 @@ Chromeless provides TypeScript typings.
 - `launchChrome: boolean` Auto-launch chrome (local) — Default: `true`
 - `cdp: CDPOptions` Chome Debugging Protocol Options — Default: `{host: 'localhost', port: 9222, secure: false, closeTab: true}`
 
-**Chromeless methods**
+### Chromeless methods
 - [`end()`](#api-end)
 
-**Chrome methods**
+### Chrome methods
 - [`goto(url: string)`](#api-goto)
 - [`setUserAgent(useragent: string)`](#api-setuseragent)
 - [`click(selector: string)`](#api-click)
