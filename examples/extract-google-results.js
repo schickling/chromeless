@@ -10,10 +10,10 @@ async function run() {
     .wait('#resultStats')
     .evaluate(() => {
       // this will be executed in headless chrome
-      const links = [].map.call(
-        document.querySelectorAll('.g h3 a'),
-        a => ({title: a.innerText, href: a.href})
-      )
+      const links = [].map.call(document.querySelectorAll('.g h3 a'), a => ({
+        title: a.innerText,
+        href: a.href,
+      }))
       return JSON.stringify(links)
     })
     // you can still use the method chaining API after evaluating
