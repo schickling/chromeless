@@ -8,6 +8,7 @@
     "node": ">= 6.10.0"
   },
   "scripts": {
+    "predeploy": "node scripts/predeploy.js",
     "deploy": "serverless deploy"
   },
   "dependencies": {
