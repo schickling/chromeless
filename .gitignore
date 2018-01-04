@@ -7,3 +7,5 @@ dist
 .build
 .envrc
 .nyc_output/
+coverage/
+yarn.lock

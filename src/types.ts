@@ -5,10 +5,13 @@ export interface Client {
   Input: any
   Runtime: any
   Emulation: any
+  Storage: any
   close: () => void
   target: {
     id: string
   }
+  port: any
+  host: any
 }
 
 export interface DeviceMetrics {
@@ -143,6 +146,11 @@ export type Command =
     }
   | {
       type: 'clearCookies'
+    }
+  | {
+      type: 'clearStorage'
+      origin: string
+      storageTypes: string
     }
   | {
       type: 'deleteCookies'

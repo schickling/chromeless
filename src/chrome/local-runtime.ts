@@ -68,6 +68,8 @@ export default class LocalRuntime {
       }
       case 'clearCache':
         return this.clearCache()
+      case 'clearStorage':
+        return this.clearStorage(command.origin, command.storageTypes)
       case 'setUserAgent':
         return this.setUserAgent(command.useragent)
       case 'click':
@@ -142,6 +144,17 @@ export default class LocalRuntime {
     }
   }
 
+  private async clearStorage(origin: string, storageTypes: string): Promise<void> {
+    const { Storage, Network } = this.client
+    const canClearCache = await Network.canClearBrowserCache
+    if (canClearCache) {
+      await Storage.clearDataForOrigin({origin, storageTypes})
+      this.log(`${storageTypes} for ${origin} is cleared`)
+    } else {
+      this.log(`${storageTypes} could not be cleared`)
+    }
+  }
+
   private async setUserAgent(useragent: string): Promise<void> {
     this.userAgentValue = useragent
     await this.log(`Set useragent to ${this.userAgentValue}`)
@@ -154,7 +167,7 @@ export default class LocalRuntime {
 
   private async waitSelector(
     selector: string,
-    waitTimeout: number = this.chromelessOptions.waitTimeout
+    waitTimeout: number = this.chromelessOptions.waitTimeout,
   ): Promise<void> {
     this.log(`Waiting for ${selector} ${waitTimeout}`)
     await waitForNode(this.client, selector, waitTimeout)
@@ -403,10 +416,7 @@ export default class LocalRuntime {
 
   // Returns the S3 url or local file path
   async returnPdf(options?: PdfOptions): Promise<string> {
-    const {
-      filePath,
-      ...cdpOptions
-    } = options || { filePath: undefined }
+    const { filePath, ...cdpOptions } = options || { filePath: undefined }
     const data = await pdf(this.client, cdpOptions)
 
     if (isS3Configured()) {

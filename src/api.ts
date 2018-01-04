@@ -101,7 +101,11 @@ export default class Chromeless<T extends any> implements Promise<T> {
         break
       }
       case 'string': {
-        this.queue.enqueue({ type: 'wait', selector: firstArg, timeout: args[0] })
+        this.queue.enqueue({
+          type: 'wait',
+          selector: firstArg,
+          timeout: args[0],
+        })
         break
       }
       case 'function': {
@@ -117,6 +121,12 @@ export default class Chromeless<T extends any> implements Promise<T> {
 
   clearCache(): Chromeless<T> {
     this.queue.enqueue({ type: 'clearCache' })
+
+    return this
+  }
+
+  clearStorage(origin: string, storageTypes: string): Chromeless<T> {
+    this.queue.enqueue({ type: 'clearStorage', origin, storageTypes })
 
     return this
   }
