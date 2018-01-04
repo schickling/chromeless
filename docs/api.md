@@ -26,6 +26,7 @@ Chromeless provides TypeScript typings.
 - [`wait(selector: string, timeout?: number)`](#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
 - [`clearCache()`](docs/api.md#api-clearcache)
+- [`clearStorage(origin: string, storageTypes: string)`](docs/api.md#api-clearstorage)
 - [`focus(selector: string)`](#api-focus)
 - [`press(keyCode: number, count?: number, modifiers?: any)`](#api-press)
 - [`type(input: string, selector?: string)`](#api-type)
@@ -194,6 +195,27 @@ __Example__
 
 ```js
 await chromeless.clearCache()
+```
+
+---------------------------------------
+
+<a name="api-clearstorage" />
+
+### clearStorage(origin: string, storageTypes: string): Chromeless<T>
+
+Clears browser storage.
+
+__Arguments__
+- `origin` - Security origin for the storage type we wish to clear
+
+- `storageTypes` - A string comma separated list of chrome storage types. Allowed values include: appcache, cookies, file_systems, indexeddb, local_storage, shader_cache, websql, service_workers, cache_storage, all, other. More information at the [Chrome Devtools Protocol website](https://chromedevtools.github.io/devtools-protocol/tot/Storage/).
+
+__Example__
+
+```js
+await chromeless.clearStorage('http://localhost', 'local_storage, websql')
+
+await chromeless.clearStorage('*', 'all')
 ```
 
 ---------------------------------------
