@@ -502,7 +502,6 @@ export async function htmlUrl(client: Client): Promise<string> {
   return outerHTML
 }
 
-
 export async function pdf(
   client: Client,
   options?: PdfOptions,

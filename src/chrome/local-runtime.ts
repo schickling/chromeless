@@ -147,11 +147,14 @@ export default class LocalRuntime {
     }
   }
 
-  private async clearStorage(origin: string, storageTypes: string): Promise<void> {
+  private async clearStorage(
+    origin: string,
+    storageTypes: string,
+  ): Promise<void> {
     const { Storage, Network } = this.client
     const canClearCache = await Network.canClearBrowserCache
     if (canClearCache) {
-      await Storage.clearDataForOrigin({origin, storageTypes})
+      await Storage.clearDataForOrigin({ origin, storageTypes })
       this.log(`${storageTypes} for ${origin} is cleared`)
     } else {
       this.log(`${storageTypes} could not be cleared`)

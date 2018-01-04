@@ -260,12 +260,11 @@ export default class Chromeless<T extends any> implements Promise<T> {
 
   htmlUrl(): Chromeless<string> {
     this.lastReturnPromise = this.queue.process<string>({
-      type: 'returnHtmlUrl'
+      type: 'returnHtmlUrl',
     })
 
     return new Chromeless<string>({}, this)
   }
-
 
   pdf(options?: PdfOptions): Chromeless<string> {
     this.lastReturnPromise = this.queue.process<string>({
