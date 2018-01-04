@@ -1,11 +1,12 @@
-Before submitting a pull request, please make sure the following is done:
+<!--
+  Thanks for filing a pull request for Chromeless!
 
-- [ ] Fork the repository and create your branch from master.
-- [ ] If you've added code that should be tested, add tests!
-- [ ] If you've changed APIs, update the documentation in [README](/) and [api/README](api/README.md)
-- [ ] If you've made a notable change (major enhancement, new feature) be sure to add it to the unreleased section in the [CHANGELOG](CHANGELOG.md)
-- [ ] Ensure the test suite passes (npm test).
-- [ ] Format your code with prettier (npm run prettier).
-- [ ] Make sure your code lints (npm run lint).
+  Please look at the following checklist to ensure that your PR
+  can be accepted quickly. Once all the items are checked-off (and CircleCI is passing), we will review your PR:
+-->
 
-
+- [ ] If this PR is a new feature, reference an issue where a consensus about the design was reached (not necessary for small changes)
+- [ ] Make sure all of the significant new logic is covered by tests
+- [ ] Rebase your changes on master so that they can be merged easily
+- [ ] Make sure all tests and linter rules pass
+- [ ] If you've changed APIs, update the documentation in [README](/) and [/api/README](/api/README.md)
