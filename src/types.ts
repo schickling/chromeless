@@ -10,6 +10,8 @@ export interface Client {
   target: {
     id: string
   }
+  port: any
+  host: any
 }
 
 export interface DeviceMetrics {
