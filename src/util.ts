@@ -366,7 +366,7 @@ export async function setCookies(
   for (const cookie of cookies) {
     await Network.setCookie({
       ...cookie,
-      url: getUrlFromCookie(cookie),
+      url: cookie.url ? cookie.url : getUrlFromCookie(cookie),
     })
   }
 }
