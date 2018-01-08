@@ -605,7 +605,7 @@ function getS3ObjectKeyPrefix() {
 }
 
 function getS3FilesPermissions() {
-  return process.env['CHROMELESS_S3_FILES_PERMISSIONS'] || 'public-read'
+  return process.env['CHROMELESS_S3_OBJECT_ACL'] || 'public-read'
 }
 
 export function isS3Configured() {
