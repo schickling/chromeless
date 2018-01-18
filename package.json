@@ -30,7 +30,7 @@
     "prettier": "prettier --list-different --write \"**/*.{ts,json}\"",
     "test": "npm run lint && npm run ava",
     "lint": "npm run prettier && npm run tslint",
-    "tslint": "tslint -c tslint.json -p tsconfig.json --exclude node_modules/**",
+    "tslint": "tslint -c tslint.json -p tsconfig.json --exclude 'node_modules/**'",
     "watch": "tsc -w",
     "watch:test": "tsc -d -w & ava --watch",
     "semantic-release": "semantic-release"
