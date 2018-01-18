@@ -26,7 +26,6 @@
     "coverage": "npm run ava",
     "precommit": "lint-staged",
     "commitmsg": "commitlint -e $GIT_PARAMS",
-    "prepublishOnly": "npm test && npm run build",
     "prettier": "prettier --list-different --write \"**/*.{ts,json}\"",
     "test": "npm run lint && npm run ava",
     "lint": "npm run prettier && npm run tslint",

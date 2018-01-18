@@ -71,4 +71,5 @@ jobs:
       - *restore_cache
       - run: npm install
       - *save_cache
+      - run: npm run build
       - run: npm run semantic-release
