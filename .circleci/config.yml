@@ -38,7 +38,6 @@ jobs:
       - image: circleci/node:6
       - image: yukinying/chrome-headless-browser
     steps:
-      - run: sudo npm install -g npm@5 --quiet --no-progress --depth 0
       - run: node -v; npm -v
       - checkout
       - *restore_cache
