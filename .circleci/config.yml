@@ -1,9 +1,75 @@
 version: 2
+
+workflows:
+  version: 2
+  chromeless:
+    jobs:
+      - build_node_6
+      - build_node_8
+      - release:
+          requires:
+            - build_node_6
+            - build_node_8
+          filters:
+            branches:
+              only: master
+
+restore_cache: &restore_cache
+  restore_cache:
+    keys:
+      - npm-cache-{{ checksum "package-lock.json" }}
+
+save_cache: &save_cache
+  save_cache:
+    key: npm-cache-{{ checksum "package-lock.json" }}
+    paths:
+      - ~/.npm
+
+codecov: &codecov
+  run:
+    name: Codecov
+    command: node_modules/.bin/nyc report --reporter=json && bash <(curl -s https://codecov.io/bash) -f coverage/coverage-final.json
+
 jobs:
-  build:
-    machine: true
+  # Build, lint, run tests
+  build_node_6:
+    working_directory: ~/chromeless
+    docker:
+      - image: circleci/node:6
+      - image: yukinying/chrome-headless-browser
     steps:
+      - run: node -v; npm -v
       - checkout
-      - run: docker run -d --rm --name chrome --shm-size 1024m -p 9222:9222 --cap-add SYS_ADMIN yukinying/chrome-headless-browser
+      - *restore_cache
       - run: npm install
+      - *save_cache
       - run: npm test
+      - *codecov
+  build_node_8:
+    working_directory: ~/chromeless
+    docker:
+      - image: circleci/node:8
+      - image: yukinying/chrome-headless-browser
+    steps:
+      - run: node -v; npm -v
+      - checkout
+      - *restore_cache
+      - run: npm install
+      - *save_cache
+      - run: npm test
+      - *codecov
+
+  # On master and if tests passed, parse the commit history to see if a new release should happen
+  # If yes, publish to npm and tag a release on GitHub
+  release:
+    working_directory: ~/chromeless
+    docker:
+      - image: circleci/node:8
+    steps:
+      - run: node -v; npm -v
+      - checkout
+      - *restore_cache
+      - run: npm install
+      - *save_cache
+      - run: npm run build
+      - run: npm run semantic-release

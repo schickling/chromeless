@@ -16,6 +16,7 @@ import {
   evaluate,
   screenshot,
   html,
+  htmlUrl,
   pdf,
   type,
   getValue,
@@ -68,6 +69,8 @@ export default class LocalRuntime {
       }
       case 'clearCache':
         return this.clearCache()
+      case 'clearStorage':
+        return this.clearStorage(command.origin, command.storageTypes)
       case 'setUserAgent':
         return this.setUserAgent(command.useragent)
       case 'click':
@@ -80,6 +83,8 @@ export default class LocalRuntime {
         return this.returnScreenshot(command.selector, command.options)
       case 'returnHtml':
         return this.returnHtml()
+      case 'returnHtmlUrl':
+        return this.returnHtmlUrl()
       case 'returnPdf':
         return this.returnPdf(command.options)
       case 'returnInputValue':
@@ -142,6 +147,20 @@ export default class LocalRuntime {
     }
   }
 
+  private async clearStorage(
+    origin: string,
+    storageTypes: string,
+  ): Promise<void> {
+    const { Storage, Network } = this.client
+    const canClearCache = await Network.canClearBrowserCache
+    if (canClearCache) {
+      await Storage.clearDataForOrigin({ origin, storageTypes })
+      this.log(`${storageTypes} for ${origin} is cleared`)
+    } else {
+      this.log(`${storageTypes} could not be cleared`)
+    }
+  }
+
   private async setUserAgent(useragent: string): Promise<void> {
     this.userAgentValue = useragent
     await this.log(`Set useragent to ${this.userAgentValue}`)
@@ -154,7 +173,7 @@ export default class LocalRuntime {
 
   private async waitSelector(
     selector: string,
-    waitTimeout: number = this.chromelessOptions.waitTimeout
+    waitTimeout: number = this.chromelessOptions.waitTimeout,
   ): Promise<void> {
     this.log(`Waiting for ${selector} ${waitTimeout}`)
     await waitForNode(this.client, selector, waitTimeout)
@@ -401,12 +420,19 @@ export default class LocalRuntime {
     return await html(this.client)
   }
 
+  async returnHtmlUrl(options?: { filePath?: string }): Promise<string> {
+    const data = await html(this.client)
+
+    if (isS3Configured()) {
+      return await uploadToS3(data, 'text/html')
+    } else {
+      return writeToFile(data, 'html', options && options.filePath)
+    }
+  }
+
   // Returns the S3 url or local file path
   async returnPdf(options?: PdfOptions): Promise<string> {
-    const {
-      filePath,
-      ...cdpOptions
-    } = options || { filePath: undefined }
+    const { filePath, ...cdpOptions } = options || { filePath: undefined }
     const data = await pdf(this.client, cdpOptions)
 
     if (isS3Configured()) {
