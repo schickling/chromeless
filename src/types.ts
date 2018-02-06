@@ -64,6 +64,7 @@ export type Command =
   | {
       type: 'goto'
       url: string
+      timeout?: number
     }
   | {
       type: 'clearCache'

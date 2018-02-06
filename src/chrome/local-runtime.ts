@@ -40,6 +40,8 @@ import {
   writeToFile,
   isS3Configured,
   uploadToS3,
+  eventToPromise,
+  waitForPromise,
 } from '../util'
 
 export default class LocalRuntime {
@@ -55,7 +57,7 @@ export default class LocalRuntime {
   async run(command: Command): Promise<any> {
     switch (command.type) {
       case 'goto':
-        return this.goto(command.url)
+        return this.goto(command.url, command.timeout)
       case 'setViewport':
         return setViewport(this.client, command.options)
       case 'wait': {
@@ -126,13 +128,18 @@ export default class LocalRuntime {
     }
   }
 
-  private async goto(url: string): Promise<void> {
+  private async goto(
+    url: string,
+    waitTimeout: number = this.chromelessOptions.waitTimeout,
+  ): Promise<void> {
     const { Network, Page } = this.client
     await Promise.all([Network.enable(), Page.enable()])
     if (!this.userAgentValue) this.userAgentValue = `Chromeless ${version}`
     await Network.setUserAgentOverride({ userAgent: this.userAgentValue })
+    const e2p = eventToPromise()
+    Page.loadEventFired(e2p.onEvent)
     await Page.navigate({ url })
-    await Page.loadEventFired()
+    await waitForPromise(e2p.fired(), waitTimeout, 'page load event')
     this.log(`Navigated to ${url}`)
   }
 
