@@ -38,6 +38,32 @@ export default class LocalChrome implements Chrome {
     const { port } = this.options.cdp
     this.chromeInstance = await launch({
       logLevel: this.options.debug ? 'info' : 'silent',
+      chromeFlags: [
+        // Do not render scroll bars
+        '--hide-scrollbars',
+
+        // The following options copied verbatim from https://github.com/GoogleChrome/chrome-launcher/blob/master/src/flags.ts
+
+        // Disable built-in Google Translate service
+        '--disable-translate',
+        // Disable all chrome extensions entirely
+        '--disable-extensions',
+        // Disable various background network services, including extension updating,
+        //   safe browsing service, upgrade detector, translate, UMA
+        '--disable-background-networking',
+        // Disable fetching safebrowsing lists, likely redundant due to disable-background-networking
+        '--safebrowsing-disable-auto-update',
+        // Disable syncing to a Google account
+        '--disable-sync',
+        // Disable reporting to UMA, but allows for collection
+        '--metrics-recording-only',
+        // Disable installation of default apps on first run
+        '--disable-default-apps',
+        // Mute any audio
+        '--mute-audio',
+        // Skip first run wizards
+        '--no-first-run',
+      ],
       port,
     })
     const target = await CDP.New({
