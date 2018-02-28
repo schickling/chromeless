@@ -38,7 +38,9 @@ export default class LocalChrome implements Chrome {
     const { port } = this.options.cdp
     this.chromeInstance = await launch({
       logLevel: this.options.debug ? 'info' : 'silent',
-      port,
+      port: this.options.cdp.port,
+      chromeFlags: this.options.chromeFlags,
+      chromePath: this.options.chromePath,
     })
     const target = await CDP.New({
       port,
