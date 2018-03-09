@@ -56,7 +56,7 @@
     "nyc": "^11.4.1",
     "prettier": "1.11.1",
     "rimraf": "^2.6.2",
-    "semantic-release": "^12.2.3",
+    "semantic-release": "^15.0.0",
     "tslint": "^5.8.0",
     "typescript": "^2.6.2"
   },
