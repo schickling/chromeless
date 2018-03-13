@@ -121,9 +121,67 @@ export default class LocalRuntime {
         return this.clearInput(command.selector)
       case 'setFileInput':
         return this.setFileInput(command.selector, command.files)
+      case 'onRequestWillBeSent':
+        return this.onRequestWillBeSent(command.func)
+      case 'onDataReceived':
+        return this.onDataReceived(command.func)
+      case 'onRequestServedFromCache':
+        return this.onRequestServedFromCache(command.func)
+      case 'onDataReceived':
+        return this.onDataReceived(command.func)
+      case 'onLoadingFinished':
+        return this.onLoadingFinished(command.func)
+      case 'onLoadingFailed':
+        return this.onLoadingFailed(command.func)
+      case 'onRequestIntercepted':
+        return this.onRequestIntercepted(command.func)
+      case 'onResponseReceived':
+        return this.onResponseReceived(command.func)
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
+  }
+
+  private async onRequestWillBeSent(func: void): Promise<void> {
+      const { Network } = this.client
+      Network.requestWillBeSent(func)
+      console.log('Added requestWillBeSent eventlistener')
+  }
+
+  private async onDataReceived(func: void): Promise<void> {
+    const { Network } = this.client
+    Network.dataReceived(func)
+    console.log('Added dateReceived eventlistener')
+  }
+
+  private async onRequestServedFromCache(func: void): Promise<void> {
+    const { Network } = this.client
+    Network.requestServedFromCache(func)
+    console.log('Added requestServedFromCache eventlistener')
+  }
+
+  private async onLoadingFinished(func: void): Promise<void> {
+    const { Network } = this.client
+    Network.loadingFinished(func)
+    console.log('Added loadingFinished eventlistener')
+  }
+
+  private async onLoadingFailed(func: void): Promise<void> {
+    const { Network } = this.client
+    Network.loadingFailed(func)
+    console.log('Added loadingFailed eventlistener')
+  }
+
+  private async onRequestIntercepted(func: void): Promise<void> {
+    const { Network } = this.client
+    Network.requestIntercepted(func)
+    console.log('Added requestIntercepted eventlistener')
+  }
+
+  private async onResponseReceived(func: void): Promise<void> {
+    const { Network } = this.client
+    Network.responseReceived(func)
+    console.log('Added responseReceived eventlistener')
   }
 
   private async goto(url: string): Promise<void> {

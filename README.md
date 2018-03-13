@@ -186,6 +186,13 @@ const chromeless = new Chromeless({
 - [`clearCookies()`](docs/api.md#api-clearcookies)
 - [`clearInput(selector: string)`](docs/api.md#api-clearInput)
 - [`setFileInput(selector: string, files: string | string[])`](docs/api.md#api-set-file-input)
+- [`onRequestWillBeSent()`](#api-onrequestwillbesent)
+- [`onDataReceived()`](#api-ondatareceived)
+- [`onRequestServedFromCache()`](#api-onrequestservedfromcache)
+- [`onLoadingFinished()`](#api-onloadingfinished)
+- [`onLoadingFailed()`](#api-onloadingfailed)
+- [`onRequestIntercepted()`](#api-onrequestintercepted)
+- [`onResponseReceived()`](#api-onresponsereceived)
 
 ## Configuring Development Environment
 

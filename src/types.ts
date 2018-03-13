@@ -189,9 +189,41 @@ export type Command =
       selector: string
     }
   | {
-      type: 'setFileInput'
-      selector: string
-      files: string[]
+    type: 'setFileInput'
+    selector: string
+    files: string[]
+    }
+  | {
+    type: 'clearInput'
+    selector: string
+    }
+  | {
+      type: 'onRequestWillBeSent'
+      func: void
+    }
+  | {
+      type: 'onDataReceived'
+      func: void
+    }
+  | {
+      type: 'onRequestServedFromCache'
+      func: void
+    }
+  | {
+      type: 'onLoadingFinished'
+      func: void
+    }
+  | {
+      type: 'onLoadingFailed'
+      func: void
+    }
+  | {
+      type: 'onRequestIntercepted'
+      func: void
+    }
+  | {
+      type: 'onResponseReceived'
+      func: void
     }
 
 export type Headers = Record<string, string>

@@ -54,6 +54,13 @@ Chromeless provides TypeScript typings.
 - [`setCookies(cookies: Cookie[])`](#api-setcookies-many)
 - [`deleteCookies(name: string)`](#api-deletecookies)
 - [`clearCookies()`](#api-clearcookies)
+- [`onRequestWillBeSent()`](#api-onrequestwillbesent)
+- [`onDataReceived()`](#api-ondatareceived)
+- [`onRequestServedFromCache()`](#api-onrequestservedfromcache)
+- [`onLoadingFinished()`](#api-onloadingfinished)
+- [`onLoadingFailed()`](#api-onloadingfailed)
+- [`onRequestIntercepted()`](#api-onrequestintercepted)
+- [`onResponseReceived()`](#api-onresponsereceived)
 
 
 ---------------------------------------
@@ -764,4 +771,130 @@ __Example__
 
 ```js
 await chromeless.setFileInput('.uploader', '/User/Me/Documents/img.jpg')
+```
+
+---------------------------------------
+
+<a name="api-onrequestwillbesent" />
+
+### onRequestWillBeSent(processFunction: void): Chromeless<T>
+
+Listen for `requestWillBeSent` events to capture and inspect them. 
+See devtools [documentation](https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-requestWillBeSent) for more information.
+
+__Arguments__
+- `processFunction` - a callback function to inspect the event properties
+
+__Example__
+
+```js
+await chromeless.onRequestWillBeSent(rqst => console.log(rqst))
+```
+
+---------------------------------------
+
+<a name="api-ondatareceived" />
+
+### onDataReceived(processFunction: void): Chromeless<T>
+
+Listen for `dataReceived` events to capture and inspect them. 
+See devtools [documentation](https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-dataReceived) for more information.
+
+__Arguments__
+- `processFunction` - a callback function to inspect the event properties
+
+__Example__
+
+```js
+await chromeless.onDataReceived(resp => console.log(resp))
+```
+
+---------------------------------------
+
+<a name="api-onrequestservedfromcache" />
+
+### onRequestServedFromCache(processFunction: void): Chromeless<T>
+
+Listen for `requestServedFromCache` events to capture and inspect them. 
+See devtools [documentation](https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-requestServedFromCache) for more information.
+
+__Arguments__
+- `processFunction` - a callback function to inspect the event properties
+
+__Example__
+
+```js
+await chromeless.onRequestServedFromCache(resp => console.log(resp))
+```
+
+---------------------------------------
+
+<a name="api-onloadingfinished" />
+
+### onLoadingFinished(processFunction: void): Chromeless<T>
+
+Listen for `loadingFinished` events to capture and inspect them. 
+See devtools [documentation](https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-loadingFinished) for more information.
+
+__Arguments__
+- `processFunction` - a callback function to inspect the event properties
+
+__Example__
+
+```js
+await chromeless.onLoadingFinished(resp => console.log(resp))
+```
+
+---------------------------------------
+
+<a name="api-onloadingfailed" />
+
+### onLoadingFailed(processFunction: void): Chromeless<T>
+
+Listen for `loadingFailed` events to capture and inspect them. 
+See devtools [documentation](https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-loadingFailed) for more information.
+
+__Arguments__
+- `processFunction` - a callback function to inspect the event properties
+
+__Example__
+
+```js
+await chromeless.onLoadingFailed(resp => console.log(resp))
+```
+
+---------------------------------------
+
+<a name="api-onrequestintercepted" />
+
+### onRequestIntercepted(processFunction: void): Chromeless<T>
+
+Listen for `requestIntercepted` events to capture and inspect them. 
+See devtools [documentation](https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-requestIntercepted) for more information.
+
+__Arguments__
+- `processFunction` - a callback function to inspect the event properties
+
+__Example__
+
+```js
+await chromeless.onRequestIntercepted(resp => console.log(resp))
+```
+
+---------------------------------------
+
+<a name="api-onresponsereceived" />
+
+### onResponseReceived(processFunction: void): Chromeless<T>
+
+Listen for `responseReceived` events to capture and inspect them. 
+See devtools [documentation](https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-responseReceived) for more information.
+
+__Arguments__
+- `processFunction` - a callback function to inspect the event properties
+
+__Example__
+
+```js
+await chromeless.onResponseReceived(resp => console.log(resp))
 ```
