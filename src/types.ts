@@ -86,6 +86,8 @@ export type Command =
   | {
       type: 'click'
       selector: string
+      x?: number
+      y?: number
     }
   | {
       type: 'returnCode'
