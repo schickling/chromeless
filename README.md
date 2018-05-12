@@ -148,7 +148,7 @@ const chromeless = new Chromeless({
 - [`end()`](docs/api.md#api-end)
 
 **Chrome methods**
-- [`goto(url: string)`](docs/api.md#api-goto)
+- [`goto(url: string, timeout?: number)`](docs/api.md#api-goto)
 - [`setUserAgent(useragent: string)`](docs/api.md#api-setUserAgent)
 - [`click(selector: string)`](docs/api.md#api-click)
 - [`wait(timeout: number)`](docs/api.md#api-wait-timeout)

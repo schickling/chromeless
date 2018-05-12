@@ -73,8 +73,8 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this.lastReturnPromise.catch(onrejected) as Promise<U>
   }
 
-  goto(url: string): Chromeless<T> {
-    this.queue.enqueue({ type: 'goto', url })
+  goto(url: string, timeout?: number): Chromeless<T> {
+    this.queue.enqueue({ type: 'goto', url, timeout })
 
     return this
   }

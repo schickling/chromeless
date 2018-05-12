@@ -106,6 +106,42 @@ export async function wait(timeout: number): Promise<void> {
   return new Promise<void>((resolve, reject) => setTimeout(resolve, timeout))
 }
 
+export async function waitForPromise<T>(
+  promise: Promise<T>,
+  waitTimeout: number,
+  label?: string,
+): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    let fullfilled = false
+    setTimeout(() => {
+      fullfilled = true
+      reject(
+        new Error(
+          `wait(${label || 'Promise'}) timed out after ${waitTimeout}ms`,
+        ),
+      )
+    }, waitTimeout)
+    return promise
+      .then(res => (fullfilled ? void 0 : resolve(res)))
+      .catch(err => (fullfilled ? void 0 : reject(err)))
+  })
+}
+
+export function eventToPromise() {
+  let resolve
+  const promise = new Promise(res => {
+    resolve = res
+  })
+  return {
+    onEvent(...args) {
+      resolve(args.length > 1 ? args : args[0])
+    },
+    fired() {
+      return promise
+    },
+  }
+}
+
 export async function nodeExists(
   client: Client,
   selector: string,

@@ -19,7 +19,7 @@ Chromeless provides TypeScript typings.
 - [`end()`](#api-end)
 
 ### Chrome methods
-- [`goto(url: string)`](#api-goto)
+- [`goto(url: string, timeout?: number)`](#api-goto)
 - [`setUserAgent(useragent: string)`](#api-setuseragent)
 - [`click(selector: string)`](#api-click)
 - [`wait(timeout: number)`](#api-wait-timeout)
@@ -73,12 +73,13 @@ await chromeless.end()
 
 <a name="api-goto" />
 
-### goto(url: string): Chromeless<T>
+### goto(url: string, timeout?: number): Chromeless<T>
 
 Navigate to a URL.
 
 __Arguments__
 - `url` - URL to navigate to
+- `timeout` -How long to wait for page to load (default is value of waitTimeout option)
 
 __Example__
 
@@ -173,7 +174,7 @@ __Arguments__
 __Example__
 
 ```js
-await chromeless.wait(() => { 
+await chromeless.wait(() => {
   return new Promise((resolve, reject) => {
     // do something async, setTimeout...
     resolve();
