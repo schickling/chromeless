@@ -205,7 +205,7 @@ export default class Chromeless<T extends any> implements Promise<T> {
   }
 
   evaluate<U extends any>(
-    fn: (...args: any[]) => void,
+    fn: (...args: any[]) => U,
     ...args: any[]
   ): Chromeless<U> {
     this.lastReturnPromise = this.queue.process<U>({
