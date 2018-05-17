@@ -2,9 +2,9 @@
 
 [![npm](https://img.shields.io/npm/v/chromeless.svg)](https://npmjs.com/package/chromeless)
 [![downloads](https://img.shields.io/npm/dm/chromeless.svg)](https://npmjs.com/package/chromeless)
-[![circleci](https://circleci.com/gh/graphcool/chromeless.svg?style=shield)](https://circleci.com/gh/graphcool/workflows/chromeless/tree/master)
-[![codecov](https://codecov.io/gh/graphcool/chromeless/branch/master/graph/badge.svg)](https://codecov.io/gh/graphcool/chromeless)
-[![dependencies](https://david-dm.org/graphcool/chromeless/status.svg)](https://david-dm.org/graphcool/chromeless)
+[![circleci](https://circleci.com/gh/prismagraphql/chromeless.svg?style=shield)](https://circleci.com/gh/prismagraphql/workflows/chromeless/tree/master)
+[![codecov](https://codecov.io/gh/prismagraphql/chromeless/branch/master/graph/badge.svg)](https://codecov.io/gh/prismagraphql/chromeless)
+[![dependencies](https://david-dm.org/prismagraphql/chromeless/status.svg)](https://david-dm.org/prismagraphql/chromeless)
 [![node](https://img.shields.io/node/v/chromeless.svg)]()
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
@@ -21,12 +21,12 @@ Chrome automation made simple. Runs locally or headless on AWS Lambda. (**[See D
 
 * [JSON of Google Results](examples/extract-google-results.js): Google for `chromeless` and get a list of JSON results
 * [Screenshot of Google Results](examples/google-screenshot.js): Google for `chromeless` and take a screenshot of the results
-* [prep](https://github.com/graphcool/prep): Compile-time prerendering for SPA/PWA (like React, Vue...) instead of server-side rendering (SSR)
+* [prep](https://github.com/prismagraphql/prep): Compile-time prerendering for SPA/PWA (like React, Vue...) instead of server-side rendering (SSR)
 * *See the full [examples list](/examples) for more*
 
 ## ▶️ Try it out
 
-You can try out Chromeless and explore the API in the browser-based **[demo playground](https://chromeless.netlify.com/)** ([source](https://github.com/graphcool/chromeless-playground)).
+You can try out Chromeless and explore the API in the browser-based **[demo playground](https://chromeless.netlify.com/)** ([source](https://github.com/prismagraphql/chromeless-playground)).
 
 [![](http://i.imgur.com/i1gtCzy.png)](https://chromeless.netlify.com/)
 
@@ -213,7 +213,7 @@ The `Chromeless` API is very similar to NightmareJS as their API is pretty aweso
 
 ### I'm new to AWS Lambda, is this still for me?
 
-You still can use this locally without Lambda, so yes. Besides that, here is a [simple guide](https://github.com/graphcool/chromeless/tree/master/serverless) on how to set the lambda function up for `Chromeless`.
+You still can use this locally without Lambda, so yes. Besides that, here is a [simple guide](https://github.com/prismagraphql/chromeless/tree/master/serverless) on how to set the lambda function up for `Chromeless`.
 
 ### How much does it cost to run Chromeless in production?
 
@@ -333,4 +333,4 @@ A big thank you to all contributors and supporters of this repository 💚
 
 Join our [Slack community](http://slack.graph.cool/) if you run into issues or have questions. We love talking to you!
 
-[![](http://i.imgur.com/5RHR6Ku.png)](https://www.graph.cool/)
+<p align="center"><a href="https://oss.prisma.io"><img src="https://imgur.com/IMU2ERq.png" alt="Prisma" height="170px"></a></p>
