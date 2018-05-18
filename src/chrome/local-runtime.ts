@@ -414,7 +414,7 @@ export default class LocalRuntime {
       }
     }
 
-    const data = await screenshot(this.client, selector)
+    const data = await screenshot(this.client, selector, options)
 
     if (isS3Configured()) {
       return await uploadToS3(data, 'image/png')
