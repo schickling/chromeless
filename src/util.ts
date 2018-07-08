@@ -668,6 +668,9 @@ const s3ContentTypes = {
   'application/pdf': {
     extension: 'pdf',
   },
+  'text/html': {
+    extension: 'html',
+  },
 }
 
 export async function uploadToS3(
@@ -686,7 +689,7 @@ export async function uploadToS3(
       Key: s3Path,
       ContentType: contentType,
       ACL: getS3FilesPermissions(),
-      Body: Buffer.from(data, 'base64'),
+      Body: Buffer.from(data, contentType === 'text/html' ? 'utf8' : 'base64'),
     })
     .promise()
 
