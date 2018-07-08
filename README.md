@@ -100,6 +100,10 @@ async function run() {
 run().catch(console.error.bind(console))
 ```
 
+Screenshot:
+
+![](https://i.imgur.com/dqWZDiA.png)
+
 ### Local Chrome Usage
 
 To run Chromeless locally, you need a recent version of Chrome or Chrome Canary installed (version 60 or greater). By default, chromeless will start Chrome automatically and will default to the most recent version found on your system if there's multiple. You can override this behavior by starting Chrome yourself, and passing a flag of `launchChrome: false` in the `Chromeless` constructor.
