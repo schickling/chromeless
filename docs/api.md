@@ -495,6 +495,7 @@ __Arguments__
 - `selector` - DOM element to take a screenshot of,
 - `options` - An options object with the following props
 - `options.filePath` - A file path override in case of working locally
+- `options.omitBackground` - Boolean to remove default white background
 
 __Examples__
 

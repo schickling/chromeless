@@ -239,6 +239,7 @@ export interface PdfOptions {
 
 export interface ScreenshotOptions {
   filePath?: string
+  omitBackground?: boolean
 }
 
 export type Quad = Array<number>

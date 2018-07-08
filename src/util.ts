@@ -10,6 +10,7 @@ import {
   BoxModel,
   Viewport,
   Headers,
+  ScreenshotOptions,
 } from './types'
 import * as CDP from 'chrome-remote-interface'
 import * as AWS from 'aws-sdk'
@@ -503,6 +504,7 @@ export function boxModelToViewPort(model: BoxModel, scale: number): Viewport {
 export async function screenshot(
   client: Client,
   selector: string,
+  options: ScreenshotOptions,
 ): Promise<string> {
   const { Page } = client
 
@@ -516,9 +518,13 @@ export async function screenshot(
     const model = await getBoxModel(client, selector)
     captureScreenshotOptions.clip = boxModelToViewPort(model, 1)
   }
-
+  if (options && options.omitBackground)
+    client.Emulation.setDefaultBackgroundColorOverride({
+      color: { r: 0, g: 0, b: 0, a: 0 },
+    })
   const screenshot = await Page.captureScreenshot(captureScreenshotOptions)
-
+  if (options && options.omitBackground)
+    client.Emulation.setDefaultBackgroundColorOverride()
   return screenshot.data
 }
 
