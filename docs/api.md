@@ -21,7 +21,7 @@ Chromeless provides TypeScript typings.
 ### Chrome methods
 - [`goto(url: string, timeout?: number)`](#api-goto)
 - [`setUserAgent(useragent: string)`](#api-setuseragent)
-- [`click(selector: string)`](#api-click)
+- [`click(selector: string, x?: number, y?: number)`](#api-click)
 - [`wait(timeout: number)`](#api-wait-timeout)
 - [`wait(selector: string, timeout?: number)`](#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
@@ -108,17 +108,20 @@ await chromeless.setUserAgent('Custom Chromeless UserAgent x.x.x')
 
 <a name="api-click" />
 
-### click(selector: string): Chromeless<T>
+### click(selector: string, x?: number, y?: number): Chromeless<T>
 
 Click on something in the DOM.
 
 __Arguments__
 - `selector` - DOM selector for element to click
+- `x` - Offset from the left of the element, default width/2
+- `y` - Offset from the top of the element, default height/2
 
 __Example__
 
 ```js
 await chromeless.click('#button')
+await chromeless.click('#button', 20, 100)
 ```
 
 ---------------------------------------

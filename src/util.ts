@@ -191,13 +191,20 @@ export async function getClientRect(client, selector): Promise<ClientRect> {
   return JSON.parse(result.result.value) as ClientRect
 }
 
-export async function click(client: Client, selector: string, scale: number) {
+export async function click(
+  client: Client,
+  selector: string,
+  scale: number,
+  x?: number,
+  y?: number,
+) {
   const clientRect = await getClientRect(client, selector)
   const { Input } = client
-
+  if (x === undefined) x = clientRect.width / 2
+  if (y === undefined) y = clientRect.height / 2
   const options = {
-    x: Math.round((clientRect.left + clientRect.width / 2) * scale),
-    y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+    x: Math.round((clientRect.left + x) * scale),
+    y: Math.round((clientRect.top + y) * scale),
     button: 'left',
     clickCount: 1,
   }

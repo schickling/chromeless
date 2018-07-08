@@ -76,7 +76,7 @@ export default class LocalRuntime {
       case 'setUserAgent':
         return this.setUserAgent(command.useragent)
       case 'click':
-        return this.click(command.selector)
+        return this.click(command.selector, command.x, command.y)
       case 'returnCode':
         return this.returnCode(command.fn, ...command.args)
       case 'returnExists':
@@ -187,7 +187,7 @@ export default class LocalRuntime {
     this.log(`Waited for ${selector}`)
   }
 
-  private async click(selector: string): Promise<void> {
+  private async click(selector: string, x?: number, y?: number): Promise<void> {
     if (this.chromelessOptions.implicitWait) {
       this.log(`click(): Waiting for ${selector}`)
       await waitForNode(
@@ -206,8 +206,8 @@ export default class LocalRuntime {
     if (this.chromelessOptions.scrollBeforeClick) {
       await scrollToElement(this.client, selector)
     }
-    await click(this.client, selector, scale)
-    this.log(`Clicked on ${selector}`)
+    await click(this.client, selector, scale, x, y)
+    this.log(`Clicked on ${selector} at (${x}, ${y})`)
   }
 
   private async returnCode<T>(fn: string, ...args: any[]): Promise<T> {

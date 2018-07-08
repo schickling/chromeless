@@ -85,8 +85,8 @@ export default class Chromeless<T extends any> implements Promise<T> {
     return this
   }
 
-  click(selector: string): Chromeless<T> {
-    this.queue.enqueue({ type: 'click', selector })
+  click(selector: string, x?: number, y?: number): Chromeless<T> {
+    this.queue.enqueue({ type: 'click', selector, x, y })
 
     return this
   }
