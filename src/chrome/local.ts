@@ -57,8 +57,6 @@ export default class LocalChrome implements Chrome {
         '--disable-sync',
         // Disable reporting to UMA, but allows for collection
         '--metrics-recording-only',
-        // Disable installation of default apps on first run
-        '--disable-default-apps',
         // Mute any audio
         '--mute-audio',
         // Skip first run wizards
