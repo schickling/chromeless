@@ -1,3 +1,6 @@
+*This project is deprecated in favor for [Puppeteer](https://github.com/GoogleChrome/puppeteer). 
+Thanks to all the contributors who made this project possible.*
+
 # Chromeless
 
 [![npm](https://img.shields.io/npm/v/chromeless.svg)](https://npmjs.com/package/chromeless)
