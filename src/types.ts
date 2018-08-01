@@ -180,6 +180,10 @@ export type Command =
       selector: string
     }
   | {
+      type: 'mouseover'
+      selector: string
+    }
+  | {
       type: 'mouseup'
       selector: string
     }
