@@ -20,8 +20,8 @@
     "node": ">= 6.10.0"
   },
   "scripts": {
-    "ava": "tsc -d && nyc ava",
-    "build": "npm run clean && tsc -d",
+    "ava": "tsc -d && cp package.json ./dist/package.json && nyc ava",
+    "build": "npm run clean && tsc -d && cp package.json ./dist/package.json",
     "clean": "rimraf dist",
     "coverage": "npm run ava",
     "precommit": "lint-staged",
