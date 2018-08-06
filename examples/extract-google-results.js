@@ -4,6 +4,9 @@ async function run() {
   const chromeless = new Chromeless({ remote: true })
 
   const links = await chromeless
+    .setUserAgent(
+      'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+    )
     .goto('https://www.google.com')
     .type('chromeless', 'input[name="q"]')
     .press(13)
