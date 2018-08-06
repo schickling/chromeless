@@ -40,7 +40,14 @@ export default class Queue {
       this.lastWaitAll = this.waitAll()
     }
 
-    await this.lastWaitAll
+    const currentWaitAll = this.lastWaitAll
+    try {
+      await this.lastWaitAll      
+    } finally {
+      if (this.lastWaitAll == currentWaitAll) {
+        this.lastWaitAll = null;
+      }
+    }
 
     return this.chrome.process<T>(command)
   }
