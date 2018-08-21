@@ -6,6 +6,7 @@ export interface Client {
   Runtime: any
   Emulation: any
   Storage: any
+  Security: any
   close: () => void
   target: {
     id: string
@@ -58,6 +59,7 @@ export interface ChromelessOptions {
 
 export interface Chrome {
   process<T extends any>(command: Command): Promise<T>
+
   close(): Promise<void>
 }
 
