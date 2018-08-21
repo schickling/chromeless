@@ -14,6 +14,7 @@ Chromeless provides TypeScript typings.
 - `viewport: any` Viewport dimensions — Default: `{width: 1440, height: 900, scale: 1}`
 - `launchChrome: boolean` Auto-launch chrome (local) — Default: `true`
 - `cdp: CDPOptions` Chome Debugging Protocol Options — Default: `{host: 'localhost', port: 9222, secure: false, closeTab: true}`
+- `ignoreCertErrors: boolean` ignore certificate errors — Default: `false`
 
 ### Chromeless methods
 - [`end()`](#api-end)

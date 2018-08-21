@@ -229,6 +229,12 @@ export async function focus(client: Client, selector: string): Promise<void> {
   await DOM.focus(node)
 }
 
+export async function ignoreCertErrors(client: Client): Promise<void> {
+  const { Security } = client
+  await Security.enable()
+  await Security.setIgnoreCertificateErrors({ ignore: true })
+}
+
 export async function evaluate<T>(
   client: Client,
   fn: string,
