@@ -51,6 +51,7 @@ export interface ChromelessOptions {
     scale?: number // 1
   }
   launchChrome?: boolean // auto-launch chrome (local) `true`
+  ignoreCertErrors?: boolean
   cdp?: CDPOptions
   remote?: RemoteOptions | boolean
 }
