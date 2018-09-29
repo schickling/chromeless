@@ -196,6 +196,12 @@ export type Command =
       selector: string
       files: string[]
     }
+  | {
+      type: 'authenticate'
+      username: string
+      password: string
+      patterns?: RequestPattern[]
+    }
 
 export type Headers = Record<string, string>
 
@@ -268,4 +274,10 @@ export interface Viewport {
   width: number
   height: number
   scale: number
+}
+
+export interface RequestPattern {
+  urlPattern?: string
+  resourceType?: string
+  interceptionStage?: string
 }

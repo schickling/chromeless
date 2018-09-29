@@ -9,6 +9,7 @@ import {
   PdfOptions,
   DeviceMetrics,
   ScreenshotOptions,
+  RequestPattern,
 } from './types'
 import { getDebugOption } from './util'
 import { isArray } from 'util'
@@ -194,6 +195,16 @@ export default class Chromeless<T extends any> implements Promise<T> {
 
   setHtml(html: string): Chromeless<T> {
     this.queue.enqueue({ type: 'setHtml', html })
+
+    return this
+  }
+
+  authenticate(
+    username: string,
+    password: string,
+    patterns?: RequestPattern[],
+  ): Chromeless<T> {
+    this.queue.enqueue({ type: 'authenticate', username, password, patterns })
 
     return this
   }
