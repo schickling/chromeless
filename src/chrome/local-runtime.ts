@@ -7,6 +7,7 @@ import {
   CookieQuery,
   PdfOptions,
   ScreenshotOptions,
+  RequestPattern,
 } from '../types'
 import {
   nodeExists,
@@ -123,6 +124,12 @@ export default class LocalRuntime {
         return this.clearInput(command.selector)
       case 'setFileInput':
         return this.setFileInput(command.selector, command.files)
+      case 'authenticate':
+        return this.authenticate(
+          command.username,
+          command.password,
+          command.patterns,
+        )
       default:
         throw new Error(`No such command: ${JSON.stringify(command)}`)
     }
@@ -171,6 +178,42 @@ export default class LocalRuntime {
   private async setUserAgent(useragent: string): Promise<void> {
     this.userAgentValue = useragent
     await this.log(`Set useragent to ${this.userAgentValue}`)
+  }
+
+  private async authenticate(
+    username: string,
+    password: string,
+    pattens?: RequestPattern[],
+  ): Promise<void> {
+    const { Network } = this.client
+    await Network.setRequestInterception({
+      patterns: pattens ? pattens : [{ urlPattern: '*' }],
+    })
+
+    Network.requestIntercepted(
+      async ({ interceptionId, request, authChallenge }) => {
+        // perform a test against the intercepted request
+        this.log(
+          `${interceptionId} ${request.url} ${
+            authChallenge ? authChallenge.origin : 'undefined'
+          } ${authChallenge ? authChallenge.scheme : 'undefined'}`,
+        )
+        if (authChallenge) {
+          await Network.continueInterceptedRequest({
+            interceptionId: interceptionId,
+            authChallengeResponse: {
+              response: 'ProvideCredentials',
+              username: username,
+              password: password,
+            },
+          })
+        } else {
+          await Network.continueInterceptedRequest({
+            interceptionId: interceptionId,
+          })
+        }
+      },
+    )
   }
 
   private async waitTimeout(timeout: number): Promise<void> {

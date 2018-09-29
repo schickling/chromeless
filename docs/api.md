@@ -53,6 +53,7 @@ Chromeless provides TypeScript typings.
 - [`setCookies(cookie: Cookie)`](#api-setcookies-one)
 - [`setCookies(cookies: Cookie[])`](#api-setcookies-many)
 - [`deleteCookies(name: string)`](#api-deletecookies)
+- [`authenticate(username: string, password: string, patterns?: RequestPattern[])`](#api-authenticate)
 - [`clearCookies()`](#api-clearcookies)
 
 
@@ -769,4 +770,23 @@ __Example__
 
 ```js
 await chromeless.setFileInput('.uploader', '/User/Me/Documents/img.jpg')
+```
+---------------------------------------
+
+<a name="api-authenticate" />
+
+### authenticate(username: string, password: string, patterns?: RequestPattern[]): Chromeless<T>
+
+provide authenticate for pop up dialog
+
+RequestPattern is defined as [here](https://chromedevtools.github.io/devtools-protocol/tot/Network#type-RequestPattern)
+
+
+__Example__
+
+```js
+await chromeless
+    .authenticate('username', 'Passw0Rd',[{urlPattern: '*'}])
+    .goto('https://github.com')
+    .screenshot()
 ```
