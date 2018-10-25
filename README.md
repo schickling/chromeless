@@ -226,7 +226,7 @@ This means you can easily execute > 100.000 tests for free in the free tier.
 
 ### Are there any limitations?
 
-If you're running Chromeless on AWS Lambda, the execution cannot take longer than 5 minutes which is the current limit of Lambda. Besides that, every feature that's supported in Chrome is also working with Chromeless. The maximal number of concurrent function executions is 1000. [AWS API Limits](http://docs.aws.amazon.com/lambda/latest/dg/limits.html)
+If you're running Chromeless on AWS Lambda, the execution cannot take longer than 15 minutes which is the current limit of Lambda. Besides that, every feature that's supported in Chrome is also working with Chromeless. The maximal number of concurrent function executions is 1000. [AWS API Limits](http://docs.aws.amazon.com/lambda/latest/dg/limits.html)
 
 ### Are there commercial options?
 
